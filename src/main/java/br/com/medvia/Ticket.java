@@ -8,27 +8,35 @@ import java.util.Date;
  */
 
 /*
- "state": 0,
- "id": "",
- "description": "Baixa qualidade de imagem",
- "dateOcurrence": "31/05/2016 17:48",
- "responsable": "Marco Alexandre Reverdito Gomes",
- "institution": "Hospital Moinhos de Vento - Sede Ramiro",
- "equipment": "MEDRAD STELLANT DDX (INTERNADOS) - 20542",
- "situation": "75% funcional",
- "priority": "Baixa"
+{
+               id: '',
+               state: 'f',
+               description: "Não liga",
+               institution: "Hospital de Clínicas (POA)",
+               equipment: "RM SPECTRIS SOLARIS EX THUNDER",
+               situation: 0,
+               priority: "n",
+               dateOcurrence: "22/05/2016 23:08",
+               prediction: "02/08/2016 10:45",
+               openedBy: "Dr. Oliver Tsubasa",
+               responsable: "Dr. Alberto A."
+           };
  */
 public class Ticket {
 
-    private int state;
     private int id;
+    private int state;
     private String description;
     private transient Date dateOcurrenceRaw;
     private String dateOcurrence;
+    private transient Date predictionRaw;
+    private String prediction;
+    private String openedBy;
     private String responsable;
     private String institution;
     private String equipment;
     private int situation;
+    private String priority;
 
     public void setState(boolean state) {
         this.state = state ? 1 : 0;
@@ -68,6 +76,26 @@ public class Ticket {
 
     public void setSituation(int situation) {
         this.situation = situation;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public void setPredictionRaw(Date predictionRaw) {
+        this.predictionRaw = predictionRaw;
+    }
+
+    public void setPrediction(String prediction) {
+        this.prediction = prediction;
+    }
+
+    public void setOpenedBy(String openedBy) {
+        this.openedBy = openedBy;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 
 }
