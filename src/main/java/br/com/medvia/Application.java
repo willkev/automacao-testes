@@ -11,7 +11,7 @@ public class Application {
     }
 
     public Application() {
-        System.out.println("CONSTRUIU ***** OK");
+        System.out.println("PhyMedvia started OK!");
     }
 
 }

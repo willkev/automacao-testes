@@ -1,4 +1,4 @@
-package br.com.medvia;
+package br.com.medvia.resources;
 
 import java.util.Date;
 
@@ -8,24 +8,25 @@ import java.util.Date;
  */
 
 /*
-{
-               id: '',
-               state: 'f',
-               description: "Não liga",
-               institution: "Hospital de Clínicas (POA)",
-               equipment: "RM SPECTRIS SOLARIS EX THUNDER",
-               situation: 0,
-               priority: "n",
-               dateOcurrence: "22/05/2016 23:08",
-               prediction: "02/08/2016 10:45",
-               openedBy: "Dr. Oliver Tsubasa",
-               responsable: "Dr. Alberto A."
-           };
+ {
+ id: '',
+ state: 'f',
+ description: "Não liga",
+ institution: "Hospital de Clínicas (POA)",
+ equipment: "RM SPECTRIS SOLARIS EX THUNDER",
+ situation: 0,
+ priority: "n",
+ dateOcurrence: "22/05/2016 23:08",
+ prediction: "02/08/2016 10:45",
+ openedBy: "Dr. Oliver Tsubasa",
+ responsable: "Dr. Alberto A."
+ };
  */
 public class Ticket {
 
     private int id;
-    private int state;
+    // Aberto, Fechado e Excluído
+    private String state;
     private String description;
     private transient Date dateOcurrenceRaw;
     private String dateOcurrence;
@@ -36,10 +37,13 @@ public class Ticket {
     private String institution;
     private String equipment;
     private int situation;
+    // 'a' : 'Alta'
+    // 'n' : 'Normal'
+    // 'b' : 'Baixa'
     private String priority;
 
-    public void setState(boolean state) {
-        this.state = state ? 1 : 0;
+    public void setState(String state) {
+        this.state = state;
     }
 
     public void setId(int id) {
@@ -78,12 +82,12 @@ public class Ticket {
         this.situation = situation;
     }
 
-    public void setState(int state) {
-        this.state = state;
-    }
-
     public void setPredictionRaw(Date predictionRaw) {
         this.predictionRaw = predictionRaw;
+    }
+
+    public Date getPredictionRaw() {
+        return predictionRaw;
     }
 
     public void setPrediction(String prediction) {
