@@ -2,7 +2,9 @@ package br.com.medvia.util;
 
 import br.com.medvia.resources.Ticket;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -10,7 +12,9 @@ import java.util.Date;
  */
 public class FakesTickets {
 
-    public Ticket[] generate(int repeat) {
+    private static List<Ticket> pool = new ArrayList<Ticket>();
+
+    static {
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         Ticket t1 = new Ticket();
@@ -73,16 +77,22 @@ public class FakesTickets {
         t4.setState("a");
         t4.setPriority("a");
 
+        pool.add(t1);
+        pool.add(t2);
+        pool.add(t3);
+        pool.add(t4);
+    }
+
+    public List<Ticket> generate(int repeat) {
         if (repeat < 1) {
             repeat = 1;
         }
-        Ticket[] pool = new Ticket[4 * repeat];
-        for (int i = 0; i < pool.length; i += 4) {
-            pool[i] = t1;
-            pool[i + 1] = t2;
-            pool[i + 2] = t3;
-            pool[i + 3] = t4;
+        List<Ticket> poolRet = new ArrayList<Ticket>();
+        for (int i = 0; i < repeat; i++) {
+            for (Ticket t : pool) {
+                poolRet.add(t);
+            }
         }
-        return pool;
+        return poolRet;
     }
 }

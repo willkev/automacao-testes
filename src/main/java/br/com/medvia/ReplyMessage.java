@@ -4,11 +4,11 @@ package br.com.medvia;
  *
  * @author willian.kirschner
  */
-class MessageReturn {
+class ReplyMessage {
 
     private final String message;
 
-    public MessageReturn(String message) {
+    public ReplyMessage(String message) {
         this.message = message;
     }
 

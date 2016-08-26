@@ -3,6 +3,9 @@ package br.com.medvia;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.util.FakesTickets;
 import com.google.gson.Gson;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,24 +21,35 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TiketController {
 
-    // OLD
-    @RequestMapping("/api/tickets/list")
-    public String getAllTickets(@RequestParam(value = "repeat", defaultValue = "1") int repeat) {
-        System.out.println("repeat=" + repeat);
-        FakesTickets fakesTickets = new FakesTickets();
-        return new Gson().toJson(fakesTickets.generate(repeat));
+    public TiketController() {
+        System.out.println("TiketController OK!");
     }
 
-    @RequestMapping("/api/tickets")
-    public Ticket[] getAll(@RequestParam(value = "repeat", defaultValue = "1") int repeat) {
+    // OLD
+    @RequestMapping("/api/tickets/list")
+    public ResponseEntity<String> getAllTickets(@RequestParam(value = "repeat", defaultValue = "1") int repeat) {
         System.out.println("repeat=" + repeat);
         FakesTickets fakesTickets = new FakesTickets();
-        return fakesTickets.generate(repeat);
+        return new ResponseEntity<>(
+                new Gson().toJson(fakesTickets.generate(repeat)),
+                HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/api/tickets", method = RequestMethod.GET)
+    public ResponseEntity<List<Ticket>> list(@RequestParam(value = "repeat", defaultValue = "1") int repeat) {
+        System.out.println("repeat=" + repeat);
+        FakesTickets fakesTickets = new FakesTickets();
+        return new ResponseEntity<>(
+                fakesTickets.generate(repeat),
+                HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/tickets", method = RequestMethod.POST)
-    public MessageReturn create(@RequestBody String ticket) {
-
-        return new MessageReturn("Criou novo chamado com sucesso!");
+    public ResponseEntity<ReplyMessage> create(@RequestBody Ticket ticket) {
+        System.out.println(ticket.toString());
+        return new ResponseEntity<>(
+                new ReplyMessage("Criou novo chamado com sucesso!"),
+                HttpStatus.OK);
     }
+
 }

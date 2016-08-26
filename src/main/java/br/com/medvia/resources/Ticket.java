@@ -25,6 +25,7 @@ import java.util.Date;
 public class Ticket {
 
     private int id;
+    private String title;
     // Aberto, Fechado e Excluído
     private String state;
     private String description;
@@ -48,6 +49,14 @@ public class Ticket {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setDescription(String description) {
@@ -100,6 +109,11 @@ public class Ticket {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" + "id=" + id + ", title=" + title + ", state=" + state + ", description=" + description + ", dateOcurrenceRaw=" + dateOcurrenceRaw + ", dateOcurrence=" + dateOcurrence + ", predictionRaw=" + predictionRaw + ", prediction=" + prediction + ", openedBy=" + openedBy + ", responsable=" + responsable + ", institution=" + institution + ", equipment=" + equipment + ", situation=" + situation + ", priority=" + priority + '}';
     }
 
 }
