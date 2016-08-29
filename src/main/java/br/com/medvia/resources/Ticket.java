@@ -1,5 +1,6 @@
 package br.com.medvia.resources;
 
+import br.com.medvia.db.WkTable;
 import java.util.Date;
 
 /**
@@ -22,9 +23,9 @@ import java.util.Date;
  responsable: "Dr. Alberto A."
  };
  */
-public class Ticket {
+public class Ticket extends WkTable {
 
-    private int id;
+//    private int id;
     private String title;
     // Aberto, Fechado e Excluído
     private String state;
@@ -45,10 +46,6 @@ public class Ticket {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -111,9 +108,8 @@ public class Ticket {
         this.priority = priority;
     }
 
-    @Override
     public String toString() {
-        return "Ticket{" + "id=" + id + ", title=" + title + ", state=" + state + ", description=" + description + ", dateOcurrenceRaw=" + dateOcurrenceRaw + ", dateOcurrence=" + dateOcurrence + ", predictionRaw=" + predictionRaw + ", prediction=" + prediction + ", openedBy=" + openedBy + ", responsable=" + responsable + ", institution=" + institution + ", equipment=" + equipment + ", situation=" + situation + ", priority=" + priority + '}';
+        return "Ticket{" + "id=" + this.getID() + ", title=" + title + ", state=" + state + ", description=" + description + ", dateOcurrenceRaw=" + dateOcurrenceRaw + ", dateOcurrence=" + dateOcurrence + ", predictionRaw=" + predictionRaw + ", prediction=" + prediction + ", openedBy=" + openedBy + ", responsable=" + responsable + ", institution=" + institution + ", equipment=" + equipment + ", situation=" + situation + ", priority=" + priority + '}';
     }
 
 }

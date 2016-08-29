@@ -1,10 +1,10 @@
-package br.com.medvia;
+package br.com.medvia.util;
 
 /**
  *
  * @author willian.kirschner
  */
-class ReplyMessage {
+public class ReplyMessage {
 
     private final String message;
 
