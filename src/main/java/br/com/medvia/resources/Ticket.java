@@ -6,22 +6,6 @@ import br.com.medvia.db.WkTable;
  *
  * @author Willian
  */
-
-/*
- {
- id: '',
- state: 'f',
- description: "Não liga",
- institution: "Hospital de Clínicas (POA)",
- equipment: "RM SPECTRIS SOLARIS EX THUNDER",
- situation: 0,
- priority: "n",
- dateOcurrence: "22/05/2016 23:08",
- prediction: "02/08/2016 10:45",
- openedBy: "Dr. Oliver Tsubasa",
- responsable: "Dr. Alberto A."
- };
- */
 public class Ticket extends WkTable {
 
     private String title;
@@ -35,13 +19,11 @@ public class Ticket extends WkTable {
     // Date "dd/MM/yyyy HH:mm"
     private String prediction;
     // Table User
-    private int openedBy;
+    private int openedByID;
     // Table User
-    private int responsable;
-    // Table Institution
-    private int institution;
+    private int responsableID;
     // Table Equipament
-    private int equipment;
+    private int equipmentID;
     // 0, 50, 75 or 100
     private int situation;
     // 'a' : 'Alta'
@@ -57,28 +39,36 @@ public class Ticket extends WkTable {
         return title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getDateOcurrence() {
+        return dateOcurrence;
+    }
+
+    public String getPrediction() {
+        return prediction;
+    }
+
+    public int getSituation() {
+        return situation;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setOpenedBy(int openedBy) {
-        this.openedBy = openedBy;
-    }
-
-    public void setResponsable(int responsable) {
-        this.responsable = responsable;
-    }
-
-    public void setInstitution(int institution) {
-        this.institution = institution;
-    }
-
-    public void setEquipment(int equipment) {
-        this.equipment = equipment;
     }
 
     public void setDateOcurrence(String dateOcurrence) {
@@ -97,9 +87,16 @@ public class Ticket extends WkTable {
         this.priority = priority;
     }
 
-    @Override
-    public String toString() {
-        return "Ticket{" + "id=" + this.getID() + "title=" + title + ", state=" + state + ", description=" + description + ", dateOcurrence=" + dateOcurrence + ", prediction=" + prediction + ", openedBy=" + openedBy + ", responsable=" + responsable + ", institution=" + institution + ", equipment=" + equipment + ", situation=" + situation + ", priority=" + priority + '}';
+    public void setOpenedByID(int openedByID) {
+        this.openedByID = openedByID;
+    }
+
+    public void setResponsableID(int responsableID) {
+        this.responsableID = responsableID;
+    }
+
+    public void setEquipmentID(int equipmentID) {
+        this.equipmentID = equipmentID;
     }
 
 }

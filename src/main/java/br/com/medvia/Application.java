@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 // -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n
-
 @SpringBootApplication
 public class Application {
 

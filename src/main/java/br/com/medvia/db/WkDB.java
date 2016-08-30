@@ -24,6 +24,7 @@ public class WkDB<T extends WkTable> {
     private static final String jdbc_driver = "org.sqlite.JDBC";
     private static final String url_in_file = "jdbc:sqlite:";
     private static File dirDB = null;
+    private static File fileDB = null;
     // Key = 'Table Name' Value = 'Connection/Session'
     private static final HashMap<String, Connection> connections = new HashMap<>(1);
     private final Connection conn;
@@ -141,8 +142,7 @@ public class WkDB<T extends WkTable> {
     /**
      * Specifies an directory to save the Data Base
      *
-     * @param directoryDB A direwctory when the tables will be save on hard
-     * disk.
+     * @param directoryDB A direwctory when the tables will be save on hard disk.
      */
     public static void setDirDB(File directoryDB) {
         if (directoryDB != null && directoryDB.isDirectory()) {
@@ -154,23 +154,26 @@ public class WkDB<T extends WkTable> {
         return dirDB;
     }
 
+    public static void setFileDB(File file) {
+        if (file != null) {
+            fileDB = file;
+        }
+    }
+
     /**
      * Create a connection for this Table. It will be performed just in memory.
      *
-     * @param clazz Class that represent a Table. This class need extends
-     * WkTable
+     * @param clazz Class that represent a Table. This class need extends WkTable
      */
     public WkDB(Class<T> clazz) {
         this(clazz, false);
     }
 
     /**
-     * Create a connection for this Table. If a directory was not especified to
-     * save the Data Base, it will be performed just in memory. If a directory
-     * was especified, it will be allowed to save in a hard disk.
+     * Create a connection for this Table. If a directory was not especified to save the Data Base, it will be performed
+     * just in memory. If a directory was especified, it will be allowed to save in a hard disk.
      *
-     * @param clazz Class that represent a Table. This class need extends
-     * WkTable
+     * @param clazz Class that represent a Table. This class need extends WkTable
      * @param saveInDisk Specifies whether must save the table in hard disk
      */
     public WkDB(Class<T> clazz, boolean saveInDisk) {
@@ -234,16 +237,22 @@ public class WkDB<T extends WkTable> {
 
     private Connection createConnection(boolean saveInDisk) throws Exception {
         Class.forName(jdbc_driver);
-        // Se não especificou um diretório para salvar o DB ou não deve gravar em disco
-        if (!saveInDisk) {
-            println("Creating new connection JDBC = " + url_in_file + ":memory:");
-            return DriverManager.getConnection(url_in_file + ":memory:");
+        File dbFile;
+        // Se definiu o arquivo de banco de dados, DEVE salvar em um único arquivo
+        if (fileDB != null) {
+            dbFile = fileDB;
+        } else {
+            // Se não especificou um diretório para salvar o DB ou não deve gravar em disco
+            if (!saveInDisk) {
+                println("Creating new connection JDBC = " + url_in_file + ":memory:");
+                return DriverManager.getConnection(url_in_file + ":memory:");
+            }
+            // Se ainda não definiu pasta paa salvar o banco em disco, utiliza home como padrão
+            if (dirDB == null) {
+                dirDB = new File(System.getProperty("user.home", ""));
+            }
+            dbFile = new File(dirDB.getAbsolutePath(), tableName + "_" + System.currentTimeMillis() + ".db");
         }
-        // Se ainda não definiu pasta paa salvar o banco em disco, utiliza home como padrão
-        if (dirDB == null) {
-            dirDB = new File(System.getProperty("user.home", ""));
-        }
-        File dbFile = new File(dirDB.getAbsolutePath(), tableName + "_" + System.currentTimeMillis() + ".db");
         println("Creating new connection JDBC = " + url_in_file + dbFile);
         return DriverManager.getConnection(url_in_file + dbFile);
     }
@@ -443,8 +452,7 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * SELECT * FROM TABLE WHERE [whereField whereCondition whereValue](n)
-     * [extraCondition]
+     * SELECT * FROM TABLE WHERE [whereField whereCondition whereValue](n) [extraCondition]
      *
      * @param whereField
      * @param whereCondition
@@ -483,8 +491,7 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * SELECT select FROM TABLE WHERE [whereField whereCondition whereValue](n)
-     * [extraCondition]
+     * SELECT select FROM TABLE WHERE [whereField whereCondition whereValue](n) [extraCondition]
      *
      * @param select
      * @param whereField
@@ -630,8 +637,7 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE
-     * [extraCondition]
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [extraCondition]
      *
      * @param uf
      * @param uv
@@ -643,8 +649,7 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField
-     * whereCondition whereValue](n)
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField whereCondition whereValue](n)
      *
      * @param uf
      * @param uv
@@ -659,8 +664,8 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField
-     * whereCondition whereValue](n) [extraCondition]
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField whereCondition whereValue](n)
+     * [extraCondition]
      *
      * @param uf
      * @param uv

@@ -8,8 +8,15 @@ import br.com.medvia.db.WkTable;
  */
 public class User extends WkTable {
 
-    public void setName(String dr_Fulano_Bento) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private String name;
+
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+    
+ 
 }
