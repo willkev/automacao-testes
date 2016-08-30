@@ -1,7 +1,5 @@
 package br.com.medvia.util;
 
-import br.com.medvia.db.DBManager;
-import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.User;
@@ -14,42 +12,71 @@ import java.util.List;
  *
  * @author Willian
  */
-public class FakesTickets {
+public class Fakes {
 
-    public static int createFakes(int repeat, WkDB<Ticket> dbTicket, WkDB<User> dbUser, WkDB<Equipment> dbEquipment) {
-        User user1 = new User();
-        user1.setName("Dr. Fulano Bento");
-        dbUser.insert(user1);
-
-        User user2 = new User();
-        user2.setName("Dr. do Hospital");
-        dbUser.insert(user2);
-
-        User user3 = new User();
-        user3.setName("Dr. Flemming");
-        dbUser.insert(user3);
-
-        User user4 = new User();
-        user4.setName("Técnico Radiologista");
-        dbUser.insert(user4);
+    public static List<Equipment> createEquipments() {
+        List<Equipment> list = new ArrayList<Equipment>();
 
         Equipment equip1 = new Equipment();
         equip1.setDescription("Tomografia 27H");
-        dbEquipment.insert(equip1);
+        list.add(equip1);
 
         Equipment equip2 = new Equipment();
-        equip2.setDescription("Ressonancia");
-        dbEquipment.insert(equip2);
+        equip2.setDescription("Ressonancia 17 Tesla");
+        list.add(equip2);
 
         Equipment equip3 = new Equipment();
         equip3.setDescription("Cama levantadora");
-        dbEquipment.insert(equip3);
+        list.add(equip3);
 
         Equipment equip4 = new Equipment();
         equip4.setDescription("Arco de luz LED");
-        dbEquipment.insert(equip4);
+        list.add(equip4);
 
+        Equipment equip5 = new Equipment();
+        equip5.setDescription("Furador de crânio");
+        list.add(equip5);
+
+        Equipment equip6 = new Equipment();
+        equip6.setDescription("Nobreak 900mA");
+        list.add(equip6);
+
+        return list;
+    }
+
+    public static List<User> createUsers() {
+        List<User> list = new ArrayList<User>();
+
+        User user1 = new User();
+        user1.setName("Dr. Fulano Bento");
+        list.add(user1);
+
+        User user2 = new User();
+        user2.setName("Dr. do Hospital");
+        list.add(user2);
+
+        User user3 = new User();
+        user3.setName("Dr. Flemming");
+        list.add(user3);
+
+        User user4 = new User();
+        user4.setName("Técnico Radiologista");
+        list.add(user4);
+
+        User user5 = new User();
+        user5.setName("Mario pizzaiolo");
+        list.add(user5);
+
+        User user6 = new User();
+        user6.setName("Doctor Who");
+        list.add(user6);
+
+        return list;
+    }
+
+    public static List<Ticket> createTickets(List<User> users, List<Equipment> equipments) {
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        List<Ticket> list = new ArrayList<Ticket>();
 
         Ticket t1 = new Ticket();
         t1.setID(1357);
@@ -59,13 +86,13 @@ public class FakesTickets {
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 13)); // -13hr
         t1.setPrediction(dateFormater.format(date));
         t1.setDescription("Fonte queimada");
-        t1.setEquipmentID(equip1.getID());
-//        t1.setInstitution("Hospital Moinhos de Vento - Sede Ramiro");
-        t1.setResponsableID(user1.getID());
-        t1.setOpenedByID(user1.getID());
+        t1.setEquipmentID(equipments.get(0).getID());
+        t1.setResponsableID(users.get(0).getID());
+        t1.setOpenedByID(users.get(1).getID());
         t1.setSituation(75);
         t1.setState("f");
         t1.setPriority("a");
+        list.add(t1);
 
         Ticket t2 = new Ticket();
         t2.setID(777);
@@ -75,13 +102,13 @@ public class FakesTickets {
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 200)); // +200hr
         t2.setPrediction(dateFormater.format(date));
         t2.setDescription("Quebrou luz de fundo");
-        t2.setEquipmentID(equip2.getID());
-//        t2.setInstitution("Hospital Tramadaí - RS");
-        t2.setResponsableID(user2.getID());
-        t2.setOpenedByID(user3.getID());
+        t2.setEquipmentID(equipments.get(1).getID());
+        t2.setResponsableID(users.get(2).getID());
+        t2.setOpenedByID(users.get(3).getID());
         t2.setSituation(100);
         t2.setState("e");
         t2.setPriority("b");
+        list.add(t2);
 
         Ticket t3 = new Ticket();
         t3.setID(222);
@@ -91,13 +118,13 @@ public class FakesTickets {
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 63)); // +63hr
         t3.setPrediction(dateFormater.format(date));
         t3.setDescription("Motor de subida sem força");
-        t3.setEquipmentID(equip3.getID());
-//        t3.setInstitution("Hospital Moinhos de Vento - Sede Ramiro");
-        t3.setResponsableID(user3.getID());
-        t3.setOpenedByID(user4.getID());
+        t3.setEquipmentID(equipments.get(2).getID());
+        t3.setResponsableID(users.get(4).getID());
+        t3.setOpenedByID(users.get(5).getID());
         t3.setSituation(0);
         t3.setState("a");
         t3.setPriority("n");
+        list.add(t3);
 
         Ticket t4 = new Ticket();
         t4.setID(13);
@@ -107,28 +134,14 @@ public class FakesTickets {
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 100)); // +100hr
         t4.setPrediction(dateFormater.format(date));
         t4.setDescription("3 grupos de LEDs queimaram");
-        t4.setEquipmentID(equip4.getID());
-//        t4.setInstitution("Hospital Julio Cesar");
-        t4.setResponsableID(user4.getID());
-        t4.setOpenedByID(user4.getID());
+        t4.setEquipmentID(equipments.get(3).getID());
+        t4.setResponsableID(users.get(2).getID());
+        t4.setOpenedByID(users.get(4).getID());
         t4.setSituation(50);
         t4.setState("a");
         t4.setPriority("a");
+        list.add(t4);
 
-        if (repeat < 1) {
-            repeat = 1;
-        }
-        List<Ticket> fakes = new ArrayList<Ticket>();
-        for (int i = 0; i < repeat; i++) {
-            fakes.add(t1);
-            fakes.add(t2);
-            fakes.add(t3);
-            fakes.add(t4);
-        }
-        System.out.println("Generated ticketsFakes.size() : " + fakes.size());
-        for (Ticket ticketFake : fakes) {
-            DBManager.getInstance().getDbTicket().insert(ticketFake);
-        }
-        return fakes.size();
+        return list;
     }
 }

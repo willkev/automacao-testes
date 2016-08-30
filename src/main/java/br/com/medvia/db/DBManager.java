@@ -20,23 +20,31 @@ public class DBManager {
         return INSTANCE;
     }
 
+    private final File fileDB;
     private final WkDB<Ticket> dbTicket;
     private final WkDB<Equipment> dbEquipment;
     private final WkDB<User> dbUser;
 
     private DBManager() {
-        // busca pelo arquivo do banco de dados, Se não existir ainda deve criar
-        File fileDB = new File(propUserHome, "phymedvia.db");
+        fileDB = new File(propUserHome, "phymedvia.db");
         System.out.println("fileDB=" + fileDB.getAbsolutePath());
+
         WkDB.setFileDB(fileDB);
+
         dbTicket = new WkDB<>(Ticket.class);
         dbEquipment = new WkDB<>(Equipment.class);
         dbUser = new WkDB<>(User.class);
-        if (!fileDB.exists() || fileDB.length() < 0) {
-            boolean createTable0 = dbTicket.createTable();
-            boolean createTable1 = dbEquipment.createTable();
-            boolean createTable2 = dbUser.createTable();
+
+        // se o arqui ainda não existir
+        if (!fileDB.exists() || fileDB.length() < 1) {
+            dbTicket.createTable();
+            dbEquipment.createTable();
+            dbUser.createTable();
         }
+    }
+
+    public File getFileDB() {
+        return fileDB;
     }
 
     public WkDB<Ticket> getDbTicket() {
@@ -51,11 +59,10 @@ public class DBManager {
         return dbUser;
     }
 
-    public void dropAndCreateTable() {
-        boolean dropAndCreateTable0 = dbTicket.dropAndCreateTable();
-        boolean dropAndCreateTable1 = dbEquipment.dropAndCreateTable();
-        boolean dropAndCreateTable2 = dbUser.dropAndCreateTable();
-
+    public synchronized void dropAndCreateTable() {
+        dbTicket.dropAndCreateTable();
+        dbEquipment.dropAndCreateTable();
+        dbUser.dropAndCreateTable();
     }
 
 }

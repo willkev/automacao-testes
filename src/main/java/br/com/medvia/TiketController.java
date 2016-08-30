@@ -1,8 +1,10 @@
 package br.com.medvia;
 
 import br.com.medvia.db.DBManager;
+import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Ticket;
-import br.com.medvia.util.FakesTickets;
+import br.com.medvia.resources.User;
+import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -22,14 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TiketController {
 
-    private static final String METHOD_CREATEFAKES = "/api/tickets/createfakes";
     private static final String METHOD_LIST = "/api/tickets";
     private static final String METHOD_CREATE = "/api/tickets";
-    private static final String METHOD_DROP = "/api/tickets/drop";
     private static final String METHOD_EDIT = "/api/tickets/{id}";
+    private static final String METHOD_DROP = "/api/tickets/drop";
+    private static final String METHOD_CREATEFAKES = "/api/tickets/createfakes";
 
     public TiketController() {
-        System.out.println("TiketController OK!");
+        System.out.println(TiketController.class.getSimpleName() + " OK!");
     }
 
     @RequestMapping(path = METHOD_LIST, method = RequestMethod.GET)
@@ -46,7 +48,7 @@ public class TiketController {
         ticket.setState("a");
         boolean insert = DBManager.getInstance().getDbTicket().insert(ticket);
         return new ResponseEntity<>(
-                new ReplyMessage((insert ? "Insert ok," : "Insert FAIL,") + " criou novo chamado com sucesso!"),
+                new ReplyMessage(insert ? "Criou novo chamado com sucesso!" : "Não foi possível criar um novo chamdo!"),
                 HttpStatus.OK);
     }
 
@@ -54,6 +56,9 @@ public class TiketController {
     public ResponseEntity<ReplyMessage> edit(@RequestBody Ticket ticket,
             @RequestParam(value = "id", defaultValue = "-1") int id) {
         System.out.println("ID = " + id);
+        if (id < 0) {
+            return new ResponseEntity<>(new ReplyMessage("ID inválido!"), HttpStatus.OK);
+        }
         ticket.setID(id);
         boolean update = DBManager.getInstance().getDbTicket().update(ticket);
         return new ResponseEntity<>(
@@ -63,20 +68,34 @@ public class TiketController {
 
     @RequestMapping(METHOD_DROP)
     public ResponseEntity<ReplyMessage> drop() {
-        DBManager.getInstance().dropAndCreateTable();
+        DBManager.getInstance().getDbTicket().dropAndCreateTable();
         return new ResponseEntity<>(
                 new ReplyMessage("Todos tickets foram deletados com sucesso!"),
                 HttpStatus.OK);
     }
 
     @RequestMapping(METHOD_CREATEFAKES)
-    public ResponseEntity<ReplyMessage> createfakes(@RequestParam(value = "repeat", defaultValue = "1") int repeat) {
-        int generated = FakesTickets.createFakes(repeat,
-                DBManager.getInstance().getDbTicket(),
-                DBManager.getInstance().getDbUser(),
-                DBManager.getInstance().getDbEquipment());
+    public ResponseEntity<ReplyMessage> createfakes() {
+        List<User> users = DBManager.getInstance().getDbUser().selectAll(null);
+        // se ainda não existir nenhum 
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(
+                    new ReplyMessage("Nenhum usuário ainda foi criado!"),
+                    HttpStatus.OK);
+        }
+        List<Equipment> equipments = DBManager.getInstance().getDbEquipment().selectAll(null);
+        // se ainda não existir nenhum 
+        if (equipments.isEmpty()) {
+            return new ResponseEntity<>(
+                    new ReplyMessage("Nenhum equipamento ainda foi criado!"),
+                    HttpStatus.OK);
+        }
+        List<Ticket> created = Fakes.createTickets(users, equipments);
+        created.stream().forEach((element) -> {
+            create(element);
+        });
         return new ResponseEntity<>(
-                new ReplyMessage(generated + " fakes foram criados com sucesso!"),
+                new ReplyMessage(created.size() + " fakes foram criados com sucesso!"),
                 HttpStatus.OK);
     }
 
