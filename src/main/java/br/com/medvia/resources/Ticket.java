@@ -14,10 +14,12 @@ public class Ticket extends WkTable {
     // 'f' : Fechado
     // 'e' : Excluído
     private String state;
-    // Date "dd/MM/yyyy HH:mm"
+
+    // Date pattern "dd/MM/yyyy HH:mm"
     private String dateOcurrence;
-    // Date "dd/MM/yyyy HH:mm"
     private String prediction;
+    private String dateClosing;
+
     // Table User
     private int openedByID;
     // Table User
@@ -25,11 +27,20 @@ public class Ticket extends WkTable {
     // Table Equipament
     private int equipmentID;
     // 0, 50, 75 or 100
-    private int situation;
+    private String situation;
     // 'a' : 'Alta'
     // 'n' : 'Normal'
     // 'b' : 'Baixa'
     private String priority;
+    private String noteClosing;
+
+    public void setDateClosing(String dateClosing) {
+        this.dateClosing = dateClosing;
+    }
+
+    public void setNoteClosing(String noteClosing) {
+        this.noteClosing = noteClosing;
+    }
 
     public void setState(String state) {
         this.state = state;
@@ -55,9 +66,10 @@ public class Ticket extends WkTable {
         return prediction;
     }
 
-    public int getSituation() {
+    public String getSituation() {
         return situation;
     }
+
 
     public String getPriority() {
         return priority;
@@ -75,7 +87,7 @@ public class Ticket extends WkTable {
         this.dateOcurrence = dateOcurrence;
     }
 
-    public void setSituation(int situation) {
+    public void setSituation(String situation) {
         this.situation = situation;
     }
 
@@ -97,6 +109,26 @@ public class Ticket extends WkTable {
 
     public void setEquipmentID(int equipmentID) {
         this.equipmentID = equipmentID;
+    }
+
+    public String getDateClosing() {
+        return dateClosing;
+    }
+
+    public int getOpenedByID() {
+        return openedByID;
+    }
+
+    public int getResponsableID() {
+        return responsableID;
+    }
+
+    public int getEquipmentID() {
+        return equipmentID;
+    }
+
+    public String getNoteClosing() {
+        return noteClosing;
     }
 
 }

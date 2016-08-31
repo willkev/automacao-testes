@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Willian Kirschner
@@ -441,6 +442,11 @@ public class WkDB<T extends WkTable> {
         return null;
     }
 
+    public T selectByID(int ID) {
+        List<T> select = select(null, Where.fields("ID"), Where.conditions("="), Where.values(ID));
+        return select.get(0);
+    }
+
     /**
      * SELECT * FROM TABLE [extraCondition]
      *
@@ -600,10 +606,6 @@ public class WkDB<T extends WkTable> {
         if (objDBElement == null) {
             return false;
         }
-        Integer count = count("ID", "ID = " + objDBElement.getID());
-        if (count == null || count < 1) {
-            return false;
-        }
         try {
             String[] upFields = new String[fields.size()];
             Object[] upValues = new Object[fields.size()];
@@ -745,6 +747,40 @@ public class WkDB<T extends WkTable> {
         return null;
     }
 
+    public List<Map<String, Object>> executeQuery(String query) {
+        // Lista dos registros: "campo":"valor"
+        ArrayList<Map<String, Object>> list = new ArrayList<>();
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.createStatement();
+            showSQL(query);
+            rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                ResultSetMetaData metaData;
+                Map<String, Object> map;
+                int columnCount;
+                do {
+                    metaData = rs.getMetaData();
+                    columnCount = metaData.getColumnCount();
+                    map = new HashMap<>(columnCount);
+                    for (int i = 1; i <= columnCount; i++) {
+                        map.put(metaData.getColumnName(i), rs.getObject(i));
+                    }
+                    list.add(map);
+                } while (rs.next());
+            }
+        } catch (Exception ex) {
+            println("Query-Result", ex.toString());
+            ex.printStackTrace();
+        } finally {
+            closeSafe(rs);
+            closeSafe(stmt);
+            showSQL = false;
+        }
+        return list;
+    }
+
     private void setPrepareStatementValue(int parameterIndex, Object x) throws SQLException {
         if (showSQL) {
             System.out.printf("[SQL](param-%d)='%s'\n", parameterIndex, x.toString());
@@ -776,6 +812,12 @@ public class WkDB<T extends WkTable> {
     private void showSQL(StringBuilder sql) {
         if (showSQL && sql != null) {
             println(sql.toString());
+        }
+    }
+
+    private void showSQL(String sql) {
+        if (showSQL && sql != null) {
+            println(sql);
         }
     }
 

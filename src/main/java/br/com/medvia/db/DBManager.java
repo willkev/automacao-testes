@@ -63,6 +63,7 @@ public class DBManager {
         dbTicket.dropAndCreateTable();
         dbEquipment.dropAndCreateTable();
         dbUser.dropAndCreateTable();
+        System.out.println("dropAndCreateTable!");
     }
 
 }

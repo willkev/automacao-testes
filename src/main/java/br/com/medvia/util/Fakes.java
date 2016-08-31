@@ -89,7 +89,7 @@ public class Fakes {
         t1.setEquipmentID(equipments.get(0).getID());
         t1.setResponsableID(users.get(0).getID());
         t1.setOpenedByID(users.get(1).getID());
-        t1.setSituation(75);
+        t1.setSituation("75");
         t1.setState("f");
         t1.setPriority("a");
         list.add(t1);
@@ -105,7 +105,7 @@ public class Fakes {
         t2.setEquipmentID(equipments.get(1).getID());
         t2.setResponsableID(users.get(2).getID());
         t2.setOpenedByID(users.get(3).getID());
-        t2.setSituation(100);
+        t2.setSituation("100");
         t2.setState("e");
         t2.setPriority("b");
         list.add(t2);
@@ -121,7 +121,7 @@ public class Fakes {
         t3.setEquipmentID(equipments.get(2).getID());
         t3.setResponsableID(users.get(4).getID());
         t3.setOpenedByID(users.get(5).getID());
-        t3.setSituation(0);
+        t3.setSituation("0");
         t3.setState("a");
         t3.setPriority("n");
         list.add(t3);
@@ -137,7 +137,7 @@ public class Fakes {
         t4.setEquipmentID(equipments.get(3).getID());
         t4.setResponsableID(users.get(2).getID());
         t4.setOpenedByID(users.get(4).getID());
-        t4.setSituation(50);
+        t4.setSituation("50");
         t4.setState("a");
         t4.setPriority("a");
         list.add(t4);
