@@ -1,5 +1,7 @@
 package br.com.medvia.db;
 
+import com.google.gson.Gson;
+
 /**
  * @author Willian Kirschner
  * @version 2015 Jul, 15
@@ -11,14 +13,17 @@ public class WkTable {
     //@WkDBType("varchar(33)");
     //@WkDBType("real");
     //@WkDBType("blob");    
-    private int ID;
+    private int id = -1;
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
+    protected String meToJson() {
+        return new Gson().toJson(this);
+    }
 }

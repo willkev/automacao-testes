@@ -8,7 +8,7 @@ import br.com.medvia.db.WkTable;
  */
 public class User extends WkTable {
 
-    private String name;
+    private String name = "";
 
     public void setName(String name) {
         this.name = name;
@@ -17,6 +17,10 @@ public class User extends WkTable {
     public String getName() {
         return name;
     }
-    
- 
+
+    @Override
+    public String toString() {
+        return "User" + meToJson();
+    }
+
 }

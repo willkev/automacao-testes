@@ -1,6 +1,7 @@
 package br.com.medvia.util;
 
 import br.com.medvia.resources.Equipment;
+import br.com.medvia.resources.Note;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.User;
 import java.text.SimpleDateFormat;
@@ -79,69 +80,73 @@ public class Fakes {
         List<Ticket> list = new ArrayList<Ticket>();
 
         Ticket t1 = new Ticket();
-        t1.setID(1357);
+        t1.setId(1357);
         t1.setTitle("Chamado #1");
         Date date = new Date();
         t1.setDateOcurrence(dateFormater.format(date));
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 13)); // -13hr
         t1.setPrediction(dateFormater.format(date));
         t1.setDescription("Fonte queimada");
-        t1.setEquipmentID(equipments.get(0).getID());
-        t1.setResponsableID(users.get(0).getID());
-        t1.setOpenedByID(users.get(1).getID());
+        t1.setEquipmentID(equipments.get(0).getId());
+        t1.setResponsableID(users.get(0).getId());
+        t1.setOpenedByID(users.get(1).getId());
         t1.setSituation("75");
         t1.setState("f");
         t1.setPriority("a");
         list.add(t1);
 
         Ticket t2 = new Ticket();
-        t2.setID(777);
+        t2.setId(777);
         t2.setTitle("Segundo chamado");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24)); // -24hr
         t2.setDateOcurrence(dateFormater.format(date));
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 200)); // +200hr
         t2.setPrediction(dateFormater.format(date));
         t2.setDescription("Quebrou luz de fundo");
-        t2.setEquipmentID(equipments.get(1).getID());
-        t2.setResponsableID(users.get(2).getID());
-        t2.setOpenedByID(users.get(3).getID());
+        t2.setEquipmentID(equipments.get(1).getId());
+        t2.setResponsableID(users.get(2).getId());
+        t2.setOpenedByID(users.get(3).getId());
         t2.setSituation("100");
         t2.setState("e");
         t2.setPriority("b");
         list.add(t2);
 
         Ticket t3 = new Ticket();
-        t3.setID(222);
+        t3.setId(222);
         t3.setTitle("3º chamado aberto");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 10)); // -10hr
         t3.setDateOcurrence(dateFormater.format(date));
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 63)); // +63hr
         t3.setPrediction(dateFormater.format(date));
         t3.setDescription("Motor de subida sem força");
-        t3.setEquipmentID(equipments.get(2).getID());
-        t3.setResponsableID(users.get(4).getID());
-        t3.setOpenedByID(users.get(5).getID());
+        t3.setEquipmentID(equipments.get(2).getId());
+        t3.setResponsableID(users.get(4).getId());
+        t3.setOpenedByID(users.get(5).getId());
         t3.setSituation("0");
         t3.setState("a");
         t3.setPriority("n");
         list.add(t3);
 
         Ticket t4 = new Ticket();
-        t4.setID(13);
+        t4.setId(13);
         t4.setTitle("Quarto chamado!!!");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 8)); // -8hr
         t4.setDateOcurrence(dateFormater.format(date));
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 100)); // +100hr
         t4.setPrediction(dateFormater.format(date));
         t4.setDescription("3 grupos de LEDs queimaram");
-        t4.setEquipmentID(equipments.get(3).getID());
-        t4.setResponsableID(users.get(2).getID());
-        t4.setOpenedByID(users.get(4).getID());
+        t4.setEquipmentID(equipments.get(3).getId());
+        t4.setResponsableID(users.get(2).getId());
+        t4.setOpenedByID(users.get(4).getId());
         t4.setSituation("50");
         t4.setState("a");
         t4.setPriority("a");
         list.add(t4);
 
         return list;
+    }
+
+    public static List<Note> createNotes(List<User> users) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

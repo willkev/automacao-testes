@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.medvia</groupId>
     <artifactId>phymedvia</artifactId>
-    <version>0.24</version>
+    <version>0.28</version>
     <packaging>war</packaging>
     <name>PhyMedvia</name>    
     <parent>
@@ -49,8 +49,6 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <scope>test</scope>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <build>

@@ -22,6 +22,8 @@ import java.util.Map;
  */
 public class WkDB<T extends WkTable> {
 
+    private static final String ID = "id";
+    
     private static final String jdbc_driver = "org.sqlite.JDBC";
     private static final String url_in_file = "jdbc:sqlite:";
     private static File dirDB = null;
@@ -289,7 +291,7 @@ public class WkDB<T extends WkTable> {
         }
         StringBuilder sql = new StringBuilder("CREATE TABLE ");
         sql.append(tableName);
-        sql.append(" (ID INTEGER PRIMARY KEY NOT NULL, ");
+        sql.append(" (id INTEGER PRIMARY KEY NOT NULL, ");
         int index = fields.size();
         for (Field field : fields.values()) {
             sql.append(field.getName());
@@ -378,9 +380,9 @@ public class WkDB<T extends WkTable> {
             rs = ps.getGeneratedKeys();
             // Insere a PK que foi gerada
             if (rs.next()) {
-                objDBElement.setID(rs.getInt(1));
+                objDBElement.setId(rs.getInt(1));
             } else {
-                objDBElement.setID(-1);
+                objDBElement.setId(-1);
                 println("Insert", "PRIMARY KEY NOT GENERATED! " + objDBElement);
             }
             return true;
@@ -426,7 +428,7 @@ public class WkDB<T extends WkTable> {
         try {
             stmt = conn.createStatement();
             StringBuilder sql = new StringBuilder("SELECT COUNT(");
-            sql.append(field == null ? "ID" : field).append(") AS C FROM ").append(tableName);
+            sql.append(field == null ? ID : field).append(") AS C FROM ").append(tableName);
             if (extraCondition != null) {
                 sql.append(" ").append(extraCondition);
             }
@@ -442,8 +444,8 @@ public class WkDB<T extends WkTable> {
         return null;
     }
 
-    public T selectByID(int ID) {
-        List<T> select = select(null, Where.fields("ID"), Where.conditions("="), Where.values(ID));
+    public T selectByID(int id) {
+        List<T> select = select(null, Where.fields(ID), Where.conditions("="), Where.values(id));
         return select.get(0);
     }
 
@@ -558,7 +560,7 @@ public class WkDB<T extends WkTable> {
                         element = classDB.newInstance();
                         for (int i = 1; i <= metaData.getColumnCount(); i++) {
                             columnName = metaData.getColumnName(i);
-                            if (columnName.equals("ID")) {
+                            if (columnName.equals(ID)) {
                                 field = classDB.getSuperclass().getDeclaredField(columnName);
                             } else {
                                 field = classDB.getDeclaredField(columnName);
@@ -617,7 +619,7 @@ public class WkDB<T extends WkTable> {
             }
             return updateByID(Update.fields(upFields),
                     Update.values(upValues),
-                    objDBElement.getID());
+                    objDBElement.getId());
         } catch (Exception ex) {
             println("update", ex.toString());
             ex.printStackTrace();
@@ -630,11 +632,11 @@ public class WkDB<T extends WkTable> {
      *
      * @param fields
      * @param values
-     * @param ID
+     * @param id
      * @return
      */
-    public boolean updateByID(UpdateField fields, UpdateValue values, int ID) {
-        Integer update = update(fields, values, Where.fields("id"), Where.conditions("="), Where.values(ID));
+    public boolean updateByID(UpdateField fields, UpdateValue values, int id) {
+        Integer update = update(fields, values, Where.fields("id"), Where.conditions("="), Where.values(id));
         return update != null && update == 1;
     }
 
@@ -739,6 +741,7 @@ public class WkDB<T extends WkTable> {
             return ps.executeUpdate();
         } catch (Exception ex) {
             println("Update", ex.toString());
+            ex.printStackTrace();
         } finally {
             // Pois retorna do método dentro do try/catch
             closeSafe(ps);

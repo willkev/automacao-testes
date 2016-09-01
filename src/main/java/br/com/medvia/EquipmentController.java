@@ -54,7 +54,7 @@ public class EquipmentController {
         if (id < 0) {
             return new ResponseEntity<>(new ReplyMessage("ID inválido!"), HttpStatus.OK);
         }
-        equipment.setID(id);
+        equipment.setId(id);
         boolean update = DBManager.getInstance().getDbEquipment().update(equipment);
         return new ResponseEntity<>(
                 new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),

@@ -54,7 +54,7 @@ public class UserController {
         if (id < 0) {
             return new ResponseEntity<>(new ReplyMessage("ID inválido!"), HttpStatus.OK);
         }
-        user.setID(id);
+        user.setId(id);
         boolean update = DBManager.getInstance().getDbUser().update(user);
         return new ResponseEntity<>(
                 new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),

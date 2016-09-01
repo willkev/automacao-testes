@@ -37,7 +37,6 @@ public class TicketTest {
 
     @After
     public void tearDown() {
-//        DBManager.getInstance().dropAndCreateTable();
     }
 
     @Test
@@ -49,11 +48,9 @@ public class TicketTest {
         ec.createfakes();
 
         TiketController tc = new TiketController();
-        tc.createfakes();
+        tc.createFakes();
 
-        List<Map<String, Object>> executeQuery = DBManager.getInstance().getDbTicket().executeQuery(
-                "select t.state, t.title, t.description, e.description as equipment, t.dateOcurrence, t.prediction, t.situation, t.priority from Ticket t, Equipment e where t.equipmentID = e.ID"
-        );
+        List<Map<String, Object>> executeQuery = DBManager.getInstance().getDbTicket().executeQuery(TiketController.QUERY_LIST);
         System.out.println("JSON:\n" + new Gson().toJson(executeQuery));
     }
 

@@ -8,7 +8,7 @@ import br.com.medvia.db.WkTable;
  */
 public class Equipment extends WkTable {
 
-    private String description;
+    private String description = "";
     private int institutionID;
 
     public void setInstitutionID(int institutionID) {
@@ -21,6 +21,11 @@ public class Equipment extends WkTable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Equipment" + meToJson();
     }
 
 }
