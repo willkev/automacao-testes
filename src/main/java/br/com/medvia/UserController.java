@@ -34,7 +34,7 @@ public class UserController {
 
     @RequestMapping(path = METHOD_LIST, method = RequestMethod.GET)
     public ResponseEntity<List<User>> list() {
-        List<User> selectAll = DBManager.getInstance().getDbUser().selectAll(null);
+        List<User> selectAll = DBManager.getInstance().getDbUser().selectAll();
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 

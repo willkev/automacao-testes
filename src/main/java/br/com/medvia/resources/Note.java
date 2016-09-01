@@ -9,12 +9,12 @@ import br.com.medvia.db.WkTable;
 public class Note extends WkTable {
 
     private String description = "";
-    private int userID;
-    private int tickteID;
+    private Integer userID;
+    private Integer tickteID;
     // Date pattern "dd/MM/yyyy HH:mm"
     private String date = "";
 
-    public int getTickteID() {
+    public Integer getTickteID() {
         return tickteID;
     }
 
@@ -30,7 +30,7 @@ public class Note extends WkTable {
         this.description = description;
     }
 
-    public int getUserID() {
+    public Integer getUserID() {
         return userID;
     }
 

@@ -146,7 +146,7 @@ public class Fakes {
         return list;
     }
 
-    public static List<Note> createNotes(List<User> users) {
+    public static List<Note> createNotes(int ticketID, List<User> users) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

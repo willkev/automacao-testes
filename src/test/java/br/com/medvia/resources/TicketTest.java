@@ -1,7 +1,7 @@
 package br.com.medvia.resources;
 
 import br.com.medvia.EquipmentController;
-import br.com.medvia.TiketController;
+import br.com.medvia.TicketController;
 import br.com.medvia.UserController;
 import br.com.medvia.db.DBManager;
 import com.google.gson.Gson;
@@ -47,10 +47,10 @@ public class TicketTest {
         EquipmentController ec = new EquipmentController();
         ec.createfakes();
 
-        TiketController tc = new TiketController();
+        TicketController tc = new TicketController();
         tc.createFakes();
 
-        List<Map<String, Object>> executeQuery = DBManager.getInstance().getDbTicket().executeQuery(TiketController.QUERY_LIST);
+        List<Map<String, Object>> executeQuery = DBManager.getInstance().getDbTicket().executeQuery(TicketController.QUERY_LIST);
         System.out.println("JSON:\n" + new Gson().toJson(executeQuery));
     }
 

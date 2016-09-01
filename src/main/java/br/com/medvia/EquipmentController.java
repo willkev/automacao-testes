@@ -34,7 +34,7 @@ public class EquipmentController {
 
     @RequestMapping(path = METHOD_LIST, method = RequestMethod.GET)
     public ResponseEntity<List<Equipment>> list() {
-        List<Equipment> selectAll = DBManager.getInstance().getDbEquipment().selectAll(null);
+        List<Equipment> selectAll = DBManager.getInstance().getDbEquipment().selectAll();
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 

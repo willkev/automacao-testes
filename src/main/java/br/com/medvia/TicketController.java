@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin
-public class TiketController extends AbstractController {
+public class TicketController extends AbstractController {
 
     public static final String QUERY_LIST = "select t.id, t.state, t.title, t.description, e.description as equipment, t.dateOcurrence, t.prediction, t.situation, t.priority from Ticket t, Equipment e where t.equipmentID = e.id";
 
@@ -36,8 +36,8 @@ public class TiketController extends AbstractController {
     private static final String PUT_CLOSE = "/api/tickets/{id}/close";
     private static final String DELETE_DELETE = "/api/tickets/{id}";
 
-    public TiketController() {
-        System.out.println(TiketController.class.getSimpleName() + " OK!");
+    public TicketController() {
+        System.out.println(TicketController.class.getSimpleName() + " OK!");
     }
 
     @RequestMapping(path = GET_LIST, method = RequestMethod.GET)
@@ -112,12 +112,12 @@ public class TiketController extends AbstractController {
 
     @RequestMapping(GET_CREATEFAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
-        List<User> users = DBManager.getInstance().getDbUser().selectAll(null);
+        List<User> users = DBManager.getInstance().getDbUser().selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
             return returnOK("Nenhum usuário ainda foi criado!");
         }
-        List<Equipment> equipments = DBManager.getInstance().getDbEquipment().selectAll(null);
+        List<Equipment> equipments = DBManager.getInstance().getDbEquipment().selectAll();
         // se ainda não existir nenhum 
         if (equipments.isEmpty()) {
             return returnOK("Nenhum equipamento ainda foi criado!");
