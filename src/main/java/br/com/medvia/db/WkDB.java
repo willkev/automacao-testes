@@ -145,7 +145,8 @@ public class WkDB<T extends WkTable> {
     /**
      * Specifies an directory to save the Data Base
      *
-     * @param directoryDB A direwctory when the tables will be save on hard disk.
+     * @param directoryDB A direwctory when the tables will be save on hard
+     * disk.
      */
     public static void setDirDB(File directoryDB) {
         if (directoryDB != null && directoryDB.isDirectory()) {
@@ -166,17 +167,20 @@ public class WkDB<T extends WkTable> {
     /**
      * Create a connection for this Table. It will be performed just in memory.
      *
-     * @param clazz Class that represent a Table. This class need extends WkTable
+     * @param clazz Class that represent a Table. This class need extends
+     * WkTable
      */
     public WkDB(Class<T> clazz) {
         this(clazz, false);
     }
 
     /**
-     * Create a connection for this Table. If a directory was not especified to save the Data Base, it will be performed
-     * just in memory. If a directory was especified, it will be allowed to save in a hard disk.
+     * Create a connection for this Table. If a directory was not especified to
+     * save the Data Base, it will be performed just in memory. If a directory
+     * was especified, it will be allowed to save in a hard disk.
      *
-     * @param clazz Class that represent a Table. This class need extends WkTable
+     * @param clazz Class that represent a Table. This class need extends
+     * WkTable
      * @param saveInDisk Specifies whether must save the table in hard disk
      */
     public WkDB(Class<T> clazz, boolean saveInDisk) {
@@ -472,7 +476,8 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * SELECT * FROM TABLE WHERE [whereField whereCondition whereValue](n) [extraCondition]
+     * SELECT * FROM TABLE WHERE [whereField whereCondition whereValue](n)
+     * [extraCondition]
      *
      * @param whereField
      * @param whereCondition
@@ -482,6 +487,16 @@ public class WkDB<T extends WkTable> {
      */
     public List<T> selectAll(WhereField whereField, WhereCondition whereCondition, WhereValue whereValue, String extraCondition) {
         return select(null, whereField, whereCondition, whereValue, extraCondition);
+    }
+
+    /**
+     * SELECT select FROM TABLE
+     *
+     * @param select
+     * @return
+     */
+    public List<T> select(String select) {
+        return select(select, Where.fields(), Where.conditions(), Where.values(), null);
     }
 
     /**
@@ -511,7 +526,8 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * SELECT select FROM TABLE WHERE [whereField whereCondition whereValue](n) [extraCondition]
+     * SELECT select FROM TABLE WHERE [whereField whereCondition whereValue](n)
+     * [extraCondition]
      *
      * @param select
      * @param whereField
@@ -653,7 +669,8 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [extraCondition]
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE
+     * [extraCondition]
      *
      * @param uf
      * @param uv
@@ -665,7 +682,8 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField whereCondition whereValue](n)
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField
+     * whereCondition whereValue](n)
      *
      * @param uf
      * @param uv
@@ -680,8 +698,8 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField whereCondition whereValue](n)
-     * [extraCondition]
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE [whereField
+     * whereCondition whereValue](n) [extraCondition]
      *
      * @param uf
      * @param uv

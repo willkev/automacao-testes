@@ -10,12 +10,12 @@ public class Ticket extends WkTable {
 
     private String title = "";
     private String description = "";
-    // 'a' : Aberto
-    // 'f' : Fechado
-    // 'e' : Excluído
-    private String state = "a";
+    // '1a' : Aberto
+    // '2f' : Fechado
+    // '3e' : Excluído
+    private String state = "1a";
 
-    // Date pattern "dd/MM/yyyy HH:mm"
+    // Datetime pattern "dd/MM/yyyy HH:mm"
     private String dateOcurrence = "";
     private String prediction = "";
     private String dateClosing = "";
@@ -28,10 +28,10 @@ public class Ticket extends WkTable {
     private int equipmentID;
     // 0, 50, 75 or 100
     private String situation = "0";
-    // 'a' : 'Alta'
-    // 'n' : 'Normal'
-    // 'b' : 'Baixa'
-    private String priority = "b";
+    // '1a' : 'Alta'
+    // '2n' : 'Normal'
+    // '3b' : 'Baixa'
+    private String priority = "3b";
     private String noteClosing = "";
 
     public void setDateClosing(String dateClosing) {

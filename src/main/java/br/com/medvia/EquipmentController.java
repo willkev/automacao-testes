@@ -1,3 +1,10 @@
+/*
+-retornar nomes dos users dos tickets
+-pegar do cokie o userID para gravar no ticket em "aberto por"
+-pegar do cokie o userID para gravar na Nota, quem criou ela
+
+*/
+
 package br.com.medvia;
 
 import br.com.medvia.db.DBManager;
@@ -5,6 +12,7 @@ import br.com.medvia.resources.Equipment;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,26 +27,33 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Willian
  */
 @RestController
+@RequestMapping("/api/equipments")
 @CrossOrigin
 public class EquipmentController {
 
-    private static final String METHOD_LIST = "/api/equipments";
-    private static final String METHOD_CREATE = "/api/equipments";
-    private static final String METHOD_EDIT = "/api/equipments/{id}";
-    private static final String METHOD_DROP = "/api/equipments/drop";
-    private static final String METHOD_CREATEFAKES = "/api/equipments/createfakes";
+    private static final String METHOD_EDIT = "/{id}";
+    private static final String METHOD_DROP = "/drop";
+    private static final String METHOD_CREATEFAKES = "/createfakes";
 
     public EquipmentController() {
         System.out.println(EquipmentController.class.getSimpleName() + " OK!");
     }
 
-    @RequestMapping(path = METHOD_LIST, method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Equipment>> list() {
-        List<Equipment> selectAll = DBManager.getInstance().getDbEquipment().selectAll();
+        List<Equipment> selected = DBManager.getInstance().getDbEquipment().selectAll();
+        
+        return new ResponseEntity<>(selected, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<Map<String, Object>>> list(@RequestParam(value = "fields", required = true) String fields) {
+        List<Map<String, Object>> selectAll = DBManager.getInstance().getDbTicket().executeQuery("");
+        
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
-    @RequestMapping(path = METHOD_CREATE, method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Equipment equipment) {
         System.out.println(equipment.toString());
         boolean insert = DBManager.getInstance().getDbEquipment().insert(equipment);
@@ -63,9 +78,9 @@ public class EquipmentController {
 
     @RequestMapping(METHOD_DROP)
     public ResponseEntity<ReplyMessage> drop() {
-        DBManager.getInstance().getDbEquipment().dropAndCreateTable();
+        boolean dropAndCreateTable = DBManager.getInstance().getDbEquipment().dropAndCreateTable();
         return new ResponseEntity<>(
-                new ReplyMessage("Todos equipamentos foram deletados com sucesso!"),
+                new ReplyMessage(dropAndCreateTable ? "Todos equipamentos deletados com sucesso!" : "Erro ao deletar todos equipamentos!"),
                 HttpStatus.OK);
     }
 
