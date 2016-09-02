@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TicketController extends AbstractController {
 
+    // order by t.state, t.priority, e.institutionID
     public static final String QUERY_LIST = "select t.id, t.state, t.title, t.description, e.description as equipment, t.dateOcurrence, t.prediction, t.situation, t.priority from Ticket t, Equipment e where t.equipmentID = e.id";
 
     private static final String GET_LIST = "/api/tickets";

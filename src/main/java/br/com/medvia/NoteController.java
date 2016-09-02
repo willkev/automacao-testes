@@ -94,18 +94,18 @@ public class NoteController extends AbstractController {
         return returnOK(update ? "Update OK!" : "Update FAIL!");
     }
 
-    //
-    // ???
-    //
     @RequestMapping(path = DELETE_DELETE, method = RequestMethod.DELETE)
     public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") Integer id) {
         System.out.println("ID = " + id);
         if (id == null) {
             return returnOK("ID inválido!");
         }
-        Note note = DBManager.getInstance().getDbNote().selectByID(id);
-        boolean update = DBManager.getInstance().getDbNote().update(note);
-        return returnOK(update ? "Delete OK!" : "Delete FAIL!");
+        boolean delete = DBManager.getInstance().getDbNote().deleteByID(id);
+        // confere se deletou
+        if (delete) {
+            delete = DBManager.getInstance().getDbNote().selectByID(id) == null;
+        }
+        return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
     }
 
     @RequestMapping(GET_DROP)

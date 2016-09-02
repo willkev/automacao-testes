@@ -32,7 +32,9 @@ public class TicketTest {
 
     @Before
     public void setUp() {
-        DBManager.getInstance().dropAndCreateTable();
+        DBManager.getInstance().getDbUser().dropAndCreateTable();
+        DBManager.getInstance().getDbEquipment().dropAndCreateTable();
+        DBManager.getInstance().getDbTicket().dropAndCreateTable();
     }
 
     @After
