@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TicketController extends AbstractController {
 
     // order by t.state, t.priority, e.institutionID
-    public static final String QUERY_LIST = "select t.id, t.state, t.title, t.description, e.description as equipment, t.dateOcurrence, t.prediction, t.situation, t.priority from Ticket t, Equipment e where t.equipmentID = e.id";
+    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.manufacturer || ' - ' || e.description) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedByID = uO.id and t.responsableID = uR.id and t.equipmentID = e.id and e.institutionID = i.id";
 
     private static final String GET_DROP = "/drop";
     private static final String GET_CREATEFAKES = "/createfakes";
@@ -46,13 +46,15 @@ public class TicketController extends AbstractController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Ticket ticket) {
         System.out.println(ticket.toString());
-        ticket.setState("1a");
+        ticket.setState("a");
 
+        // TODO: pegar do cokie!!!
+        ticket.setOpenedByID(1);
+        
         // valida campos obrigatórios
         if (ticket.getDescription() == null || ticket.getDescription().isEmpty()) {
             return returnOK("Campo obrigatório não informado: Descrição");
         }
-
         boolean insert = DBManager.getInstance().getDbTicket().insert(ticket);
         return returnOK(insert ? "Criou novo chamado com sucesso!" : "Não foi possível criar um novo chamdo!");
     }
@@ -81,7 +83,7 @@ public class TicketController extends AbstractController {
             return returnOK("ID inválido!");
         }
         Ticket ticket = DBManager.getInstance().getDbTicket().selectByID(id);
-        ticket.setState("3e");
+        ticket.setState("e");
         boolean update = DBManager.getInstance().getDbTicket().update(ticket);
         return returnOK(update ? "Delete OK!" : "Delete FAIL!");
     }
@@ -96,7 +98,7 @@ public class TicketController extends AbstractController {
         // altera apenas os dados do fechamento
         ticketOriginal.setDateClosing(ticket.getDateClosing());
         ticketOriginal.setNoteClosing(ticket.getNoteClosing());
-        ticketOriginal.setState("2f");
+        ticketOriginal.setState("f");
         boolean update = DBManager.getInstance().getDbTicket().update(ticketOriginal);
         return returnOK(update ? "Close OK!" : "Close FAIL!");
     }

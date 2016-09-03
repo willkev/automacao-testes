@@ -1,10 +1,3 @@
-/*
--retornar nomes dos users dos tickets
--pegar do cokie o userID para gravar no ticket em "aberto por"
--pegar do cokie o userID para gravar na Nota, quem criou ela
-
-*/
-
 package br.com.medvia;
 
 import br.com.medvia.db.DBManager;
@@ -22,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
+ -pegar do cokie o userID para gravar no ticket em "aberto por"
+ -pegar do cokie o userID para gravar na Nota, quem criou ela
+
+wagner: ordenar pela coluna de data nas NOTAS
+ */
 /**
  *
  * @author Willian
@@ -40,22 +39,19 @@ public class EquipmentController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Equipment>> list() {
-        List<Equipment> selected = DBManager.getInstance().getDbEquipment().selectAll();
-        
-        return new ResponseEntity<>(selected, HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Map<String, Object>>> list(@RequestParam(value = "fields", required = true) String fields) {
-        List<Map<String, Object>> selectAll = DBManager.getInstance().getDbTicket().executeQuery("");
-        
+    public ResponseEntity<List<?>> list(@RequestParam(value = "fields", defaultValue = "") String fields) {
+        if (fields.isEmpty()) {
+            List<Equipment> selected = DBManager.getInstance().getDbEquipment().selectAll();
+            return new ResponseEntity<>(selected, HttpStatus.OK);
+        }
+        List<Map<String, Object>> selectAll = DBManager.getInstance().getDbEquipment().executeQuery(fields, null);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Equipment equipment) {
         System.out.println(equipment.toString());
+        equipment.setActive(true);
         boolean insert = DBManager.getInstance().getDbEquipment().insert(equipment);
         return new ResponseEntity<>(
                 new ReplyMessage(insert ? "Criou novo equipamento com sucesso!" : "Não foi possível criar um novo equipamento!"),

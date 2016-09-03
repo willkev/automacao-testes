@@ -13,7 +13,7 @@ public class Ticket extends WkTable {
     // '1a' : Aberto
     // '2f' : Fechado
     // '3e' : Excluído
-    private String state = "1a";
+    private String state = "a";
 
     // Datetime pattern "dd/MM/yyyy HH:mm"
     private String dateOcurrence = "";
@@ -31,7 +31,7 @@ public class Ticket extends WkTable {
     // '1a' : 'Alta'
     // '2n' : 'Normal'
     // '3b' : 'Baixa'
-    private String priority = "3b";
+    private String priority = "b";
     private String noteClosing = "";
 
     public void setDateClosing(String dateClosing) {
