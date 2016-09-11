@@ -10,15 +10,16 @@ public class Ticket extends WkTable {
 
     private String title = "";
     private String description = "";
-    // '1a' : Aberto
-    // '2f' : Fechado
-    // '3e' : Excluído
+    // 'a' : Aberto
+    // 'f' : Fechado
+    // 'e' : Excluído
     private String state = "a";
 
     // Datetime pattern "dd/MM/yyyy HH:mm"
     private String dateOcurrence = "";
     private String prediction = "";
     private String dateClosing = "";
+    private String dateRemoving = "";
 
     // Table User
     private int openedByID;
@@ -28,11 +29,12 @@ public class Ticket extends WkTable {
     private int equipmentID;
     // 0, 50, 75 or 100
     private String situation = "0";
-    // '1a' : 'Alta'
-    // '2n' : 'Normal'
-    // '3b' : 'Baixa'
+    // 'a' : 'Alta'
+    // 'n' : 'Normal'
+    // 'b' : 'Baixa'
     private String priority = "b";
     private String noteClosing = "";
+    private String noteRemoving = "";
 
     public void setDateClosing(String dateClosing) {
         this.dateClosing = dateClosing;
@@ -128,6 +130,22 @@ public class Ticket extends WkTable {
 
     public String getNoteClosing() {
         return noteClosing;
+    }
+
+    public String getDateRemoving() {
+        return dateRemoving;
+    }
+
+    public void setDateRemoving(String dateRemoving) {
+        this.dateRemoving = dateRemoving;
+    }
+
+    public String getNoteRemoving() {
+        return noteRemoving;
+    }
+
+    public void setNoteRemoving(String noteRemoving) {
+        this.noteRemoving = noteRemoving;
     }
 
     @Override

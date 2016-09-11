@@ -1,6 +1,7 @@
 package br.com.medvia.db;
 
 import br.com.medvia.resources.Equipment;
+import br.com.medvia.resources.Institution;
 import br.com.medvia.resources.Note;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.User;
@@ -26,9 +27,10 @@ public class DBManager {
     private final WkDB<Equipment> dbEquipment;
     private final WkDB<User> dbUser;
     private final WkDB<Note> dbNote;
+    private final WkDB<Institution> dbInstitution;
 
     private DBManager() {
-        fileDB = new File(propUserHome, "phymedvia.db");
+        fileDB = new File(propUserHome, "medvia.db");
         System.out.println("fileDB=" + fileDB.getAbsolutePath());
 
         WkDB.setFileDB(fileDB);
@@ -37,6 +39,7 @@ public class DBManager {
         dbEquipment = new WkDB<>(Equipment.class);
         dbUser = new WkDB<>(User.class);
         dbNote = new WkDB<>(Note.class);
+        dbInstitution = new WkDB<>(Institution.class);
 
         // se o arqui ainda não existir
         if (!fileDB.exists() || fileDB.length() < 1) {
@@ -44,6 +47,7 @@ public class DBManager {
             dbEquipment.createTable();
             dbUser.createTable();
             dbNote.createTable();
+            dbInstitution.createTable();
         }
     }
 
@@ -67,11 +71,16 @@ public class DBManager {
         return dbNote;
     }
 
+    public WkDB<Institution> getDbInstitution() {
+        return dbInstitution;
+    }
+
     public synchronized void dropAndCreateTable() {
         dbTicket.dropAndCreateTable();
         dbEquipment.dropAndCreateTable();
         dbUser.dropAndCreateTable();
         dbNote.dropAndCreateTable();
+        dbInstitution.dropAndCreateTable();
         System.out.println("dropAndCreateTable!");
     }
 

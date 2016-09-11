@@ -15,12 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
- -pegar do cokie o userID para gravar no ticket em "aberto por"
- -pegar do cokie o userID para gravar na Nota, quem criou ela
-
-wagner: ordenar pela coluna de data nas NOTAS
- */
 /**
  *
  * @author Willian
@@ -28,29 +22,40 @@ wagner: ordenar pela coluna de data nas NOTAS
 @RestController
 @RequestMapping("/api/equipments")
 @CrossOrigin
-public class EquipmentController {
+public class EquipmentController extends AbstractController {
 
-    private static final String METHOD_EDIT = "/{id}";
-    private static final String METHOD_DROP = "/drop";
-    private static final String METHOD_CREATEFAKES = "/createfakes";
+    private static final String LIST_BY_INST = "/api/institutions/{id}/equipments";
 
     public EquipmentController() {
         System.out.println(EquipmentController.class.getSimpleName() + " OK!");
     }
 
+    @RequestMapping(path = LIST_BY_INST, method = RequestMethod.GET)
+    public ResponseEntity<List<?>> listByInstitution(@RequestParam(value = "id") int id,
+            @RequestParam(value = "fields", defaultValue = "") String fields) {
+        return list0(fields, id);
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<?>> list(@RequestParam(value = "fields", defaultValue = "") String fields) {
+        return list0(fields, null);
+    }
+
+    private ResponseEntity<List<?>> list0(String fields, Integer institutionID) {
+        String filterByInstitution = null;
+        if (institutionID != null) {
+            filterByInstitution = "where institutionID = " + institutionID;
+        }
         if (fields.isEmpty()) {
-            List<Equipment> selected = DBManager.getInstance().getDbEquipment().selectAll();
+            List<Equipment> selected = DBManager.getInstance().getDbEquipment().selectAll(filterByInstitution);
             return new ResponseEntity<>(selected, HttpStatus.OK);
         }
-        List<Map<String, Object>> selectAll = DBManager.getInstance().getDbEquipment().executeQuery(fields, null);
+        List<Map<String, Object>> selectAll = DBManager.getInstance().getDbEquipment().executeQuery(fields, filterByInstitution);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Equipment equipment) {
-        System.out.println(equipment.toString());
         equipment.setActive(true);
         boolean insert = DBManager.getInstance().getDbEquipment().insert(equipment);
         return new ResponseEntity<>(
@@ -58,13 +63,8 @@ public class EquipmentController {
                 HttpStatus.OK);
     }
 
-    @RequestMapping(path = METHOD_EDIT, method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> edit(@RequestBody Equipment equipment,
-            @RequestParam(value = "id", defaultValue = "-1") int id) {
-        System.out.println("ID = " + id);
-        if (id < 0) {
-            return new ResponseEntity<>(new ReplyMessage("ID inválido!"), HttpStatus.OK);
-        }
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ReplyMessage> edit(@RequestBody Equipment equipment, @RequestParam(value = "id") int id) {
         equipment.setId(id);
         boolean update = DBManager.getInstance().getDbEquipment().update(equipment);
         return new ResponseEntity<>(
@@ -72,7 +72,7 @@ public class EquipmentController {
                 HttpStatus.OK);
     }
 
-    @RequestMapping(METHOD_DROP)
+    @RequestMapping(PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
         boolean dropAndCreateTable = DBManager.getInstance().getDbEquipment().dropAndCreateTable();
         return new ResponseEntity<>(
@@ -80,7 +80,7 @@ public class EquipmentController {
                 HttpStatus.OK);
     }
 
-    @RequestMapping(METHOD_CREATEFAKES)
+    @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createfakes() {
         List<Equipment> created = Fakes.createEquipments();
         created.stream().forEach((element) -> {

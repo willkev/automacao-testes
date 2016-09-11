@@ -25,32 +25,28 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Willian
  */
 @RestController
+@RequestMapping("/api/notes")
 @CrossOrigin
 public class NoteController extends AbstractController {
 
-    public static final String QUERY_LIST = "select n.id, n.description, u.name as user, n.date from Note n, User u where n.userID = u.id and n.tickteID = ";
+    public static final String QUERY_LIST = "select n.id, n.description, n.userID, u.name as user, n.date from Note n, User u where n.userID = u.id and n.tickteID = ";
 
     private static final String GET_LIST = "/api/tickets/{id}/notes";
-    private static final String GET_GET = "/api/notes/{id}";
-    private static final String GET_DROP = "/api/notes/drop";
-    private static final String GET_CREATEFAKES = "/api/notes/createfakes";
     private static final String POST_CREATE = "/api/tickets/{id}/notes";
     private static final String PUT_EDIT = "/api/tickets/{idTicket}/notes/{id}";
-    private static final String DELETE_DELETE = "/api/notes/{id}";
 
     public NoteController() {
         System.out.println(NoteController.class.getSimpleName() + " OK!");
     }
 
     @RequestMapping(path = GET_LIST, method = RequestMethod.GET)
-    public ResponseEntity<List<Map<String, Object>>> list(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<List<Map<String, Object>>> list(@PathVariable(value = "id") int id) {
         List<Map<String, Object>> selectAll = DBManager.getInstance().getDbNote().executeQuery(QUERY_LIST + id);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(path = POST_CREATE, method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@PathVariable(value = "id") Integer id, @RequestBody Note note) {
-        System.out.println(note.toString());
+    public ResponseEntity<ReplyMessage> create(@PathVariable(value = "id") int id, @RequestBody Note note) {
         // Valida campos obrigatórios
         if (note.getDescription() == null || note.getDescription().isEmpty()) {
             return returnOK("Campo obrigatório não informado: Descrição");
@@ -66,18 +62,14 @@ public class NoteController extends AbstractController {
         return returnOK(insert ? "Criou nova nota com sucesso!" : "Não foi possível criar nova nota!");
     }
 
-    @RequestMapping(path = GET_GET, method = RequestMethod.GET)
-    public ResponseEntity<Note> get(@PathVariable(value = "id") Integer id) {
-        System.out.println("ID = " + id);
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Note> get(@PathVariable(value = "id") int id) {
         return new ResponseEntity<>(DBManager.getInstance().getDbNote().selectByID(id), HttpStatus.OK);
     }
 
     @RequestMapping(path = PUT_EDIT, method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "idTicket") Integer idTicket,
-            @PathVariable(value = "id") Integer id, @RequestBody Note note) {
-        if (id == null) {
-            return returnOK("ID inválido!");
-        }
+    public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "idTicket") int idTicket,
+            @PathVariable(value = "id") int id, @RequestBody Note note) {
         Note noteOriginal = DBManager.getInstance().getDbNote().selectByID(id);
         if (noteOriginal == null) {
             return returnOK("Nota não encontrada!");
@@ -94,12 +86,8 @@ public class NoteController extends AbstractController {
         return returnOK(update ? "Update OK!" : "Update FAIL!");
     }
 
-    @RequestMapping(path = DELETE_DELETE, method = RequestMethod.DELETE)
-    public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") Integer id) {
-        System.out.println("ID = " + id);
-        if (id == null) {
-            return returnOK("ID inválido!");
-        }
+    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id) {
         boolean delete = DBManager.getInstance().getDbNote().deleteByID(id);
         // confere se deletou
         if (delete) {
@@ -108,13 +96,13 @@ public class NoteController extends AbstractController {
         return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
     }
 
-    @RequestMapping(GET_DROP)
+    @RequestMapping(PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
         DBManager.getInstance().getDbNote().dropAndCreateTable();
         return returnOK("Todas notas foram deletados com sucesso!");
     }
 
-    @RequestMapping(GET_CREATEFAKES)
+    @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
         List<User> users = DBManager.getInstance().getDbUser().selectAll();
         // se ainda não existir nenhum 

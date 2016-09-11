@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
  */
 class AbstractController {
 
+    static final String PATH_DROP = "/drop";
+    static final String PATH_FAKES = "/createfakes";
+
     public AbstractController() {
     }
 

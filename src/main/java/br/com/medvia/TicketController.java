@@ -27,11 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class TicketController extends AbstractController {
 
     // order by t.state, t.priority, e.institutionID
-    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.manufacturer || ' - ' || e.description) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedByID = uO.id and t.responsableID = uR.id and t.equipmentID = e.id and e.institutionID = i.id";
+    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedByID = uO.id and t.responsableID = uR.id and t.equipmentID = e.id and e.institutionID = i.id";
 
-    private static final String GET_DROP = "/drop";
-    private static final String GET_CREATEFAKES = "/createfakes";
     private static final String PUT_CLOSE = "/{id}/close";
+    private static final String PUT_DELETE = "/{id}/delete";
 
     public TicketController() {
         System.out.println(TicketController.class.getSimpleName() + " OK!");
@@ -50,7 +49,7 @@ public class TicketController extends AbstractController {
 
         // TODO: pegar do cokie!!!
         ticket.setOpenedByID(1);
-        
+
         // valida campos obrigatórios
         if (ticket.getDescription() == null || ticket.getDescription().isEmpty()) {
             return returnOK("Campo obrigatório não informado: Descrição");
@@ -61,39 +60,18 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Ticket> get(@PathVariable(value = "id") Integer id) {
-        System.out.println("ID = " + id);
         return new ResponseEntity<>(DBManager.getInstance().getDbTicket().selectByID(id), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "id") Integer id, @RequestBody Ticket ticket) {
-        System.out.println("ID = " + id);
-        if (id == null) {
-            return returnOK("ID inválido!");
-        }
+    public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
         ticket.setId(id);
         boolean update = DBManager.getInstance().getDbTicket().update(ticket);
         return returnOK(update ? "Update OK!" : "Update FAIL!");
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") Integer id) {
-        System.out.println("ID = " + id);
-        if (id == null) {
-            return returnOK("ID inválido!");
-        }
-        Ticket ticket = DBManager.getInstance().getDbTicket().selectByID(id);
-        ticket.setState("e");
-        boolean update = DBManager.getInstance().getDbTicket().update(ticket);
-        return returnOK(update ? "Delete OK!" : "Delete FAIL!");
-    }
-
     @RequestMapping(path = PUT_CLOSE, method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> close(@PathVariable(value = "id") Integer id, @RequestBody Ticket ticket) {
-        System.out.println("ID = " + id);
-        if (id == null) {
-            return returnOK("ID inválido!");
-        }
+    public ResponseEntity<ReplyMessage> close(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
         Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectByID(id);
         // altera apenas os dados do fechamento
         ticketOriginal.setDateClosing(ticket.getDateClosing());
@@ -103,7 +81,18 @@ public class TicketController extends AbstractController {
         return returnOK(update ? "Close OK!" : "Close FAIL!");
     }
 
-    @RequestMapping(GET_DROP)
+    @RequestMapping(path = PUT_DELETE, method = RequestMethod.PUT)
+    public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+        Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectByID(id);
+        // altera apenas os dados da deleção
+        ticketOriginal.setDateRemoving(ticket.getDateRemoving());
+        ticketOriginal.setNoteRemoving(ticket.getNoteRemoving());
+        ticketOriginal.setState("e");
+        boolean update = DBManager.getInstance().getDbTicket().update(ticketOriginal);
+        return returnOK(update ? "Delete OK!" : "Delete FAIL!");
+    }
+
+    @RequestMapping(PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
         boolean dropAndCreateTable = DBManager.getInstance().getDbTicket().dropAndCreateTable();
         return new ResponseEntity<>(
@@ -111,7 +100,7 @@ public class TicketController extends AbstractController {
                 HttpStatus.OK);
     }
 
-    @RequestMapping(GET_CREATEFAKES)
+    @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
         List<User> users = DBManager.getInstance().getDbUser().selectAll();
         // se ainda não existir nenhum 

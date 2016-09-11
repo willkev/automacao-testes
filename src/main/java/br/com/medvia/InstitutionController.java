@@ -1,7 +1,7 @@
 package br.com.medvia;
 
 import br.com.medvia.db.DBManager;
-import br.com.medvia.resources.User;
+import br.com.medvia.resources.Institution;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.util.List;
@@ -19,32 +19,32 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Willian
  */
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/institutions")
 @CrossOrigin
-public class UserController extends AbstractController {
+public class InstitutionController extends AbstractController {
 
-    public UserController() {
-        System.out.println(UserController.class.getSimpleName() + " OK!");
+    public InstitutionController() {
+        System.out.println(InstitutionController.class.getSimpleName() + " OK!");
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<User>> list() {
-        List<User> selectAll = DBManager.getInstance().getDbUser().selectAll();
+    public ResponseEntity<List<Institution>> list() {
+        List<Institution> selectAll = DBManager.getInstance().getDbInstitution().selectAll();
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@RequestBody User user) {
-        boolean insert = DBManager.getInstance().getDbUser().insert(user);
+    public ResponseEntity<ReplyMessage> create(@RequestBody Institution institution) {
+        boolean insert = DBManager.getInstance().getDbInstitution().insert(institution);
         return new ResponseEntity<>(
-                new ReplyMessage(insert ? "Criou novo usuário com sucesso!" : "Não foi possível criar um novo usuário!"),
+                new ReplyMessage(insert ? "Criou nova instituição com sucesso!" : "Não foi possível criar uma nova instituição!"),
                 HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> edit(@RequestBody User user, @RequestParam(value = "id") int id) {
-        user.setId(id);
-        boolean update = DBManager.getInstance().getDbUser().update(user);
+    public ResponseEntity<ReplyMessage> edit(@RequestBody Institution institution, @RequestParam(value = "id") int id) {
+        institution.setId(id);
+        boolean update = DBManager.getInstance().getDbInstitution().update(institution);
         return new ResponseEntity<>(
                 new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),
                 HttpStatus.OK);
@@ -52,15 +52,15 @@ public class UserController extends AbstractController {
 
     @RequestMapping(PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
-        DBManager.getInstance().getDbUser().dropAndCreateTable();
+        DBManager.getInstance().getDbInstitution().dropAndCreateTable();
         return new ResponseEntity<>(
-                new ReplyMessage("Todos usuários foram deletados com sucesso!"),
+                new ReplyMessage("Todas instituições foram deletados com sucesso!"),
                 HttpStatus.OK);
     }
 
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createfakes() {
-        List<User> created = Fakes.createUsers();
+        List<Institution> created = Fakes.createInstitutions();
         created.stream().forEach((element) -> {
             create(element);
         });
