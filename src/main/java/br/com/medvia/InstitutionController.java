@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/institutions")
 @CrossOrigin
 public class InstitutionController extends AbstractController {
+
+    private final EquipmentController equipmentController = new EquipmentController();
 
     public InstitutionController() {
         System.out.println(InstitutionController.class.getSimpleName() + " OK!");
@@ -42,12 +45,18 @@ public class InstitutionController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> edit(@RequestBody Institution institution, @RequestParam(value = "id") int id) {
+    public ResponseEntity<ReplyMessage> edit(@RequestBody Institution institution, @PathVariable(value = "id") int id) {
         institution.setId(id);
         boolean update = DBManager.getInstance().getDbInstitution().update(institution);
         return new ResponseEntity<>(
                 new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),
                 HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/{id}/equipments", method = RequestMethod.GET)
+    public ResponseEntity<List<?>> listByInstitution(@PathVariable(value = "id") int id,
+            @RequestParam(value = "fields", defaultValue = "") String fields) {
+        return equipmentController.list(fields, id);
     }
 
     @RequestMapping(PATH_DROP)

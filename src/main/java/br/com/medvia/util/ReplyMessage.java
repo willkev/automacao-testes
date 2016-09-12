@@ -16,4 +16,9 @@ public class ReplyMessage {
         return message;
     }
 
+    @Override
+    public String toString() {
+        return "ReplyMessage{" + "message=" + message + '}';
+    }
+
 }

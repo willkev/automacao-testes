@@ -284,6 +284,7 @@ public class WkDB<T extends WkTable> {
         return createTable();
     }
 
+    // https://www.sqlite.org/datatype3.html
     public boolean createTable() {
         if (count() != null) {
             println("CreateTable", "Table already exist!");
@@ -303,6 +304,8 @@ public class WkDB<T extends WkTable> {
                 sql.append(" INTEGER DEFAULT 0");
             } else if (isSameType(field.getType(), Long.class)) {
                 sql.append(" BIGINT DEFAULT 0");
+            } else if (isSameType(field.getType(), Double.class)) {
+                sql.append(" REAL DEFAULT 0");                
             } else {
                 sql.append(" VARCHAR(10)");
             }
@@ -361,7 +364,7 @@ public class WkDB<T extends WkTable> {
         return false;
     }
 
-    public boolean insert(WkTable objDBElement) {
+    public boolean insert(T objDBElement) {
         if (objDBElement == null) {
             return false;
         }
@@ -626,7 +629,7 @@ public class WkDB<T extends WkTable> {
      * @param objDBElement
      * @return False - Se não existir.
      */
-    public boolean update(WkTable objDBElement) {
+    public boolean update(T objDBElement) {
         if (objDBElement == null) {
             return false;
         }

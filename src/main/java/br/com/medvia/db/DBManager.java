@@ -1,5 +1,6 @@
 package br.com.medvia.db;
 
+import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.resources.Note;
@@ -27,6 +28,7 @@ public class DBManager {
     private final WkDB<Equipment> dbEquipment;
     private final WkDB<User> dbUser;
     private final WkDB<Note> dbNote;
+    private final WkDB<Cost> dbCost;
     private final WkDB<Institution> dbInstitution;
 
     private DBManager() {
@@ -39,6 +41,7 @@ public class DBManager {
         dbEquipment = new WkDB<>(Equipment.class);
         dbUser = new WkDB<>(User.class);
         dbNote = new WkDB<>(Note.class);
+        dbCost = new WkDB<>(Cost.class);
         dbInstitution = new WkDB<>(Institution.class);
 
         // se o arqui ainda não existir
@@ -47,6 +50,7 @@ public class DBManager {
             dbEquipment.createTable();
             dbUser.createTable();
             dbNote.createTable();
+            dbCost.createTable();
             dbInstitution.createTable();
         }
     }
@@ -71,6 +75,10 @@ public class DBManager {
         return dbNote;
     }
 
+    public WkDB<Cost> getDbCost() {
+        return dbCost;
+    }
+
     public WkDB<Institution> getDbInstitution() {
         return dbInstitution;
     }
@@ -80,7 +88,9 @@ public class DBManager {
         dbEquipment.dropAndCreateTable();
         dbUser.dropAndCreateTable();
         dbNote.dropAndCreateTable();
+        dbCost.dropAndCreateTable();
         dbInstitution.dropAndCreateTable();
+
         System.out.println("dropAndCreateTable!");
     }
 

@@ -25,12 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Willian
  */
 @RestController
-@RequestMapping("/api/notes")
 @CrossOrigin
 public class NoteController extends AbstractController {
 
     public static final String QUERY_LIST = "select n.id, n.description, n.userID, u.name as user, n.date from Note n, User u where n.userID = u.id and n.tickteID = ";
 
+    private static final String PATH_NOTE = "/api/notes";
+    private static final String PATH_NOTE_ID = PATH_NOTE + "/{id}";
     private static final String GET_LIST = "/api/tickets/{id}/notes";
     private static final String POST_CREATE = "/api/tickets/{id}/notes";
     private static final String PUT_EDIT = "/api/tickets/{idTicket}/notes/{id}";
@@ -42,19 +43,22 @@ public class NoteController extends AbstractController {
     @RequestMapping(path = GET_LIST, method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> list(@PathVariable(value = "id") int id) {
         List<Map<String, Object>> selectAll = DBManager.getInstance().getDbNote().executeQuery(QUERY_LIST + id);
+        // Adiciona as notas de Exclusão ou Fechamento
+        //
+        // ???
+        //
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(path = POST_CREATE, method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@PathVariable(value = "id") int id, @RequestBody Note note) {
         // Valida campos obrigatórios
-        if (note.getDescription() == null || note.getDescription().isEmpty()) {
+        if (!isValueOK(note.getDescription())) {
             return returnOK("Campo obrigatório não informado: Descrição");
         }
-        if (note.getUserID() == null || note.getUserID() < 0) {
+        if (!isValueOK(note.getUserID())) {
             return returnOK("Campo obrigatório não informado: Usuário");
         }
-
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         note.setTickteID(id);
         note.setDate(dateFormater.format(new Date()));
@@ -62,7 +66,7 @@ public class NoteController extends AbstractController {
         return returnOK(insert ? "Criou nova nota com sucesso!" : "Não foi possível criar nova nota!");
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.GET)
     public ResponseEntity<Note> get(@PathVariable(value = "id") int id) {
         return new ResponseEntity<>(DBManager.getInstance().getDbNote().selectByID(id), HttpStatus.OK);
     }
@@ -72,11 +76,11 @@ public class NoteController extends AbstractController {
             @PathVariable(value = "id") int id, @RequestBody Note note) {
         Note noteOriginal = DBManager.getInstance().getDbNote().selectByID(id);
         if (noteOriginal == null) {
-            return returnOK("Nota não encontrada!");
+            return returnOK("ID de nota não encontrado!");
         }
         // Se informou ID errado para o Ticket
         if (!Objects.equals(noteOriginal.getTickteID(), idTicket)) {
-            return returnOK("Nota não encontrada para o Ticket!");
+            return returnOK("Nota não encontrada para o Ticket ID!");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         // Altera apenas alguns campos
@@ -86,7 +90,7 @@ public class NoteController extends AbstractController {
         return returnOK(update ? "Update OK!" : "Update FAIL!");
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.DELETE)
     public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id) {
         boolean delete = DBManager.getInstance().getDbNote().deleteByID(id);
         // confere se deletou
@@ -96,13 +100,13 @@ public class NoteController extends AbstractController {
         return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
     }
 
-    @RequestMapping(PATH_DROP)
+    @RequestMapping(PATH_NOTE + PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
         DBManager.getInstance().getDbNote().dropAndCreateTable();
-        return returnOK("Todas notas foram deletados com sucesso!");
+        return returnOK("Todas notas foram deletadas com sucesso!");
     }
 
-    @RequestMapping(PATH_FAKES)
+    @RequestMapping(PATH_NOTE + PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
         List<User> users = DBManager.getInstance().getDbUser().selectAll();
         // se ainda não existir nenhum 

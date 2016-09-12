@@ -1,6 +1,7 @@
 package br.com.medvia;
 
 import br.com.medvia.db.DBManager;
+import br.com.medvia.util.ReplyMessage;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,10 +35,39 @@ public class ServerController {
         return info;
     }
 
-    @RequestMapping("/dbreset")
+    @RequestMapping("/dbdrop")
     public ResponseEntity<String> dbReset() {
         DBManager.getInstance().dropAndCreateTable();
-        return new ResponseEntity<>("Banco resetado OK!", HttpStatus.OK);
+        return new ResponseEntity<>("DB droped OK!", HttpStatus.OK);
+    }
+
+    @RequestMapping("/dbcreate")
+    public ResponseEntity<String> dbCreate() {
+        dbReset();
+
+        UserController u = new UserController();
+        InstitutionController i = new InstitutionController();
+        EquipmentController e = new EquipmentController();
+        TicketController t = new TicketController();
+        NoteController n = new NoteController();
+        CostController c = new CostController();
+
+        // Popula todas tabelas com fakes
+        // Obs: Deve ser feito na ordem correta
+        ResponseEntity<ReplyMessage> resp = u.createfakes();
+        System.out.println(resp.toString());
+        resp = i.createfakes();
+        System.out.println(resp.toString());
+        resp = e.createfakes();
+        System.out.println(resp.toString());
+        resp = t.createFakes();
+        System.out.println(resp.toString());
+        resp = n.createFakes();
+        System.out.println(resp.toString());
+        resp = c.createFakes();
+        System.out.println(resp.toString());
+
+        return new ResponseEntity<>("Banco criado e populado OK!", HttpStatus.OK);
     }
 
     @RequestMapping("/dbinfo")

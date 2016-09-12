@@ -1,6 +1,6 @@
 package br.com.medvia.util;
 
-import br.com.medvia.db.WkDB;
+import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.resources.Note;
@@ -29,22 +29,19 @@ public class Fakes {
         i2.setDescription("Hospital de Clínicas (POA)");
         list.add(i2);
 
+        Institution i3 = new Institution();
+        i3.setDescription("Moinhos de Vento");
+        list.add(i3);
+
         return list;
     }
 
-    public static List<Equipment> createEquipments() {
-        WkDB<Institution> dbInstitution = new WkDB<>(Institution.class);
-        dbInstitution.dropAndCreateTable();
-        List<Institution> institutions = createInstitutions();
-        for (Institution institution : institutions) {
-            dbInstitution.insert(institution);
-        }
-
+    public static List<Equipment> createEquipments(List<Institution> institutions) {
         List<Equipment> list = new ArrayList<>();
 
         Equipment equip1 = new Equipment();
         equip1.setDescription("Tomografia 24 Horas");
-        equip1.setInstitutionID(1);
+        equip1.setInstitutionID(institutions.get(0).getId());
         equip1.setBrand("Siemens");
         equip1.setManufacturer("Siemens");
         equip1.setSerieNumber("EGH-90876-UKMG");
@@ -52,7 +49,7 @@ public class Fakes {
 
         Equipment equip2 = new Equipment();
         equip2.setDescription("Ressonancia 20 Tesla");
-        equip2.setInstitutionID(1);
+        equip2.setInstitutionID(institutions.get(0).getId());
         equip2.setBrand("Philips");
         equip2.setManufacturer("Philips");
         equip2.setSerieNumber("823928276-UKMG");
@@ -60,7 +57,7 @@ public class Fakes {
 
         Equipment equip3 = new Equipment();
         equip3.setDescription("Cama levantadora");
-        equip3.setInstitutionID(1);
+        equip3.setInstitutionID(institutions.get(1).getId());
         equip3.setBrand("Siemens");
         equip3.setManufacturer("Siemens");
         equip3.setSerieNumber("OLPK-490196-UKMG");
@@ -68,7 +65,7 @@ public class Fakes {
 
         Equipment equip4 = new Equipment();
         equip4.setDescription("Arco de luz LED");
-        equip4.setInstitutionID(2);
+        equip4.setInstitutionID(institutions.get(2).getId());
         equip4.setBrand("Samsung");
         equip4.setManufacturer("Samsung");
         equip4.setSerieNumber("45590-AJQOA-39404");
@@ -76,7 +73,7 @@ public class Fakes {
 
         Equipment equip5 = new Equipment();
         equip5.setDescription("Furador de crânio");
-        equip5.setInstitutionID(2);
+        equip5.setInstitutionID(institutions.get(2).getId());
         equip5.setBrand("LG");
         equip5.setManufacturer("LG");
         equip5.setSerieNumber("906627119909");
@@ -84,7 +81,7 @@ public class Fakes {
 
         Equipment equip6 = new Equipment();
         equip6.setDescription("Nobreak 900mA");
-        equip6.setInstitutionID(2);
+        equip6.setInstitutionID(institutions.get(2).getId());
         equip6.setBrand("Brastemp");
         equip6.setManufacturer("Brastemp");
         equip6.setSerieNumber("0918204-49");
@@ -205,6 +202,39 @@ public class Fakes {
         return list;
     }
 
+    public static List<Cost> createCosts(int ticketID, List<User> users) {
+        SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        List<Cost> costs = new ArrayList<>();
+        // vai pegar randomicamente um user dentro dos disponíveis
+        Random random = new Random(System.currentTimeMillis());
+
+        Cost c1 = new Cost();
+        c1.setCost(120.77);
+        c1.setDescription("2 horas do técnico para instalar o equipamento");
+        c1.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 111)))); // -111hr
+        c1.setTickteID(ticketID);
+        c1.setUserID(users.get(random.nextInt(users.size())).getId());
+        costs.add(c1);
+
+        Cost c2 = new Cost();
+        c2.setCost(240.00);
+        c2.setDescription("Necessitou chamar um técnico na madrugada do final de semana, por isso custou mais caro");
+        c2.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 11)))); // -11hr
+        c2.setTickteID(ticketID);
+        c2.setUserID(users.get(random.nextInt(users.size())).getId());
+        costs.add(c2);
+
+        Cost c3 = new Cost();
+        c3.setCost(50.00);
+        c3.setDescription("50 pila de cabos blindados");
+        c3.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 23)))); // -23hr
+        c3.setTickteID(ticketID);
+        c3.setUserID(users.get(random.nextInt(users.size())).getId());
+        costs.add(c3);
+
+        return costs;
+    }
+
     public static List<Note> createNotes(int ticketID, List<User> users) {
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         List<Note> notes = new ArrayList<>();
@@ -234,4 +264,5 @@ public class Fakes {
 
         return notes;
     }
+
 }

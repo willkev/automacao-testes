@@ -18,4 +18,9 @@ public class Institution extends WkTable {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return "Institution" + meToJson();
+    }
+
 }

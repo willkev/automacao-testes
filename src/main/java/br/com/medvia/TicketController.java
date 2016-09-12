@@ -59,7 +59,7 @@ public class TicketController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Ticket> get(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Ticket> get(@PathVariable(value = "id") int id) {
         return new ResponseEntity<>(DBManager.getInstance().getDbTicket().selectByID(id), HttpStatus.OK);
     }
 
@@ -72,7 +72,13 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(path = PUT_CLOSE, method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> close(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+        if (!isValueOK(ticket.getDateClosing()) || !isValueOK(ticket.getNoteClosing())) {
+            return returnOK("Campo obrigatório não informado!");
+        }
         Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectByID(id);
+        if (ticketOriginal == null) {
+            return returnOK("ID não encontrado!");
+        }
         // altera apenas os dados do fechamento
         ticketOriginal.setDateClosing(ticket.getDateClosing());
         ticketOriginal.setNoteClosing(ticket.getNoteClosing());
@@ -83,7 +89,13 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(path = PUT_DELETE, method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+        if (!isValueOK(ticket.getDateRemoving()) || !isValueOK(ticket.getNoteRemoving())) {
+            return returnOK("Campo obrigatório não informado!");
+        }
         Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectByID(id);
+        if (ticketOriginal == null) {
+            return returnOK("ID não encontrado!");
+        }
         // altera apenas os dados da deleção
         ticketOriginal.setDateRemoving(ticket.getDateRemoving());
         ticketOriginal.setNoteRemoving(ticket.getNoteRemoving());
