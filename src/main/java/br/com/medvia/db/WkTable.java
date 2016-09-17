@@ -1,5 +1,6 @@
 package br.com.medvia.db;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 
 /**
@@ -13,14 +14,16 @@ public class WkTable {
     //@WkDBType("varchar(33)");
     //@WkDBType("real");
     //@WkDBType("blob");    
-    private int id = -1;
+    @JsonProperty("Id")
+    private int Id = -1;
 
+    @JsonProperty("Id")
     public int getId() {
-        return id;
+        return Id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     protected String meToJson() {

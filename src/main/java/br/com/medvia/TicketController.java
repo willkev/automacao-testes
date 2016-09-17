@@ -26,8 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TicketController extends AbstractController {
 
-    // order by t.state, t.priority, e.institutionID
-    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedByID = uO.id and t.responsableID = uR.id and t.equipmentID = e.id and e.institutionID = i.id";
+    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.Id Id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedById = uO.Id and t.responsableId = uR.Id and t.equipmentId = e.Id and e.institutionId = i.Id";
 
     private static final String PUT_CLOSE = "/{id}/close";
     private static final String PUT_DELETE = "/{id}/delete";
@@ -48,7 +47,7 @@ public class TicketController extends AbstractController {
         ticket.setState("a");
 
         // TODO: pegar do cokie!!!
-        ticket.setOpenedByID(1);
+        ticket.setOpenedById(1);
 
         // valida campos obrigatórios
         if (ticket.getDescription() == null || ticket.getDescription().isEmpty()) {
@@ -60,7 +59,7 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Ticket> get(@PathVariable(value = "id") int id) {
-        return new ResponseEntity<>(DBManager.getInstance().getDbTicket().selectByID(id), HttpStatus.OK);
+        return new ResponseEntity<>(DBManager.getInstance().getDbTicket().selectById(id), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
@@ -75,9 +74,9 @@ public class TicketController extends AbstractController {
         if (!isValueOK(ticket.getDateClosing()) || !isValueOK(ticket.getNoteClosing())) {
             return returnOK("Campo obrigatório não informado!");
         }
-        Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectByID(id);
+        Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectById(id);
         if (ticketOriginal == null) {
-            return returnOK("ID não encontrado!");
+            return returnOK("Id não encontrado!");
         }
         // altera apenas os dados do fechamento
         ticketOriginal.setDateClosing(ticket.getDateClosing());
@@ -92,9 +91,9 @@ public class TicketController extends AbstractController {
         if (!isValueOK(ticket.getDateRemoving()) || !isValueOK(ticket.getNoteRemoving())) {
             return returnOK("Campo obrigatório não informado!");
         }
-        Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectByID(id);
+        Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectById(id);
         if (ticketOriginal == null) {
-            return returnOK("ID não encontrado!");
+            return returnOK("Id não encontrado!");
         }
         // altera apenas os dados da deleção
         ticketOriginal.setDateRemoving(ticket.getDateRemoving());

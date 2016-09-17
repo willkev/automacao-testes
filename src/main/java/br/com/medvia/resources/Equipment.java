@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class Equipment extends WkTable {
 
     private String description;
-    private int institutionID;
+    private int institutionId;
     private String brand;
     private String model;
     private String manufacturer;
@@ -123,16 +123,16 @@ public class Equipment extends WkTable {
         this.active = active;
     }
 
-    public void setInstitutionID(int institutionID) {
-        this.institutionID = institutionID;
+    public void setInstitutionId(int institutionId) {
+        this.institutionId = institutionId;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public int getInstitutionID() {
-        return institutionID;
+    public int getInstitutionId() {
+        return institutionId;
     }
 
     public void setDescription(String description) {

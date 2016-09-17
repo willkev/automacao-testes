@@ -9,17 +9,17 @@ import br.com.medvia.db.WkTable;
 public class Note extends WkTable {
 
     private String description = "";
-    private Integer userID;
-    private Integer tickteID;
+    private Integer userId;
+    private Integer tickteId;
     // Date pattern "dd/MM/yyyy HH:mm"
     private String date = "";
 
-    public Integer getTickteID() {
-        return tickteID;
+    public Integer getTickteId() {
+        return tickteId;
     }
 
-    public void setTickteID(int tickteID) {
-        this.tickteID = tickteID;
+    public void setTickteId(int tickteId) {
+        this.tickteId = tickteId;
     }
 
     public String getDescription() {
@@ -30,12 +30,12 @@ public class Note extends WkTable {
         this.description = description;
     }
 
-    public Integer getUserID() {
-        return userID;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getDate() {

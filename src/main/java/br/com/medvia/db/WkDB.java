@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class WkDB<T extends WkTable> {
 
-    private static final String ID = "id";
+    private static final String ID = "Id";
 
     private static final String jdbc_driver = "org.sqlite.JDBC";
     private static final String url_in_file = "jdbc:sqlite:";
@@ -291,8 +291,10 @@ public class WkDB<T extends WkTable> {
             return true;
         }
         StringBuilder sql = new StringBuilder("CREATE TABLE ");
-        sql.append(tableName);
-        sql.append(" (id INTEGER PRIMARY KEY NOT NULL, ");
+        sql.append(tableName)
+                .append(" (")
+                .append(ID)
+                .append(" INTEGER PRIMARY KEY NOT NULL, ");
         int index = fields.size();
         for (Field field : fields.values()) {
             sql.append(field.getName());
@@ -305,7 +307,7 @@ public class WkDB<T extends WkTable> {
             } else if (isSameType(field.getType(), Long.class)) {
                 sql.append(" BIGINT DEFAULT 0");
             } else if (isSameType(field.getType(), Double.class)) {
-                sql.append(" REAL DEFAULT 0");                
+                sql.append(" REAL DEFAULT 0");
             } else {
                 sql.append(" VARCHAR(10)");
             }
@@ -410,7 +412,7 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * SELECT COUNT(ID) FROM TABLE
+     * SELECT COUNT(Id) FROM TABLE
      *
      * @return Number of records found
      */
@@ -447,8 +449,8 @@ public class WkDB<T extends WkTable> {
         return null;
     }
 
-    public T selectByID(int id) {
-        List<T> select = select(null, Where.fields(ID), Where.conditions("="), Where.values(id));
+    public T selectById(int Id) {
+        List<T> select = select(null, Where.fields(ID), Where.conditions("="), Where.values(Id));
         if (select.isEmpty()) {
             return null;
         }
@@ -576,13 +578,13 @@ public class WkDB<T extends WkTable> {
             }
             if (rs.next()) {
                 ResultSetMetaData metaData;
-                Object element;
+                T element;
                 Field field;
                 String columnName;
                 try {
                     do {
                         metaData = rs.getMetaData();
-                        element = classDB.newInstance();
+                        element = (T) classDB.newInstance();
                         for (int i = 1; i <= metaData.getColumnCount(); i++) {
                             columnName = metaData.getColumnName(i);
                             if (columnName.equals(ID)) {
@@ -642,7 +644,7 @@ public class WkDB<T extends WkTable> {
                 upValues[index] = field.get(objDBElement);
                 index++;
             }
-            return updateByID(Update.fields(upFields),
+            return updateById(Update.fields(upFields),
                     Update.values(upValues),
                     objDBElement.getId());
         } catch (Exception ex) {
@@ -653,14 +655,14 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE ID = ID
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE Id = Id
      *
      * @param fields
      * @param values
      * @param id
      * @return
      */
-    public boolean updateByID(UpdateField fields, UpdateValue values, int id) {
+    public boolean updateById(UpdateField fields, UpdateValue values, int id) {
         Integer update = update(fields, values, Where.fields("id"), Where.conditions("="), Where.values(id));
         return update != null && update == 1;
     }
@@ -832,7 +834,7 @@ public class WkDB<T extends WkTable> {
         return list;
     }
 
-    public boolean deleteByID(Integer id) {
+    public boolean deleteById(Integer id) {
         Statement stmt = null;
         try {
             stmt = conn.createStatement();

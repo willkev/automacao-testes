@@ -22,11 +22,11 @@ public class Ticket extends WkTable {
     private String dateRemoving = "";
 
     // Table User
-    private int openedByID;
+    private int openedById;
     // Table User
-    private int responsableID;
+    private int responsableId;
     // Table Equipament
-    private int equipmentID;
+    private int equipmentId;
     // 0, 50, 75 or 100
     private String situation = "0";
     // 'a' : 'Alta'
@@ -100,32 +100,32 @@ public class Ticket extends WkTable {
         this.priority = priority;
     }
 
-    public void setOpenedByID(int openedByID) {
-        this.openedByID = openedByID;
+    public void setOpenedById(int openedById) {
+        this.openedById = openedById;
     }
 
-    public void setResponsableID(int responsableID) {
-        this.responsableID = responsableID;
+    public void setResponsableId(int responsableId) {
+        this.responsableId = responsableId;
     }
 
-    public void setEquipmentID(int equipmentID) {
-        this.equipmentID = equipmentID;
+    public void setEquipmentId(int equipmentId) {
+        this.equipmentId = equipmentId;
     }
 
     public String getDateClosing() {
         return dateClosing;
     }
 
-    public int getOpenedByID() {
-        return openedByID;
+    public int getOpenedById() {
+        return openedById;
     }
 
-    public int getResponsableID() {
-        return responsableID;
+    public int getResponsableId() {
+        return responsableId;
     }
 
-    public int getEquipmentID() {
-        return equipmentID;
+    public int getEquipmentId() {
+        return equipmentId;
     }
 
     public String getNoteClosing() {

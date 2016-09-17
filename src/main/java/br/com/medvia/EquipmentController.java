@@ -38,7 +38,7 @@ public class EquipmentController extends AbstractController {
     public ResponseEntity<List<?>> list(String fields, Integer institutionID) {
         String filterByInstitution = null;
         if (institutionID != null) {
-            filterByInstitution = "where institutionID = " + institutionID;
+            filterByInstitution = "where institutionId = " + institutionID;
         }
         if (fields == null || fields.isEmpty()) {
             List<Equipment> selected = DBManager.getInstance().getDbEquipment().selectAll(filterByInstitution);

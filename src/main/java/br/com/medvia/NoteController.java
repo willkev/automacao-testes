@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class NoteController extends AbstractController {
 
-    public static final String QUERY_LIST = "select n.id, n.description, n.userID, u.name as user, n.date from Note n, User u where n.userID = u.id and n.tickteID = ";
+    public static final String QUERY_LIST = "select n.Id Id,n.description,n.userId userId,u.name user,n.date from Note n,User u where n.userId = u.Id and n.tickteId = ";
 
     private static final String PATH_NOTE = "/api/notes";
     private static final String PATH_NOTE_ID = PATH_NOTE + "/{id}";
@@ -56,11 +56,11 @@ public class NoteController extends AbstractController {
         if (!isValueOK(note.getDescription())) {
             return returnOK("Campo obrigatório não informado: Descrição");
         }
-        if (!isValueOK(note.getUserID())) {
+        if (!isValueOK(note.getUserId())) {
             return returnOK("Campo obrigatório não informado: Usuário");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        note.setTickteID(id);
+        note.setTickteId(id);
         note.setDate(dateFormater.format(new Date()));
         boolean insert = DBManager.getInstance().getDbNote().insert(note);
         return returnOK(insert ? "Criou nova nota com sucesso!" : "Não foi possível criar nova nota!");
@@ -68,18 +68,18 @@ public class NoteController extends AbstractController {
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.GET)
     public ResponseEntity<Note> get(@PathVariable(value = "id") int id) {
-        return new ResponseEntity<>(DBManager.getInstance().getDbNote().selectByID(id), HttpStatus.OK);
+        return new ResponseEntity<>(DBManager.getInstance().getDbNote().selectById(id), HttpStatus.OK);
     }
 
     @RequestMapping(path = PUT_EDIT, method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "idTicket") int idTicket,
             @PathVariable(value = "id") int id, @RequestBody Note note) {
-        Note noteOriginal = DBManager.getInstance().getDbNote().selectByID(id);
+        Note noteOriginal = DBManager.getInstance().getDbNote().selectById(id);
         if (noteOriginal == null) {
             return returnOK("ID de nota não encontrado!");
         }
         // Se informou ID errado para o Ticket
-        if (!Objects.equals(noteOriginal.getTickteID(), idTicket)) {
+        if (!Objects.equals(noteOriginal.getTickteId(), idTicket)) {
             return returnOK("Nota não encontrada para o Ticket ID!");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -92,10 +92,10 @@ public class NoteController extends AbstractController {
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.DELETE)
     public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id) {
-        boolean delete = DBManager.getInstance().getDbNote().deleteByID(id);
+        boolean delete = DBManager.getInstance().getDbNote().deleteById(id);
         // confere se deletou
         if (delete) {
-            delete = DBManager.getInstance().getDbNote().selectByID(id) == null;
+            delete = DBManager.getInstance().getDbNote().selectById(id) == null;
         }
         return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
     }
@@ -123,7 +123,7 @@ public class NoteController extends AbstractController {
             List<Note> created = Fakes.createNotes(t.getId(), users);
             count += created.size();
             created.stream().forEach((element) -> {
-                create(element.getTickteID(), element);
+                create(element.getTickteId(), element);
             });
         }
         return returnOK(count + " fakes foram criados com sucesso!");

@@ -41,7 +41,7 @@ public class Fakes {
 
         Equipment equip1 = new Equipment();
         equip1.setDescription("Tomografia 24 Horas");
-        equip1.setInstitutionID(institutions.get(0).getId());
+        equip1.setInstitutionId(institutions.get(0).getId());
         equip1.setBrand("Siemens");
         equip1.setManufacturer("Siemens");
         equip1.setSerieNumber("EGH-90876-UKMG");
@@ -49,7 +49,7 @@ public class Fakes {
 
         Equipment equip2 = new Equipment();
         equip2.setDescription("Ressonancia 20 Tesla");
-        equip2.setInstitutionID(institutions.get(0).getId());
+        equip2.setInstitutionId(institutions.get(0).getId());
         equip2.setBrand("Philips");
         equip2.setManufacturer("Philips");
         equip2.setSerieNumber("823928276-UKMG");
@@ -57,7 +57,7 @@ public class Fakes {
 
         Equipment equip3 = new Equipment();
         equip3.setDescription("Cama levantadora");
-        equip3.setInstitutionID(institutions.get(1).getId());
+        equip3.setInstitutionId(institutions.get(1).getId());
         equip3.setBrand("Siemens");
         equip3.setManufacturer("Siemens");
         equip3.setSerieNumber("OLPK-490196-UKMG");
@@ -65,7 +65,7 @@ public class Fakes {
 
         Equipment equip4 = new Equipment();
         equip4.setDescription("Arco de luz LED");
-        equip4.setInstitutionID(institutions.get(2).getId());
+        equip4.setInstitutionId(institutions.get(2).getId());
         equip4.setBrand("Samsung");
         equip4.setManufacturer("Samsung");
         equip4.setSerieNumber("45590-AJQOA-39404");
@@ -73,7 +73,7 @@ public class Fakes {
 
         Equipment equip5 = new Equipment();
         equip5.setDescription("Furador de crânio");
-        equip5.setInstitutionID(institutions.get(2).getId());
+        equip5.setInstitutionId(institutions.get(2).getId());
         equip5.setBrand("LG");
         equip5.setManufacturer("LG");
         equip5.setSerieNumber("906627119909");
@@ -81,7 +81,7 @@ public class Fakes {
 
         Equipment equip6 = new Equipment();
         equip6.setDescription("Nobreak 900mA");
-        equip6.setInstitutionID(institutions.get(2).getId());
+        equip6.setInstitutionId(institutions.get(2).getId());
         equip6.setBrand("Brastemp");
         equip6.setManufacturer("Brastemp");
         equip6.setSerieNumber("0918204-49");
@@ -131,9 +131,9 @@ public class Fakes {
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 13)); // -13hr
         t1.setPrediction(dateFormater.format(date));
         t1.setDescription("Fonte trifásica queimada por raio no dia 12/07");
-        t1.setEquipmentID(equipments.get(0).getId());
-        t1.setResponsableID(users.get(0).getId());
-        t1.setOpenedByID(users.get(1).getId());
+        t1.setEquipmentId(equipments.get(0).getId());
+        t1.setResponsableId(users.get(0).getId());
+        t1.setOpenedById(users.get(1).getId());
         t1.setSituation("0");
         t1.setState("a");
         t1.setPriority("a");
@@ -146,9 +146,9 @@ public class Fakes {
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 200)); // +200hr
         t2.setPrediction(dateFormater.format(date));
         t2.setDescription("Quebrou a luz de fundo do aparelho teletransportados de bosons de higges");
-        t2.setEquipmentID(equipments.get(1).getId());
-        t2.setResponsableID(users.get(2).getId());
-        t2.setOpenedByID(users.get(3).getId());
+        t2.setEquipmentId(equipments.get(1).getId());
+        t2.setResponsableId(users.get(2).getId());
+        t2.setOpenedById(users.get(3).getId());
         t2.setSituation("50");
         t2.setState("a");
         t2.setPriority("a");
@@ -161,9 +161,9 @@ public class Fakes {
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 63)); // +63hr
         t3.setPrediction(dateFormater.format(date));
         t3.setDescription("Motor de subida da cama para ressonancia está sem força quando paciente tem mais de 700kg");
-        t3.setEquipmentID(equipments.get(2).getId());
-        t3.setResponsableID(users.get(4).getId());
-        t3.setOpenedByID(users.get(5).getId());
+        t3.setEquipmentId(equipments.get(2).getId());
+        t3.setResponsableId(users.get(4).getId());
+        t3.setOpenedById(users.get(5).getId());
         t3.setSituation("0");
         t3.setState("a");
         t3.setPriority("n");
@@ -176,9 +176,9 @@ public class Fakes {
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 100)); // +100hr
         t4.setPrediction(dateFormater.format(date));
         t4.setDescription("3 grupos de LEDs queimaram na máquina de café");
-        t4.setEquipmentID(equipments.get(3).getId());
-        t4.setResponsableID(users.get(1).getId());
-        t4.setOpenedByID(users.get(5).getId());
+        t4.setEquipmentId(equipments.get(3).getId());
+        t4.setResponsableId(users.get(1).getId());
+        t4.setOpenedById(users.get(5).getId());
         t4.setSituation("100");
         t4.setState("f");
         t4.setPriority("b");
@@ -191,9 +191,9 @@ public class Fakes {
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 200)); // +200hr
         t5.setPrediction(dateFormater.format(date));
         t5.setDescription("3 grupos de LEDs queimaram na máquina de café");
-        t5.setEquipmentID(equipments.get(4).getId());
-        t5.setResponsableID(users.get(2).getId());
-        t5.setOpenedByID(users.get(4).getId());
+        t5.setEquipmentId(equipments.get(4).getId());
+        t5.setResponsableId(users.get(2).getId());
+        t5.setOpenedById(users.get(4).getId());
         t5.setSituation("100");
         t5.setState("e");
         t5.setPriority("b");
@@ -202,7 +202,7 @@ public class Fakes {
         return list;
     }
 
-    public static List<Cost> createCosts(int ticketID, List<User> users) {
+    public static List<Cost> createCosts(int ticketId, List<User> users) {
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         List<Cost> costs = new ArrayList<>();
         // vai pegar randomicamente um user dentro dos disponíveis
@@ -212,30 +212,30 @@ public class Fakes {
         c1.setCost(120.77);
         c1.setDescription("2 horas do técnico para instalar o equipamento");
         c1.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 111)))); // -111hr
-        c1.setTickteID(ticketID);
-        c1.setUserID(users.get(random.nextInt(users.size())).getId());
+        c1.setTickteId(ticketId);
+        c1.setUserId(users.get(random.nextInt(users.size())).getId());
         costs.add(c1);
 
         Cost c2 = new Cost();
         c2.setCost(240.00);
         c2.setDescription("Necessitou chamar um técnico na madrugada do final de semana, por isso custou mais caro");
         c2.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 11)))); // -11hr
-        c2.setTickteID(ticketID);
-        c2.setUserID(users.get(random.nextInt(users.size())).getId());
+        c2.setTickteId(ticketId);
+        c2.setUserId(users.get(random.nextInt(users.size())).getId());
         costs.add(c2);
 
         Cost c3 = new Cost();
         c3.setCost(50.00);
         c3.setDescription("50 pila de cabos blindados");
         c3.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 23)))); // -23hr
-        c3.setTickteID(ticketID);
-        c3.setUserID(users.get(random.nextInt(users.size())).getId());
+        c3.setTickteId(ticketId);
+        c3.setUserId(users.get(random.nextInt(users.size())).getId());
         costs.add(c3);
 
         return costs;
     }
 
-    public static List<Note> createNotes(int ticketID, List<User> users) {
+    public static List<Note> createNotes(int ticketId, List<User> users) {
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         List<Note> notes = new ArrayList<>();
         // vai pegar randomicamente um user dentro dos disponíveis
@@ -244,22 +244,22 @@ public class Fakes {
         Note n1 = new Note();
         n1.setDescription("Este chamado está demorando muito, pois os responsáveis não foram avisados no dia do ocorrido");
         n1.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 150)))); // -150hr
-        n1.setTickteID(ticketID);
-        n1.setUserID(users.get(random.nextInt(users.size())).getId());
+        n1.setTickteId(ticketId);
+        n1.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n1);
 
         Note n2 = new Note();
         n2.setDescription("Pendência com o técnico, o mesmo retorna segunda-feira");
         n2.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 300)))); // -300hr
-        n2.setTickteID(ticketID);
-        n2.setUserID(users.get(random.nextInt(users.size())).getId());
+        n2.setTickteId(ticketId);
+        n2.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n2);
 
         Note n3 = new Note();
         n3.setDescription("Alterado o estado do chamado, pois é urgente!!!");
         n3.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 50)))); // -50hr
-        n3.setTickteID(ticketID);
-        n3.setUserID(users.get(random.nextInt(users.size())).getId());
+        n3.setTickteId(ticketId);
+        n3.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n3);
 
         return notes;

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class CostController extends AbstractController {
 
-    public static final String QUERY_LIST = "select c.id, c.description, c.userID, u.name as user, c.date from Cost c, User u where c.userID = u.id and c.tickteID = ";
+    public static final String QUERY_LIST = "select c.Id Id,c.description,c.userId userId,u.name user,c.date from Cost c,User u where c.userId = u.Id and c.tickteId = ";
 
     private static final String PATH_COST = "/api/costs";
     private static final String PATH_COST_ID = PATH_COST + "/{id}";
@@ -56,11 +56,11 @@ public class CostController extends AbstractController {
         if (!isValueOK(cost.getDescription())) {
             return returnOK("Campo obrigatório não informado: Descrição");
         }
-        if (!isValueOK(cost.getUserID())) {
+        if (!isValueOK(cost.getUserId())) {
             return returnOK("Campo obrigatório não informado: Usuário");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        cost.setTickteID(id);
+        cost.setTickteId(id);
         cost.setDate(dateFormater.format(new Date()));
         boolean insert = DBManager.getInstance().getDbCost().insert(cost);
         return returnOK(insert ? "Criou novo custo com sucesso!" : "Não foi possível criar novo custo!");
@@ -76,12 +76,12 @@ public class CostController extends AbstractController {
         if (!isValueOK(cost.getDescription())) {
             return returnOK("Campo obrigatório não informado: Descrição");
         }        
-        Cost costOriginal = DBManager.getInstance().getDbCost().selectByID(id);
+        Cost costOriginal = DBManager.getInstance().getDbCost().selectById(id);
         if (costOriginal == null) {
             return returnOK("ID de custo não encontrado!");
         }
         // Se informou ID errado para o Ticket
-        if (!Objects.equals(costOriginal.getTickteID(), idTicket)) {
+        if (!Objects.equals(costOriginal.getTickteId(), idTicket)) {
             return returnOK("Custo não encontrada para o Ticket ID!");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -95,7 +95,7 @@ public class CostController extends AbstractController {
 
     @RequestMapping(path = PATH_COST_ID, method = RequestMethod.GET)
     public ResponseEntity<Cost> get(@PathVariable(value = "id") int id) {
-        return new ResponseEntity<>(DBManager.getInstance().getDbCost().selectByID(id), HttpStatus.OK);
+        return new ResponseEntity<>(DBManager.getInstance().getDbCost().selectById(id), HttpStatus.OK);
     }
 
     @RequestMapping(PATH_COST + PATH_DROP)
@@ -121,7 +121,7 @@ public class CostController extends AbstractController {
             List<Cost> created = Fakes.createCosts(t.getId(), users);
             count += created.size();
             created.stream().forEach((element) -> {
-                create(element.getTickteID(), element);
+                create(element.getTickteId(), element);
             });
         }
         return returnOK(count + " fakes foram criados com sucesso!");
