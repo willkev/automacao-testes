@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class CostController extends AbstractController {
 
-    public static final String QUERY_LIST = "select c.Id Id,c.description,c.userId userId,u.name user,c.date from Cost c,User u where c.userId = u.Id and c.tickteId = ";
+    public static final String QUERY_LIST = "select c.id id,c.description,c.userId userId,u.name user,c.date from Cost c,User u where c.userId = u.id and c.tickteId = ";
 
     private static final String PATH_COST = "/api/costs";
     private static final String PATH_COST_ID = PATH_COST + "/{id}";
@@ -78,7 +78,7 @@ public class CostController extends AbstractController {
         }        
         Cost costOriginal = DBManager.getInstance().getDbCost().selectById(id);
         if (costOriginal == null) {
-            return returnOK("ID de custo não encontrado!");
+            return returnOK(ID_NOT_FOUND);
         }
         // Se informou ID errado para o Ticket
         if (!Objects.equals(costOriginal.getTickteId(), idTicket)) {

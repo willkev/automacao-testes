@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TicketController extends AbstractController {
 
-    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.Id Id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedById = uO.Id and t.responsableId = uR.Id and t.equipmentId = e.Id and e.institutionId = i.Id";
+    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedById = uO.id and t.responsableId = uR.id and t.equipmentId = e.id and e.institutionId = i.id";
 
     private static final String PUT_CLOSE = "/{id}/close";
     private static final String PUT_DELETE = "/{id}/delete";
@@ -76,7 +76,7 @@ public class TicketController extends AbstractController {
         }
         Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectById(id);
         if (ticketOriginal == null) {
-            return returnOK("Id não encontrado!");
+            return returnOK(ID_NOT_FOUND);
         }
         // altera apenas os dados do fechamento
         ticketOriginal.setDateClosing(ticket.getDateClosing());
@@ -93,7 +93,7 @@ public class TicketController extends AbstractController {
         }
         Ticket ticketOriginal = DBManager.getInstance().getDbTicket().selectById(id);
         if (ticketOriginal == null) {
-            return returnOK("Id não encontrado!");
+            return returnOK(ID_NOT_FOUND);
         }
         // altera apenas os dados da deleção
         ticketOriginal.setDateRemoving(ticket.getDateRemoving());

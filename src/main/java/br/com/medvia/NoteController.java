@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class NoteController extends AbstractController {
 
-    public static final String QUERY_LIST = "select n.Id Id,n.description,n.userId userId,u.name user,n.date from Note n,User u where n.userId = u.Id and n.tickteId = ";
+    public static final String QUERY_LIST = "select n.id id,n.description,n.userId userId,u.name user,n.date from Note n,User u where n.userId = u.id and n.tickteId = ";
 
     private static final String PATH_NOTE = "/api/notes";
     private static final String PATH_NOTE_ID = PATH_NOTE + "/{id}";
@@ -76,7 +76,7 @@ public class NoteController extends AbstractController {
             @PathVariable(value = "id") int id, @RequestBody Note note) {
         Note noteOriginal = DBManager.getInstance().getDbNote().selectById(id);
         if (noteOriginal == null) {
-            return returnOK("ID de nota não encontrado!");
+            return returnOK(ID_NOT_FOUND);
         }
         // Se informou ID errado para o Ticket
         if (!Objects.equals(noteOriginal.getTickteId(), idTicket)) {

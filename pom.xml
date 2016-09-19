@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.medvia</groupId>
     <artifactId>phymedvia</artifactId>
-    <version>0.40</version>
+    <version>0.42</version>
     <packaging>war</packaging>
     <name>Medvia</name>    
     <parent>

@@ -44,7 +44,7 @@ public class DBManager {
         dbCost = new WkDB<>(Cost.class);
         dbInstitution = new WkDB<>(Institution.class);
 
-        // se o arqui ainda não existir
+        // se o arquivo ainda não existir
         if (!fileDB.exists() || fileDB.length() < 1) {
             dbTicket.createTable();
             dbEquipment.createTable();

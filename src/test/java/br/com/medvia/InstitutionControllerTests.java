@@ -33,7 +33,7 @@ public class InstitutionControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(content().string("[{\"description\":\"Menino Deus\",\"Id\":1},{\"description\":\"Hospital de Clínicas (POA)\",\"Id\":2},{\"description\":\"Moinhos de Vento\",\"Id\":3}]"));
+                .andExpect(content().string("[{\"description\":\"Menino Deus\",\"id\":1},{\"description\":\"Hospital de Clínicas (POA)\",\"id\":2},{\"description\":\"Moinhos de Vento\",\"id\":3}]"));
     }
 
     @Test
@@ -43,16 +43,16 @@ public class InstitutionControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(content().string("[{\"description\":\"Arco de luz LED\",\"institutionId\":3,\"brand\":\"Samsung\",\"manufacturer\":\"Samsung\",\"serieNumber\":\"45590-AJQOA-39404\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"Id\":4},{\"description\":\"Furador de crânio\",\"institutionId\":3,\"brand\":\"LG\",\"manufacturer\":\"LG\",\"serieNumber\":\"906627119909\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"Id\":5},{\"description\":\"Nobreak 900mA\",\"institutionId\":3,\"brand\":\"Brastemp\",\"manufacturer\":\"Brastemp\",\"serieNumber\":\"0918204-49\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"Id\":6}]"));
+                .andExpect(content().string("[{\"description\":\"Arco de luz LED\",\"institutionId\":3,\"brand\":\"Samsung\",\"manufacturer\":\"Samsung\",\"serieNumber\":\"45590-AJQOA-39404\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":4},{\"description\":\"Furador de crânio\",\"institutionId\":3,\"brand\":\"LG\",\"manufacturer\":\"LG\",\"serieNumber\":\"906627119909\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":5},{\"description\":\"Nobreak 900mA\",\"institutionId\":3,\"brand\":\"Brastemp\",\"manufacturer\":\"Brastemp\",\"serieNumber\":\"0918204-49\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":6}]"));
     }
 
     @Test
     public void listEquipmentsByInstitutionWithFields() throws Exception {
-        this.mockMvc.perform(get("/api/institutions/{id}/equipments", 1).param("fields", "description,institutionId,typeEquipmentId,Id"))
+        this.mockMvc.perform(get("/api/institutions/{id}/equipments", 1).param("fields", "description,institutionId,typeEquipmentId,id"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(content().string("[{\"typeEquipmentId\":0,\"description\":\"Tomografia 24 Horas\",\"Id\":1,\"institutionId\":1},{\"typeEquipmentId\":0,\"description\":\"Ressonancia 20 Tesla\",\"Id\":2,\"institutionId\":1}]"));
+                .andExpect(content().string("[{\"typeEquipmentId\":0,\"description\":\"Tomografia 24 Horas\",\"id\":1,\"institutionId\":1},{\"typeEquipmentId\":0,\"description\":\"Ressonancia 20 Tesla\",\"id\":2,\"institutionId\":1}]"));
     }
 }

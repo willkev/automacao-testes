@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class WkDB<T extends WkTable> {
 
-    private static final String ID = "Id";
+    private static final String ID = "id";
 
     private static final String jdbc_driver = "org.sqlite.JDBC";
     private static final String url_in_file = "jdbc:sqlite:";
@@ -412,7 +412,7 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * SELECT COUNT(Id) FROM TABLE
+     * SELECT COUNT(id) FROM TABLE
      *
      * @return Number of records found
      */
@@ -449,8 +449,8 @@ public class WkDB<T extends WkTable> {
         return null;
     }
 
-    public T selectById(int Id) {
-        List<T> select = select(null, Where.fields(ID), Where.conditions("="), Where.values(Id));
+    public T selectById(int id) {
+        List<T> select = select(null, Where.fields(ID), Where.conditions("="), Where.values(id));
         if (select.isEmpty()) {
             return null;
         }
@@ -655,7 +655,7 @@ public class WkDB<T extends WkTable> {
     }
 
     /**
-     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE Id = Id
+     * UPDATE TABLE SET [updateFields](n) = [updateValues](n) WHERE id = id
      *
      * @param fields
      * @param values

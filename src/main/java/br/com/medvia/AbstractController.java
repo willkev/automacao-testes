@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
  */
 class AbstractController {
 
+    static final String ID_NOT_FOUND = "ID não encontrado!";
+    
     static final String PATH_DROP = "/drop";
     static final String PATH_FAKES = "/createfakes";
 

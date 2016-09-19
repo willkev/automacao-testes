@@ -32,9 +32,9 @@ public class CostControllerTest {
     public void listByTicket() throws Exception {
 
         // inserção de Users é randomica!
-        String contentPart1 = "[{\"date\":\"18/09/2016 17:51\",\"description\":\"2 horas do técnico para instalar o equipamento\",\"Id\":1,\"userId\":";
-        String contentPart2 = "},{\"date\":\"18/09/2016 17:51\",\"description\":\"Necessitou chamar um técnico na madrugada do final de semana, por isso custou mais caro\",\"Id\":2,\"userId\":";
-        String contentPart3 = "},{\"date\":\"18/09/2016 17:51\",\"description\":\"50 pila de cabos blindados\",\"Id\":3,\"userId\":";
+        String contentPart1 = "[{\"date\":\"18/09/2016 17:51\",\"description\":\"2 horas do técnico para instalar o equipamento\",\"id\":1,\"userId\":";
+        String contentPart2 = "},{\"date\":\"18/09/2016 17:51\",\"description\":\"Necessitou chamar um técnico na madrugada do final de semana, por isso custou mais caro\",\"id\":2,\"userId\":";
+        String contentPart3 = "},{\"date\":\"18/09/2016 17:51\",\"description\":\"50 pila de cabos blindados\",\"id\":3,\"userId\":";
 
         this.mockMvc.perform(get("/api/tickets/{id}/costs", 1))
                 .andDo(print())
@@ -51,7 +51,7 @@ public class CostControllerTest {
 
         // inserção de Users é randomica!
         String contentPart1 = "{\"cost\":240.0,\"description\":\"Necessitou chamar um técnico na madrugada do final de semana, por isso custou mais caro\",\"userId\":";
-        String contentPart2 = ",\"tickteId\":1,\"date\":\"18/09/2016 17:51\",\"Id\":2}";
+        String contentPart2 = ",\"tickteId\":1,\"date\":\"18/09/2016 17:51\",\"id\":2}";
 
         this.mockMvc.perform(get("/api/costs/{id}", 2))
                 .andDo(print())
