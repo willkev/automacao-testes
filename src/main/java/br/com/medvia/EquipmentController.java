@@ -31,7 +31,7 @@ public class EquipmentController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<?>> listAll(@RequestParam(value = "fields", defaultValue = "") String fields) {
+    public ResponseEntity<List<?>> list(@RequestParam(value = "fields", defaultValue = "") String fields) {
         return list(fields, null);
     }
 

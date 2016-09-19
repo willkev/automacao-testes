@@ -54,7 +54,7 @@ public class InstitutionController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}/equipments", method = RequestMethod.GET)
-    public ResponseEntity<List<?>> listByInstitution(@PathVariable(value = "id") int id,
+    public ResponseEntity<List<?>> listEquipmentsByInstitution(@PathVariable(value = "id") int id,
             @RequestParam(value = "fields", defaultValue = "") String fields) {
         return equipmentController.list(fields, id);
     }

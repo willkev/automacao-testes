@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.medvia</groupId>
     <artifactId>phymedvia</artifactId>
-    <version>0.39</version>
+    <version>0.40</version>
     <packaging>war</packaging>
-    <name>PhyMedvia</name>    
+    <name>Medvia</name>    
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

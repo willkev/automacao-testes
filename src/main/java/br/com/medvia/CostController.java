@@ -42,7 +42,7 @@ public class CostController extends AbstractController {
     }
 
     @RequestMapping(path = PATH_LIST, method = RequestMethod.GET)
-    public ResponseEntity<List<Map<String, Object>>> list(@PathVariable(value = "id") int id) {
+    public ResponseEntity<List<Map<String, Object>>> listByTicket(@PathVariable(value = "id") int id) {
         List<Map<String, Object>> selectAll = DBManager.getInstance().getDbCost().executeQuery(QUERY_LIST + id);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
@@ -94,7 +94,7 @@ public class CostController extends AbstractController {
     }
 
     @RequestMapping(path = PATH_COST_ID, method = RequestMethod.GET)
-    public ResponseEntity<Cost> get(@PathVariable(value = "id") int id) {
+    public ResponseEntity<Cost> getById(@PathVariable(value = "id") int id) {
         return new ResponseEntity<>(DBManager.getInstance().getDbCost().selectById(id), HttpStatus.OK);
     }
 

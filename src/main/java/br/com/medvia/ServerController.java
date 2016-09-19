@@ -3,7 +3,6 @@ package br.com.medvia;
 import br.com.medvia.db.DBManager;
 import br.com.medvia.util.ReplyMessage;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -71,13 +70,29 @@ public class ServerController {
     }
 
     @RequestMapping("/dbinfo")
-    public ResponseEntity<Map<String, String>> dbInfo() {
-        Map<String, String> info = new HashMap<>();
+    public ResponseEntity<DbInfo> dbInfo() {
         File fileDB = DBManager.getInstance().getFileDB();
-        info.put("dbFilePath", fileDB.getAbsolutePath());
-        info.put("dbFileSise", "" + fileDB.length());
-        return new ResponseEntity<>(info,
-                HttpStatus.OK);
+        return new ResponseEntity<>(new DbInfo(fileDB.getAbsolutePath(), fileDB.length()), HttpStatus.OK);
+    }
+
+    public class DbInfo {
+
+        private final String dbFilePath;
+        private final Long dbFileSise;
+
+        public DbInfo(String dbFilePath, Long dbFileSise) {
+            this.dbFilePath = dbFilePath;
+            this.dbFileSise = dbFileSise;
+        }
+
+        public String getDbFilePath() {
+            return dbFilePath;
+        }
+
+        public Long getDbFileSise() {
+            return dbFileSise;
+        }
+
     }
 
 }
