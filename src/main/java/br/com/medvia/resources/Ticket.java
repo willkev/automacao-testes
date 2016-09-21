@@ -22,7 +22,7 @@ public class Ticket extends WkTable {
     private String dateRemoving = "";
 
     // Table User
-    private int openedById;
+    private int creatorId;
     private int responsableId;
     
     // Table Equipament
@@ -101,10 +101,6 @@ public class Ticket extends WkTable {
         this.priority = priority;
     }
 
-    public void setOpenedById(int openedById) {
-        this.openedById = openedById;
-    }
-
     public void setResponsableId(int responsableId) {
         this.responsableId = responsableId;
     }
@@ -117,8 +113,12 @@ public class Ticket extends WkTable {
         return dateClosing;
     }
 
-    public int getOpenedById() {
-        return openedById;
+    public int getUserId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
     }
 
     public int getResponsableId() {

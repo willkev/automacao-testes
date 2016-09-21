@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TicketController extends AbstractController {
 
-    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.openedById = uO.id and t.responsableId = uR.id and t.equipmentId = e.id and e.institutionId = i.id";
+    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.userId = uO.id and t.responsableId = uR.id and t.equipmentId = e.id and e.institutionId = i.id";
+    public static final String QUERY_LIST_ID = "select t.*,e.institutionId from Ticket t, Equipment e where t.equipmentId = e.id and t.id = ";
 
     private static final String PUT_CLOSE = "/{id}/close";
     private static final String PUT_DELETE = "/{id}/delete";
@@ -41,29 +41,24 @@ public class TicketController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Map<String, Object>>> list() {
+    public ResponseEntity<?> list() {
         List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@CookieValue("userId") String userId, @RequestBody Ticket ticket) {
+    public ResponseEntity<ReplyMessage> create(@RequestBody Ticket ticket) {
         // valida campos obrigatórios
-        int userIdInt = 0;
-        try {
-            userIdInt = Integer.parseInt(userId);
-            if (!isValueOK(userIdInt, 1, Integer.MAX_VALUE)) {
-                return returnFieldMandatory("userId");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            returnBadRequest(e.getMessage());
+        if (!isValueOK(ticket.getUserId(), 1, Integer.MAX_VALUE)) {
+            return returnFieldMandatory("Usuário Criador");
+        }
+        if (!isValueOK(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
+            return returnFieldMandatory("Usuário Responsável");
         }
         if (!isValueOK(ticket.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
         ticket.setState("a");
-        ticket.setOpenedById(userIdInt);
         boolean insert = db.insert(ticket);
         if (insert) {
             return returnOK("Criou novo chamado com sucesso!");
@@ -72,8 +67,9 @@ public class TicketController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Ticket> get(@PathVariable(value = "id") int id) {
-        return new ResponseEntity<>(db.selectById(id), HttpStatus.OK);
+    public ResponseEntity<?> get(@PathVariable(value = "id") int id) {
+        List<Map<String, Object>> selectOne = db.executeQuery(QUERY_LIST_ID + id);
+        return new ResponseEntity<>(selectOne.get(0), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
@@ -154,7 +150,7 @@ public class TicketController extends AbstractController {
         }
         List<Ticket> created = Fakes.createTickets(users, equipments);
         created.stream().forEach((element) -> {
-            create("1", element);
+            create(element);
         });
         return returnOK(created.size() + " fakes foram criados com sucesso!");
     }

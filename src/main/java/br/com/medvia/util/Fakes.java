@@ -133,7 +133,7 @@ public class Fakes {
         t1.setDescription("Fonte trifásica queimada por raio no dia 12/07");
         t1.setEquipmentId(equipments.get(0).getId());
         t1.setResponsableId(users.get(0).getId());
-        t1.setOpenedById(users.get(1).getId());
+        t1.setCreatorId(users.get(1).getId());
         t1.setSituation("0");
         t1.setState("a");
         t1.setPriority("a");
@@ -148,7 +148,7 @@ public class Fakes {
         t2.setDescription("Quebrou a luz de fundo do aparelho teletransportados de bosons de higges");
         t2.setEquipmentId(equipments.get(1).getId());
         t2.setResponsableId(users.get(2).getId());
-        t2.setOpenedById(users.get(3).getId());
+        t2.setCreatorId(users.get(3).getId());
         t2.setSituation("50");
         t2.setState("a");
         t2.setPriority("a");
@@ -163,7 +163,7 @@ public class Fakes {
         t3.setDescription("Motor de subida da cama para ressonancia está sem força quando paciente tem mais de 700kg");
         t3.setEquipmentId(equipments.get(2).getId());
         t3.setResponsableId(users.get(4).getId());
-        t3.setOpenedById(users.get(5).getId());
+        t3.setCreatorId(users.get(5).getId());
         t3.setSituation("0");
         t3.setState("a");
         t3.setPriority("n");
@@ -178,7 +178,7 @@ public class Fakes {
         t4.setDescription("3 grupos de LEDs queimaram na máquina de café");
         t4.setEquipmentId(equipments.get(3).getId());
         t4.setResponsableId(users.get(1).getId());
-        t4.setOpenedById(users.get(5).getId());
+        t4.setCreatorId(users.get(5).getId());
         t4.setSituation("100");
         t4.setState("f");
         t4.setPriority("b");
@@ -193,7 +193,7 @@ public class Fakes {
         t5.setDescription("3 grupos de LEDs queimaram na máquina de café");
         t5.setEquipmentId(equipments.get(4).getId());
         t5.setResponsableId(users.get(2).getId());
-        t5.setOpenedById(users.get(4).getId());
+        t5.setCreatorId(users.get(4).getId());
         t5.setSituation("100");
         t5.setState("e");
         t5.setPriority("b");
