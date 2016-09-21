@@ -209,7 +209,7 @@ public class Fakes {
         Random random = new Random(System.currentTimeMillis());
 
         Cost c1 = new Cost();
-        c1.setCost(120.77);
+        c1.setValue(120.77);
         c1.setDescription("2 horas do técnico para instalar o equipamento");
         c1.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 111)))); // -111hr
         c1.setTickteId(ticketId);
@@ -217,7 +217,7 @@ public class Fakes {
         costs.add(c1);
 
         Cost c2 = new Cost();
-        c2.setCost(240.00);
+        c2.setValue(240.00);
         c2.setDescription("Necessitou chamar um técnico na madrugada do final de semana, por isso custou mais caro");
         c2.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 11)))); // -11hr
         c2.setTickteId(ticketId);
@@ -225,7 +225,7 @@ public class Fakes {
         costs.add(c2);
 
         Cost c3 = new Cost();
-        c3.setCost(50.00);
+        c3.setValue(50.00);
         c3.setDescription("50 pila de cabos blindados");
         c3.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 23)))); // -23hr
         c3.setTickteId(ticketId);

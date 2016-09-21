@@ -12,7 +12,7 @@ public class Application {
     }
 
     public Application() {
-        System.out.println("PhyMedvia started OK!");
+        System.out.println("Medvia started OK!");
         
         ServerController sc = new ServerController();
         sc.dbCreate();

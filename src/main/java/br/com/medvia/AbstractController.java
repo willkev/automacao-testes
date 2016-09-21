@@ -11,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 class AbstractController {
 
     static final String ID_NOT_FOUND = "ID não encontrado!";
-    
+    static final String FIELD_MANDATORY = "Campo obrigatório não informado! ";
+
     static final String PATH_DROP = "/drop";
     static final String PATH_FAKES = "/createfakes";
 
@@ -22,6 +23,14 @@ class AbstractController {
         return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.OK);
     }
 
+    ResponseEntity<ReplyMessage> returnFieldMandatory(String fieldName) {
+        return returnBadRequest(FIELD_MANDATORY + fieldName);
+    }
+
+    ResponseEntity<ReplyMessage> returnBadRequest(String msg) {
+        return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.BAD_REQUEST);
+    }
+
     boolean isValueOK(String value) {
         if (value == null) {
             return false;
@@ -30,10 +39,14 @@ class AbstractController {
     }
 
     boolean isValueOK(Integer value) {
+        return isValueOK(value, 0, Integer.MAX_VALUE);
+    }
+
+    boolean isValueOK(Integer value, int min, int max) {
         if (value == null) {
             return false;
         }
-        return value >= 0;
+        return value >= min && value <= max;
     }
 
     boolean isValueOK(Double value) {

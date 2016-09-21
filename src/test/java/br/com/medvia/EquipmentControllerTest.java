@@ -31,20 +31,24 @@ public class EquipmentControllerTest {
 
     @Test
     public void list() throws Exception {
-        String contentExpected = "[{\"description\":\"Tomografia 24 Horas\",\"institutionId\":1,\"brand\":\"Siemens\",\"manufacturer\":\"Siemens\",\"serieNumber\":\"EGH-90876-UKMG\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":1},{\"description\":\"Ressonancia 20 Tesla\",\"institutionId\":1,\"brand\":\"Philips\",\"manufacturer\":\"Philips\",\"serieNumber\":\"823928276-UKMG\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":2},{\"description\":\"Cama levantadora\",\"institutionId\":2,\"brand\":\"Siemens\",\"manufacturer\":\"Siemens\",\"serieNumber\":\"OLPK-490196-UKMG\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":3},{\"description\":\"Arco de luz LED\",\"institutionId\":3,\"brand\":\"Samsung\",\"manufacturer\":\"Samsung\",\"serieNumber\":\"45590-AJQOA-39404\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":4},{\"description\":\"Furador de crânio\",\"institutionId\":3,\"brand\":\"LG\",\"manufacturer\":\"LG\",\"serieNumber\":\"906627119909\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":5},{\"description\":\"Nobreak 900mA\",\"institutionId\":3,\"brand\":\"Brastemp\",\"manufacturer\":\"Brastemp\",\"serieNumber\":\"0918204-49\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true,\"id\":6}]";
-        String sssssssssssssss = "[{\"id\":1,\"description\":\"Tomografia 24 Horas\",\"institutionId\":1,\"brand\":\"Siemens\",\"manufacturer\":\"Siemens\",\"serieNumber\":\"EGH-90876-UKMG\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true},{\"id\":2,\"description\":\"Ressonancia 20 Tesla\",\"institutionId\":1,\"brand\":\"Philips\",\"manufacturer\":\"Philips\",\"serieNumber\":\"823928276-UKMG\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true},{\"id\":3,\"description\":\"Cama levantadora\",\"institutionId\":2,\"brand\":\"Siemens\",\"manufacturer\":\"Siemens\",\"serieNumber\":\"OLPK-490196-UKMG\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true},{\"id\":4,\"description\":\"Arco de luz LED\",\"institutionId\":3,\"brand\":\"Samsung\",\"manufacturer\":\"Samsung\",\"serieNumber\":\"45590-AJQOA-39404\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true},{\"id\":5,\"description\":\"Furador de crânio\",\"institutionId\":3,\"brand\":\"LG\",\"manufacturer\":\"LG\",\"serieNumber\":\"906627119909\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true},{\"id\":6,\"description\":\"Nobreak 900mA\",\"institutionId\":3,\"brand\":\"Brastemp\",\"manufacturer\":\"Brastemp\",\"serieNumber\":\"0918204-49\",\"typeEquipmentId\":0,\"workedHoursPerDay\":0,\"active\":true}]";
         this.mockMvc.perform(get("/api/equipments"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(6)))
-                .andExpect(jsonPath("$[0].description", containsString("Tomografia 24 Horas")))
                 .andExpect(jsonPath("$[0].id", equalTo(1)))
-                .andExpect(jsonPath("$[0].", containsString("Tomografia 24 Horas")))
-                .andExpect(jsonPath("$[0].", containsString("Tomografia 24 Horas")))
-                .andExpect(jsonPath("$[0].", containsString("Tomografia 24 Horas")))
-                .andExpect(jsonPath("$[0].", containsString("Tomografia 24 Horas")));
-        //.andExpect(content().string(contentExpected));
+                .andExpect(jsonPath("$[0].description", containsString("Tomografia 24 Horas")))
+                .andExpect(jsonPath("$[0].institutionId", equalTo(1)))
+                .andExpect(jsonPath("$[0].serieNumber", containsString("EGH-90876-UKMG")))
+                .andExpect(jsonPath("$[0].active", equalTo(true)))
+                .andExpect(jsonPath("$[1].id", equalTo(2)))
+                .andExpect(jsonPath("$[1].description", containsString("Ressonancia 20 Tesla")))
+                .andExpect(jsonPath("$[2].id", equalTo(3)))
+                .andExpect(jsonPath("$[2].description", containsString("Cama levantadora")))
+                .andExpect(jsonPath("$[5].id", equalTo(6)))
+                .andExpect(jsonPath("$[5].institutionId", equalTo(3)))
+                .andExpect(jsonPath("$[5].serieNumber", containsString("0918204-49")))
+                .andExpect(jsonPath("$[5].description", containsString("Nobreak 900mA")));
     }
 
 }

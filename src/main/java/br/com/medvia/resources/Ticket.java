@@ -23,11 +23,12 @@ public class Ticket extends WkTable {
 
     // Table User
     private int openedById;
-    // Table User
     private int responsableId;
+    
     // Table Equipament
     private int equipmentId;
-    // 0, 50, 75 or 100
+    
+    // 0(parado), 50, 75 or 100
     private String situation = "0";
     // 'a' : 'Alta'
     // 'n' : 'Normal'

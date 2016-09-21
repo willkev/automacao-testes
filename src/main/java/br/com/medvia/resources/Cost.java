@@ -8,7 +8,8 @@ import br.com.medvia.db.WkTable;
  */
 public class Cost extends WkTable {
 
-    private Double cost;
+    // OBS: alguns campos precisam de valor default para garantir a validação automática do rest-bind do JSON para o Objetct
+    private Double value;
     private String description = "";
     private Integer userId;
     private Integer tickteId;
@@ -47,12 +48,12 @@ public class Cost extends WkTable {
         this.date = date;
     }
 
-    public Double getCost() {
-        return cost;
+    public Double getValue() {
+        return value;
     }
 
-    public void setCost(Double cost) {
-        this.cost = cost;
+    public void setValue(Double value) {
+        this.value = value;
     }
 
     @Override

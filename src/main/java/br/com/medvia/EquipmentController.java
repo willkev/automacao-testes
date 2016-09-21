@@ -61,9 +61,10 @@ public class EquipmentController extends AbstractController {
     public ResponseEntity<ReplyMessage> edit(@RequestBody Equipment equipment, @PathVariable(value = "id") int id) {
         equipment.setId(id);
         boolean update = DBManager.getInstance().getDbEquipment().update(equipment);
-        return new ResponseEntity<>(
-                new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),
-                HttpStatus.OK);
+        if (update) {
+            return returnOK("Update OK!");
+        }
+        return returnBadRequest("Update Fail!");
     }
 
     @RequestMapping(PATH_DROP)
