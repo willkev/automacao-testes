@@ -19,12 +19,14 @@ public class Equipment extends WkTable {
     // Date pattern "dd/MM/yyyy"
     private String manufactureDate;
     private String installationDate;
+    
     private String registerMS;
     private String serieNumber;
     private int typeEquipmentId;
-    private int workedHoursPerDay;
     private String observation;
     private boolean active;
+    private int workedHoursPerDay;
+    private int daysPerWeek;
 
     // Se for necessário em algum momento garantir que os campos não setados
     // fiquem com um valor padrão
