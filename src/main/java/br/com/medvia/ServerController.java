@@ -1,8 +1,17 @@
 package br.com.medvia;
 
-import br.com.medvia.db.DBManager;
+import br.com.medvia.db.WkDB;
+import br.com.medvia.resources.Cost;
+import br.com.medvia.resources.Equipment;
+import br.com.medvia.resources.Institution;
+import br.com.medvia.resources.Note;
+import br.com.medvia.resources.Ticket;
+import br.com.medvia.resources.TypeEquipment;
+import br.com.medvia.resources.User;
+import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -19,24 +28,56 @@ public class ServerController {
     //
     // java.io.tmpdir=/var/cache/tomcat8/temp
     // user.home=/usr/share/tomcat8
+    private final File fileDB;
+
+    private final WkDB<Ticket> dbTicket;
+    private final WkDB<Equipment> dbEquipment;
+    private final WkDB<User> dbUser;
+    private final WkDB<Note> dbNote;
+    private final WkDB<Cost> dbCost;
+    private final WkDB<Institution> dbInstitution;
+    private final WkDB<TypeEquipment> dbTypeEquipment;
+
     public ServerController() {
         System.out.println(ServerController.class.getSimpleName() + " OK!");
-    }
 
-    @RequestMapping("/serverinfo")
-    public String serverInfo() {
-        String info = "";
-        Properties properties = System.getProperties();
-        Set<Map.Entry<Object, Object>> entrySet = properties.entrySet();
-        for (Map.Entry<Object, Object> entry : entrySet) {
-            info += entry.getKey() + "=" + entry.getValue() + "<br>";
+        //String propJavaTmp = System.getProperty("java.io.tmpdir");
+        String propUserHome = System.getProperty("user.home");
+        fileDB = new File(propUserHome, "medvia.db");
+        System.out.println("fileDB=" + fileDB.getAbsolutePath());
+
+        WkDB.setFileDB(fileDB);
+
+        dbTicket = new WkDB<>(Ticket.class);
+        dbEquipment = new WkDB<>(Equipment.class);
+        dbUser = new WkDB<>(User.class);
+        dbNote = new WkDB<>(Note.class);
+        dbCost = new WkDB<>(Cost.class);
+        dbInstitution = new WkDB<>(Institution.class);
+        dbTypeEquipment = new WkDB<>(TypeEquipment.class);
+        // se o arquivo ainda não existir
+        if (!fileDB.exists() || fileDB.length() < 1) {
+            dbTicket.createTable();
+            dbEquipment.createTable();
+            dbUser.createTable();
+            dbNote.createTable();
+            dbCost.createTable();
+            dbInstitution.createTable();
+            dbTypeEquipment.createTable();
         }
-        return info;
     }
 
     @RequestMapping("/dbdrop")
     public ResponseEntity<String> dbReset() {
-        DBManager.getInstance().dropAndCreateTable();
+        dbTicket.dropAndCreateTable();
+        dbEquipment.dropAndCreateTable();
+        dbUser.dropAndCreateTable();
+        dbNote.dropAndCreateTable();
+        dbCost.dropAndCreateTable();
+        dbInstitution.dropAndCreateTable();
+        dbTypeEquipment.dropAndCreateTable();
+
+        System.out.println("dropAndCreateTable!");
         return new ResponseEntity<>("DB droped OK!", HttpStatus.OK);
     }
 
@@ -50,6 +91,11 @@ public class ServerController {
         TicketController t = new TicketController();
         NoteController n = new NoteController();
         CostController c = new CostController();
+
+        List<TypeEquipment> createTypesEquipment = Fakes.createEquipmentTypes();
+        for (TypeEquipment typeEquipment : createTypesEquipment) {
+            dbTypeEquipment.showSQL().insert(typeEquipment);
+        }
 
         // Popula todas tabelas com fakes
         // Obs: Deve ser feito na ordem correta
@@ -71,8 +117,18 @@ public class ServerController {
 
     @RequestMapping("/dbinfo")
     public ResponseEntity<DbInfo> dbInfo() {
-        File fileDB = DBManager.getInstance().getFileDB();
         return new ResponseEntity<>(new DbInfo(fileDB.getAbsolutePath(), fileDB.length()), HttpStatus.OK);
+    }
+
+    @RequestMapping("/serverinfo")
+    public String serverInfo() {
+        String info = "";
+        Properties properties = System.getProperties();
+        Set<Map.Entry<Object, Object>> entrySet = properties.entrySet();
+        for (Map.Entry<Object, Object> entry : entrySet) {
+            info += entry.getKey() + "=" + entry.getValue() + "<br>";
+        }
+        return info;
     }
 
     public class DbInfo {

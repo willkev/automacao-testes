@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class Equipment extends WkTable {
 
-    private String description;
+    private String name;
     private int institutionId;
     private String brand;
     private String model;
@@ -20,14 +20,15 @@ public class Equipment extends WkTable {
     private String manufactureDate;
     private String installationDate;
     
-    private String registerMS;
+    private String registryMS;
     private String serieNumber;
     private int typeEquipmentId;
     private String observation;
     private boolean active;
     private int workedHoursPerDay;
     private int daysPerWeek;
-
+    private int userId;
+    
     // Se for necessário em algum momento garantir que os campos não setados
     // fiquem com um valor padrão
     public void initFields() {
@@ -77,14 +78,6 @@ public class Equipment extends WkTable {
         this.installationDate = installationDate;
     }
 
-    public String getRegisterMS() {
-        return registerMS;
-    }
-
-    public void setRegisterMS(String registerMS) {
-        this.registerMS = registerMS;
-    }
-
     public String getSerieNumber() {
         return serieNumber;
     }
@@ -129,16 +122,40 @@ public class Equipment extends WkTable {
         this.institutionId = institutionId;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public int getInstitutionId() {
         return institutionId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRegistryMS() {
+        return registryMS;
+    }
+
+    public void setRegistryMS(String registryMS) {
+        this.registryMS = registryMS;
+    }
+
+    public int getDaysPerWeek() {
+        return daysPerWeek;
+    }
+
+    public void setDaysPerWeek(int daysPerWeek) {
+        this.daysPerWeek = daysPerWeek;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override

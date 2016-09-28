@@ -22,7 +22,7 @@ public class Ticket extends WkTable {
     private String dateRemoving = "";
 
     // Table User
-    private int creatorId;
+    private int userId;
     private int responsableId;
     
     // Table Equipament
@@ -114,11 +114,11 @@ public class Ticket extends WkTable {
     }
 
     public int getUserId() {
-        return creatorId;
+        return userId;
     }
 
-    public void setCreatorId(int creatorId) {
-        this.creatorId = creatorId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getResponsableId() {

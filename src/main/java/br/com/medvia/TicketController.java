@@ -1,6 +1,5 @@
 package br.com.medvia;
 
-import br.com.medvia.db.DBManager;
 import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Ticket;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TicketController extends AbstractController {
 
-    public static final String QUERY_LIST = "select uO.name openedBy,uR.name responsable,t.id id,t.state state,t.title title,i.description institution,(e.description || ' - ' || e.manufacturer) equipment,t.dateOcurrence dateOcurrence,t.prediction prediction,t.situation situation,t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.userId = uO.id and t.responsableId = uR.id and t.equipmentId = e.id and e.institutionId = i.id";
+    public static final String QUERY_LIST = "select uO.name openedBy, uR.name responsable, t.id id, t.state state, t.title title, i.description institution,(e.name || ' - ' || e.manufacturer) equipment, t.dateOcurrence dateOcurrence, t.prediction prediction, t.situation situation, t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.userId = uO.id and t.responsableId = uR.id and t.equipmentId = e.id and e.institutionId = i.id";
     public static final String QUERY_LIST_ID = "select t.*,e.institutionId from Ticket t, Equipment e where t.equipmentId = e.id and t.id = ";
 
     private static final String PUT_CLOSE = "/{id}/close";
@@ -138,12 +137,12 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
-        List<User> users = DBManager.getInstance().getDbUser().selectAll();
+        List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
             return returnBadRequest("Nenhum usuário ainda foi criado!");
         }
-        List<Equipment> equipments = DBManager.getInstance().getDbEquipment().selectAll();
+        List<Equipment> equipments = new WkDB<>(Equipment.class).selectAll();
         // se ainda não existir nenhum 
         if (equipments.isEmpty()) {
             return returnBadRequest("Nenhum equipamento ainda foi criado!");

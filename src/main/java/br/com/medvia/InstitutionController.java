@@ -1,6 +1,6 @@
 package br.com.medvia;
 
-import br.com.medvia.db.DBManager;
+import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
@@ -26,19 +26,22 @@ public class InstitutionController extends AbstractController {
 
     private final EquipmentController equipmentController = new EquipmentController();
 
+    private final WkDB<Institution> db;
+
     public InstitutionController() {
         System.out.println(InstitutionController.class.getSimpleName() + " OK!");
+        db = new WkDB<>(Institution.class);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Institution>> list() {
-        List<Institution> selectAll = DBManager.getInstance().getDbInstitution().selectAll();
+        List<Institution> selectAll = db.selectAll();
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Institution institution) {
-        boolean insert = DBManager.getInstance().getDbInstitution().insert(institution);
+        boolean insert = db.insert(institution);
         return new ResponseEntity<>(
                 new ReplyMessage(insert ? "Criou nova instituição com sucesso!" : "Não foi possível criar uma nova instituição!"),
                 HttpStatus.OK);
@@ -47,7 +50,7 @@ public class InstitutionController extends AbstractController {
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestBody Institution institution, @PathVariable(value = "id") int id) {
         institution.setId(id);
-        boolean update = DBManager.getInstance().getDbInstitution().update(institution);
+        boolean update = db.update(institution);
         return new ResponseEntity<>(
                 new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),
                 HttpStatus.OK);
@@ -61,7 +64,7 @@ public class InstitutionController extends AbstractController {
 
     @RequestMapping(PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
-        DBManager.getInstance().getDbInstitution().dropAndCreateTable();
+        db.dropAndCreateTable();
         return new ResponseEntity<>(
                 new ReplyMessage("Todas instituições foram deletados com sucesso!"),
                 HttpStatus.OK);

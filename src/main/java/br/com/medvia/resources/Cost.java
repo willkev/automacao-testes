@@ -58,7 +58,7 @@ public class Cost extends WkTable {
 
     @Override
     public String toString() {
-        return "Note" + meToJson();
+        return "Cost" + meToJson();
     }
 
 }

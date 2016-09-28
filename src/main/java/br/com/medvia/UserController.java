@@ -1,6 +1,6 @@
 package br.com.medvia;
 
-import br.com.medvia.db.DBManager;
+import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
@@ -23,19 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class UserController extends AbstractController {
 
+    private final WkDB<User> db;
+    
     public UserController() {
         System.out.println(UserController.class.getSimpleName() + " OK!");
+        db = new WkDB<>(User.class);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<User>> list() {
-        List<User> selectAll = DBManager.getInstance().getDbUser().selectAll();
+        List<User> selectAll = db.selectAll();
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody User user) {
-        boolean insert = DBManager.getInstance().getDbUser().insert(user);
+        boolean insert = db.insert(user);
         return new ResponseEntity<>(
                 new ReplyMessage(insert ? "Criou novo usuário com sucesso!" : "Não foi possível criar um novo usuário!"),
                 HttpStatus.OK);
@@ -44,7 +47,7 @@ public class UserController extends AbstractController {
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestBody User user, @PathVariable(value = "id") int id) {
         user.setId(id);
-        boolean update = DBManager.getInstance().getDbUser().update(user);
+        boolean update = db.update(user);
         return new ResponseEntity<>(
                 new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),
                 HttpStatus.OK);
@@ -52,7 +55,7 @@ public class UserController extends AbstractController {
 
     @RequestMapping(PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
-        DBManager.getInstance().getDbUser().dropAndCreateTable();
+        db.dropAndCreateTable();
         return new ResponseEntity<>(
                 new ReplyMessage("Todos usuários foram deletados com sucesso!"),
                 HttpStatus.OK);

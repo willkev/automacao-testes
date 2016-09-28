@@ -37,18 +37,18 @@ public class EquipmentControllerTest {
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(6)))
                 .andExpect(jsonPath("$[0].id", equalTo(1)))
-                .andExpect(jsonPath("$[0].description", containsString("Tomografia 24 Horas")))
+                .andExpect(jsonPath("$[0].name", containsString("Tomografia 24 Horas")))
                 .andExpect(jsonPath("$[0].institutionId", equalTo(1)))
                 .andExpect(jsonPath("$[0].serieNumber", containsString("EGH-90876-UKMG")))
                 .andExpect(jsonPath("$[0].active", equalTo(true)))
                 .andExpect(jsonPath("$[1].id", equalTo(2)))
-                .andExpect(jsonPath("$[1].description", containsString("Ressonancia 20 Tesla")))
+                .andExpect(jsonPath("$[1].name", containsString("Ressonancia 20 Tesla")))
                 .andExpect(jsonPath("$[2].id", equalTo(3)))
-                .andExpect(jsonPath("$[2].description", containsString("Cama levantadora")))
+                .andExpect(jsonPath("$[2].name", containsString("Cama levantadora")))
                 .andExpect(jsonPath("$[5].id", equalTo(6)))
                 .andExpect(jsonPath("$[5].institutionId", equalTo(3)))
                 .andExpect(jsonPath("$[5].serieNumber", containsString("0918204-49")))
-                .andExpect(jsonPath("$[5].description", containsString("Nobreak 900mA")));
+                .andExpect(jsonPath("$[5].name", containsString("Nobreak 900mA")));
     }
 
 }

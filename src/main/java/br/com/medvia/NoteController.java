@@ -1,6 +1,6 @@
 package br.com.medvia;
 
-import br.com.medvia.db.DBManager;
+import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Note;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.User;
@@ -36,13 +36,16 @@ public class NoteController extends AbstractController {
     private static final String POST_CREATE = "/api/tickets/{id}/notes";
     private static final String PUT_EDIT = "/api/tickets/{idTicket}/notes/{id}";
 
+    private final WkDB<Note> db;
+
     public NoteController() {
         System.out.println(NoteController.class.getSimpleName() + " OK!");
+        db = new WkDB<>(Note.class);
     }
 
     @RequestMapping(path = GET_LIST, method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> list(@PathVariable(value = "id") int id) {
-        List<Map<String, Object>> selectAll = DBManager.getInstance().getDbNote().executeQuery(QUERY_LIST + id);
+        List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST + id);
         // Adiciona as notas de Exclusão ou Fechamento
         //
         // ???
@@ -62,19 +65,19 @@ public class NoteController extends AbstractController {
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         note.setTickteId(id);
         note.setDate(dateFormater.format(new Date()));
-        boolean insert = DBManager.getInstance().getDbNote().insert(note);
+        boolean insert = db.insert(note);
         return returnOK(insert ? "Criou nova nota com sucesso!" : "Não foi possível criar nova nota!");
     }
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.GET)
     public ResponseEntity<Note> get(@PathVariable(value = "id") int id) {
-        return new ResponseEntity<>(DBManager.getInstance().getDbNote().selectById(id), HttpStatus.OK);
+        return new ResponseEntity<>(db.selectById(id), HttpStatus.OK);
     }
 
     @RequestMapping(path = PUT_EDIT, method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "idTicket") int idTicket,
             @PathVariable(value = "id") int id, @RequestBody Note note) {
-        Note noteOriginal = DBManager.getInstance().getDbNote().selectById(id);
+        Note noteOriginal = db.selectById(id);
         if (noteOriginal == null) {
             return returnOK(ID_NOT_FOUND);
         }
@@ -86,34 +89,34 @@ public class NoteController extends AbstractController {
         // Altera apenas alguns campos
         noteOriginal.setDescription(note.getDescription());
         noteOriginal.setDate(dateFormater.format(new Date()));
-        boolean update = DBManager.getInstance().getDbNote().update(noteOriginal);
+        boolean update = db.update(noteOriginal);
         return returnOK(update ? "Update OK!" : "Update FAIL!");
     }
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.DELETE)
     public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id) {
-        boolean delete = DBManager.getInstance().getDbNote().deleteById(id);
+        boolean delete = db.deleteById(id);
         // confere se deletou
         if (delete) {
-            delete = DBManager.getInstance().getDbNote().selectById(id) == null;
+            delete = db.selectById(id) == null;
         }
         return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
     }
 
     @RequestMapping(PATH_NOTE + PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
-        DBManager.getInstance().getDbNote().dropAndCreateTable();
+        db.dropAndCreateTable();
         return returnOK("Todas notas foram deletadas com sucesso!");
     }
 
     @RequestMapping(PATH_NOTE + PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
-        List<User> users = DBManager.getInstance().getDbUser().selectAll();
+        List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
             return returnOK("Nenhum usuário ainda foi criado!");
         }
-        List<Ticket> tickets = DBManager.getInstance().getDbTicket().selectAll();
+        List<Ticket> tickets = new WkDB<>(Ticket.class).selectAll();
         // se ainda não existir nenhum 
         if (tickets.isEmpty()) {
             return returnOK("Nenhum chamado ainda foi criado!");

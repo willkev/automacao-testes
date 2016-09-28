@@ -1,7 +1,6 @@
 package br.com.medvia;
 
 import static br.com.medvia.AbstractController.PATH_DROP;
-import br.com.medvia.db.DBManager;
 import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Ticket;
@@ -129,12 +128,12 @@ public class CostController extends AbstractController {
 
     @RequestMapping(PATH_COST + PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
-        List<User> users = DBManager.getInstance().getDbUser().selectAll();
+        List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
             return returnBadRequest("Nenhum usuário ainda foi criado!");
         }
-        List<Ticket> tickets = DBManager.getInstance().getDbTicket().selectAll();
+        List<Ticket> tickets = new WkDB<>(Ticket.class).selectAll();
         // se ainda não existir nenhum 
         if (tickets.isEmpty()) {
             return returnBadRequest("Nenhum chamado ainda foi criado!");

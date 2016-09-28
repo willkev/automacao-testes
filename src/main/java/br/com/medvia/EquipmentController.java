@@ -1,7 +1,8 @@
 package br.com.medvia;
 
-import br.com.medvia.db.DBManager;
+import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Equipment;
+import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
@@ -26,8 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class EquipmentController extends AbstractController {
 
+    public static final String QUERY_LIST = "";
+
+    private final WkDB<Equipment> db;
+
     public EquipmentController() {
         System.out.println(EquipmentController.class.getSimpleName() + " OK!");
+        db = new WkDB<>(Equipment.class);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -41,17 +47,17 @@ public class EquipmentController extends AbstractController {
             filterByInstitution = "where institutionId = " + institutionID;
         }
         if (fields == null || fields.isEmpty()) {
-            List<Equipment> selected = DBManager.getInstance().getDbEquipment().selectAll(filterByInstitution);
+            List<Equipment> selected = db.selectAll(filterByInstitution);
             return new ResponseEntity<>(selected, HttpStatus.OK);
         }
-        List<Map<String, Object>> selectAll = DBManager.getInstance().getDbEquipment().executeQuery(fields, filterByInstitution);
+        List<Map<String, Object>> selectAll = db.executeQuery(fields, filterByInstitution);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Equipment equipment) {
         equipment.setActive(true);
-        boolean insert = DBManager.getInstance().getDbEquipment().insert(equipment);
+        boolean insert = db.insert(equipment);
         return new ResponseEntity<>(
                 new ReplyMessage(insert ? "Criou novo equipamento com sucesso!" : "Não foi possível criar um novo equipamento!"),
                 HttpStatus.OK);
@@ -60,7 +66,7 @@ public class EquipmentController extends AbstractController {
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestBody Equipment equipment, @PathVariable(value = "id") int id) {
         equipment.setId(id);
-        boolean update = DBManager.getInstance().getDbEquipment().update(equipment);
+        boolean update = db.update(equipment);
         if (update) {
             return returnOK("Update OK!");
         }
@@ -69,7 +75,7 @@ public class EquipmentController extends AbstractController {
 
     @RequestMapping(PATH_DROP)
     public ResponseEntity<ReplyMessage> drop() {
-        boolean dropAndCreateTable = DBManager.getInstance().getDbEquipment().dropAndCreateTable();
+        boolean dropAndCreateTable = db.dropAndCreateTable();
         return new ResponseEntity<>(
                 new ReplyMessage(dropAndCreateTable ? "Todos equipamentos deletados com sucesso!" : "Erro ao deletar todos equipamentos!"),
                 HttpStatus.OK);
@@ -77,12 +83,17 @@ public class EquipmentController extends AbstractController {
 
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createfakes() {
-        List<Institution> institutions = DBManager.getInstance().getDbInstitution().selectAll();
+        List<Institution> institutions = new WkDB<>(Institution.class).selectAll();
         // se ainda não existir nenhum 
         if (institutions.isEmpty()) {
             return returnOK("Nenhuma instituição ainda foi criada!");
         }
-        List<Equipment> created = Fakes.createEquipments(institutions);
+        List<TypeEquipment> typesEquipment = new WkDB<>(TypeEquipment.class).selectAll();
+        // se ainda não existir nenhum 
+        if (typesEquipment.isEmpty()) {
+            return returnOK("Nenhum tipo de equipamento ainda foi criado!");
+        }
+        List<Equipment> created = Fakes.createEquipments(institutions, typesEquipment);
         created.stream().forEach((element) -> {
             create(element);
         });

@@ -5,6 +5,7 @@ import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.resources.Note;
 import br.com.medvia.resources.Ticket;
+import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.User;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,55 +37,123 @@ public class Fakes {
         return list;
     }
 
-    public static List<Equipment> createEquipments(List<Institution> institutions) {
+    public static List<TypeEquipment> createEquipmentTypes() {
+        List<TypeEquipment> list = new ArrayList<>();
+
+        list.add(new TypeEquipment("ACESSÓRIOS"));
+        list.add(new TypeEquipment("ANALISADOR PORTÁTIL DE LIGAS"));
+        list.add(new TypeEquipment("APARELHO DE ANESTESIA"));
+        list.add(new TypeEquipment("CÂMARA DE IONIZAÇÃO"));
+        list.add(new TypeEquipment("CÍCLOTRON"));
+        list.add(new TypeEquipment("CINEFLUOROSCOPIA"));
+        list.add(new TypeEquipment("COMPUTADOR PESSOAL"));
+        list.add(new TypeEquipment("CONTADOR DE DOSES-CURIÔMETRO"));
+        list.add(new TypeEquipment("CR - RADIOLOGIA COMPUTADORIZAD"));
+        list.add(new TypeEquipment("CROMATÓGRAFO COM ECD"));
+        list.add(new TypeEquipment("DENSITOMETRIA ÓSSEA"));
+        list.add(new TypeEquipment("DETECTOR DE SUPERFÍCIE"));
+        list.add(new TypeEquipment("DETECTOR GEIGER-MULLER"));
+        list.add(new TypeEquipment("DIFRATÔMETRO DE RAIOS-X"));
+        list.add(new TypeEquipment("DISPOSITIVOS PARA CQ"));
+        list.add(new TypeEquipment("ECOGRAFIA"));
+        list.add(new TypeEquipment("EQUIP. DE MEDIDA / SIMULADORES"));
+        list.add(new TypeEquipment("ESPECTRÔMETRO DE RAIOS X"));
+        list.add(new TypeEquipment("ESTAÇÃO DE TRABALHO/INTERPRET."));
+        list.add(new TypeEquipment("FONTES RADIOATIVAS"));
+        list.add(new TypeEquipment("HOLTER"));
+        list.add(new TypeEquipment("IDENTIFICADORA DE FILMES"));
+        list.add(new TypeEquipment("IMPRESSORA"));
+        list.add(new TypeEquipment("INJETORA DE CONTRASTE"));
+        list.add(new TypeEquipment("INJETORA DE MEDICAMENTO RM"));
+        list.add(new TypeEquipment("LITOTRIPSIA EXTRACORPÓREA"));
+        list.add(new TypeEquipment("MAMOGRAFIA ANALÓGICA"));
+        list.add(new TypeEquipment("MAMOGRAFIA DIGITAL"));
+        list.add(new TypeEquipment("MEDICINA NUCLEAR - GAMA CÂMARA"));
+        list.add(new TypeEquipment("MEDIDOR DE NÍVEL"));
+        list.add(new TypeEquipment("MEDIDOR DE PARTÍCULAS EM SUSP."));
+        list.add(new TypeEquipment("MEDIDOR NUCLEAR"));
+        list.add(new TypeEquipment("MICROSCÓPIO ELET. DE VARREDURA"));
+        list.add(new TypeEquipment("MISTURADOR DE QUÍMICOS"));
+        list.add(new TypeEquipment("MONITOR DE COMPUTADOR"));
+        list.add(new TypeEquipment("PET-CT"));
+        list.add(new TypeEquipment("PROCESSADORA SECA - DRY"));
+        list.add(new TypeEquipment("PROCESSADORA ÚMIDA"));
+        list.add(new TypeEquipment("RADIOIMUNOENSAIO"));
+        list.add(new TypeEquipment("RADIOTERAPIA"));
+        list.add(new TypeEquipment("RAIO-X CONVENCIONAL"));
+        list.add(new TypeEquipment("RAIOS X C/ SERIÓGRAFO"));
+        list.add(new TypeEquipment("RAIOS X INDUSTRIAL"));
+        list.add(new TypeEquipment("RAIOS X MÓVEL"));
+        list.add(new TypeEquipment("RAIOS X PANORÂMICO"));
+        list.add(new TypeEquipment("RAIOS X PERIAPICAL"));
+        list.add(new TypeEquipment("RAIOS X TELECOMANDADO"));
+        list.add(new TypeEquipment("RAIOS X TRANSPORTÁVEL ARCO-C"));
+        list.add(new TypeEquipment("RAIOS-X DE BAGAGENS"));
+        list.add(new TypeEquipment("RAIOS-X EDUCACIONAL"));
+        list.add(new TypeEquipment("RESSONÂNCIA MAGNÉTICA"));
+        list.add(new TypeEquipment("SISTEMA DE TRAT. EFLUENTES"));
+        list.add(new TypeEquipment("SOFTWARE"));
+        list.add(new TypeEquipment("STEREOTAXIA"));
+        list.add(new TypeEquipment("TOMOGRAFIA COMPUTADORIZADA"));
+
+        return list;
+    }
+
+    public static List<Equipment> createEquipments(List<Institution> institutions, List<TypeEquipment> typesEquipment) {
         List<Equipment> list = new ArrayList<>();
 
         Equipment equip1 = new Equipment();
-        equip1.setDescription("Tomografia 24 Horas");
+        equip1.setName("Tomografia 24 Horas");
         equip1.setInstitutionId(institutions.get(0).getId());
         equip1.setBrand("Siemens");
         equip1.setManufacturer("Siemens");
         equip1.setSerieNumber("EGH-90876-UKMG");
+        equip1.setTypeEquipmentId(typesEquipment.get(0).getId());
         list.add(equip1);
 
         Equipment equip2 = new Equipment();
-        equip2.setDescription("Ressonancia 20 Tesla");
+        equip2.setName("Ressonancia 20 Tesla");
         equip2.setInstitutionId(institutions.get(0).getId());
         equip2.setBrand("Philips");
         equip2.setManufacturer("Philips");
         equip2.setSerieNumber("823928276-UKMG");
+        equip2.setTypeEquipmentId(typesEquipment.get(10).getId());
         list.add(equip2);
 
         Equipment equip3 = new Equipment();
-        equip3.setDescription("Cama levantadora");
+        equip3.setName("Cama levantadora");
         equip3.setInstitutionId(institutions.get(1).getId());
         equip3.setBrand("Siemens");
         equip3.setManufacturer("Siemens");
         equip3.setSerieNumber("OLPK-490196-UKMG");
+        equip3.setTypeEquipmentId(typesEquipment.get(20).getId());
         list.add(equip3);
 
         Equipment equip4 = new Equipment();
-        equip4.setDescription("Arco de luz LED");
+        equip4.setName("Arco de luz LED");
         equip4.setInstitutionId(institutions.get(2).getId());
         equip4.setBrand("Samsung");
         equip4.setManufacturer("Samsung");
         equip4.setSerieNumber("45590-AJQOA-39404");
+        equip4.setTypeEquipmentId(typesEquipment.get(30).getId());
         list.add(equip4);
 
         Equipment equip5 = new Equipment();
-        equip5.setDescription("Furador de crânio");
+        equip5.setName("Furador de crânio");
         equip5.setInstitutionId(institutions.get(2).getId());
         equip5.setBrand("LG");
         equip5.setManufacturer("LG");
         equip5.setSerieNumber("906627119909");
+        equip5.setTypeEquipmentId(typesEquipment.get(40).getId());
         list.add(equip5);
 
         Equipment equip6 = new Equipment();
-        equip6.setDescription("Nobreak 900mA");
+        equip6.setName("Nobreak 900mA");
         equip6.setInstitutionId(institutions.get(2).getId());
         equip6.setBrand("Brastemp");
         equip6.setManufacturer("Brastemp");
         equip6.setSerieNumber("0918204-49");
+        equip6.setTypeEquipmentId(typesEquipment.get(50).getId());
         list.add(equip6);
 
         return list;
@@ -133,7 +202,7 @@ public class Fakes {
         t1.setDescription("Fonte trifásica queimada por raio no dia 12/07");
         t1.setEquipmentId(equipments.get(0).getId());
         t1.setResponsableId(users.get(0).getId());
-        t1.setCreatorId(users.get(1).getId());
+        t1.setUserId(users.get(1).getId());
         t1.setSituation("0");
         t1.setState("a");
         t1.setPriority("a");
@@ -148,7 +217,7 @@ public class Fakes {
         t2.setDescription("Quebrou a luz de fundo do aparelho teletransportados de bosons de higges");
         t2.setEquipmentId(equipments.get(1).getId());
         t2.setResponsableId(users.get(2).getId());
-        t2.setCreatorId(users.get(3).getId());
+        t2.setUserId(users.get(3).getId());
         t2.setSituation("50");
         t2.setState("a");
         t2.setPriority("a");
@@ -163,7 +232,7 @@ public class Fakes {
         t3.setDescription("Motor de subida da cama para ressonancia está sem força quando paciente tem mais de 700kg");
         t3.setEquipmentId(equipments.get(2).getId());
         t3.setResponsableId(users.get(4).getId());
-        t3.setCreatorId(users.get(5).getId());
+        t3.setUserId(users.get(5).getId());
         t3.setSituation("0");
         t3.setState("a");
         t3.setPriority("n");
@@ -178,7 +247,7 @@ public class Fakes {
         t4.setDescription("3 grupos de LEDs queimaram na máquina de café");
         t4.setEquipmentId(equipments.get(3).getId());
         t4.setResponsableId(users.get(1).getId());
-        t4.setCreatorId(users.get(5).getId());
+        t4.setUserId(users.get(5).getId());
         t4.setSituation("100");
         t4.setState("f");
         t4.setPriority("b");
@@ -193,7 +262,7 @@ public class Fakes {
         t5.setDescription("3 grupos de LEDs queimaram na máquina de café");
         t5.setEquipmentId(equipments.get(4).getId());
         t5.setResponsableId(users.get(2).getId());
-        t5.setCreatorId(users.get(4).getId());
+        t5.setUserId(users.get(4).getId());
         t5.setSituation("100");
         t5.setState("e");
         t5.setPriority("b");
