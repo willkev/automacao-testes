@@ -2,7 +2,7 @@ package br.com.medvia.util;
 
 /**
  *
- * @author willian.kirschner
+ * @author Willian Kirschner willkev@gmail.com.kirschner
  */
 public class ReplyMessage {
 

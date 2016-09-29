@@ -1,6 +1,5 @@
 package br.com.medvia;
 
-import static br.com.medvia.AbstractController.PATH_DROP;
 import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Ticket;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 @RestController
 @CrossOrigin
@@ -40,7 +39,7 @@ public class CostController extends AbstractController {
     private final WkDB<Cost> db;
 
     public CostController() {
-        System.out.println(CostController.class.getSimpleName() + " OK!");
+        super(CostController.class.getSimpleName());
         db = new WkDB<>(Cost.class);
     }
 
@@ -120,12 +119,6 @@ public class CostController extends AbstractController {
         return returnBadRequest("Delete Fail!");
     }
 
-    @RequestMapping(PATH_COST + PATH_DROP)
-    public ResponseEntity<ReplyMessage> drop() {
-        db.dropAndCreateTable();
-        return returnOK("Todos custos foram deletados com sucesso!");
-    }
-
     @RequestMapping(PATH_COST + PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
         List<User> users = new WkDB<>(User.class).selectAll();
@@ -146,7 +139,7 @@ public class CostController extends AbstractController {
                 create(element.getTickteId(), element);
             });
         }
-        return returnOK(count + " fakes foram criados com sucesso!");
+        return fakesCreated(count);
     }
 
 }

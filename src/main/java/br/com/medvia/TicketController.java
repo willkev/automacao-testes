@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 @RestController
 @RequestMapping("/api/tickets")
@@ -35,7 +35,7 @@ public class TicketController extends AbstractController {
     private final WkDB<Ticket> db;
 
     public TicketController() {
-        System.out.println(TicketController.class.getSimpleName() + " OK!");
+        super(TicketController.class.getSimpleName());
         db = new WkDB<>(Ticket.class);
     }
 
@@ -127,14 +127,6 @@ public class TicketController extends AbstractController {
         return returnBadRequest("Delete Fail!");
     }
 
-    @RequestMapping(PATH_DROP)
-    public ResponseEntity<ReplyMessage> drop() {
-        boolean dropAndCreateTable = db.dropAndCreateTable();
-        return new ResponseEntity<>(
-                new ReplyMessage(dropAndCreateTable ? "Todos chamados deletados com sucesso!" : "Erro ao deletar todos chamados!"),
-                HttpStatus.OK);
-    }
-
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
         List<User> users = new WkDB<>(User.class).selectAll();
@@ -151,7 +143,7 @@ public class TicketController extends AbstractController {
         created.stream().forEach((element) -> {
             create(element);
         });
-        return returnOK(created.size() + " fakes foram criados com sucesso!");
+        return fakesCreated(created.size());
     }
 
 }

@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 public class TestUtil {
 

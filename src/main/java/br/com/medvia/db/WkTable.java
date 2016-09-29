@@ -3,7 +3,7 @@ package br.com.medvia.db;
 import com.google.gson.Gson;
 
 /**
- * @author Willian Kirschner
+ * @author Willian Kirschner willkev@gmail.com Kirschner
  * @version 2015 Jul, 15
  */
 public class WkTable {

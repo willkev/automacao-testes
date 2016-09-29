@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 @RestController
 @CrossOrigin
@@ -39,7 +39,7 @@ public class NoteController extends AbstractController {
     private final WkDB<Note> db;
 
     public NoteController() {
-        System.out.println(NoteController.class.getSimpleName() + " OK!");
+        super(NoteController.class.getSimpleName());
         db = new WkDB<>(Note.class);
     }
 
@@ -103,12 +103,6 @@ public class NoteController extends AbstractController {
         return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
     }
 
-    @RequestMapping(PATH_NOTE + PATH_DROP)
-    public ResponseEntity<ReplyMessage> drop() {
-        db.dropAndCreateTable();
-        return returnOK("Todas notas foram deletadas com sucesso!");
-    }
-
     @RequestMapping(PATH_NOTE + PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
         List<User> users = new WkDB<>(User.class).selectAll();
@@ -129,7 +123,7 @@ public class NoteController extends AbstractController {
                 create(element.getTickteId(), element);
             });
         }
-        return returnOK(count + " fakes foram criados com sucesso!");
+        return fakesCreated(count);
     }
 
 }

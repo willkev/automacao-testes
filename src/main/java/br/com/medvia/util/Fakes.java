@@ -4,6 +4,7 @@ import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.resources.Note;
+import br.com.medvia.resources.QualityControl;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.User;
@@ -15,9 +16,11 @@ import java.util.Random;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 public class Fakes {
+
+    public static final SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     public static List<Institution> createInstitutions() {
         List<Institution> list = new ArrayList<>();
@@ -37,7 +40,7 @@ public class Fakes {
         return list;
     }
 
-    public static List<TypeEquipment> createEquipmentTypes() {
+    public static List<TypeEquipment> createTypesEquipment() {
         List<TypeEquipment> list = new ArrayList<>();
 
         list.add(new TypeEquipment("ACESSÓRIOS"));
@@ -190,7 +193,6 @@ public class Fakes {
     }
 
     public static List<Ticket> createTickets(List<User> users, List<Equipment> equipments) {
-        SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         List<Ticket> list = new ArrayList<>();
 
         Ticket t1 = new Ticket();
@@ -272,7 +274,6 @@ public class Fakes {
     }
 
     public static List<Cost> createCosts(int ticketId, List<User> users) {
-        SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         List<Cost> costs = new ArrayList<>();
         // vai pegar randomicamente um user dentro dos disponíveis
         Random random = new Random(System.currentTimeMillis());
@@ -305,7 +306,6 @@ public class Fakes {
     }
 
     public static List<Note> createNotes(int ticketId, List<User> users) {
-        SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         List<Note> notes = new ArrayList<>();
         // vai pegar randomicamente um user dentro dos disponíveis
         Random random = new Random(System.currentTimeMillis());
@@ -332,6 +332,47 @@ public class Fakes {
         notes.add(n3);
 
         return notes;
+    }
+
+    public static List<QualityControl> createQualityControl(List<User> users, List<Equipment> equipments) {
+        List<QualityControl> list = new ArrayList<>();
+
+        QualityControl q1 = new QualityControl();
+        q1.setTest("Máquina validada OK");
+        q1.setCompliance(true);
+        q1.setEquipmentId(equipments.get(0).getId());
+        q1.setUserId(users.get(0).getId());
+        q1.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 90)))); //-90 dias
+        q1.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 90))));  //+90 dias
+        list.add(q1);
+
+        QualityControl q2 = new QualityControl();
+        q2.setTest("Teste de estress falhou");
+        q2.setCompliance(false);
+        q2.setEquipmentId(equipments.get(1).getId());
+        q2.setUserId(users.get(1).getId());
+        q2.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 10)))); //-10 dias
+        q2.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 10)))); //+10 dias
+        list.add(q2);
+
+        QualityControl q3 = new QualityControl();
+        q3.setTest("Teste falhou novamente!!!");
+        q3.setCompliance(false);
+        q3.setEquipmentId(equipments.get(2).getId());
+        q3.setUserId(users.get(2).getId());
+        q3.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 5)))); //-5 dias
+        q3.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 3)))); // +3 dias
+        list.add(q3);
+
+        QualityControl q4 = new QualityControl();
+        q4.setTest("Validação OK 100%");
+        q4.setCompliance(true);
+        q4.setEquipmentId(equipments.get(3).getId());
+        q4.setUserId(users.get(3).getId());
+        q4.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 50)))); //-50 dias
+        q4.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 200)))); // +200 dias
+        list.add(q4);
+        return list;
     }
 
 }

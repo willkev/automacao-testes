@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(CostController.class)

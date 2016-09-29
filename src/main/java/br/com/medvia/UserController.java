@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 @RestController
 @RequestMapping("/api/users")
@@ -26,7 +26,7 @@ public class UserController extends AbstractController {
     private final WkDB<User> db;
     
     public UserController() {
-        System.out.println(UserController.class.getSimpleName() + " OK!");
+        super(UserController.class.getSimpleName());
         db = new WkDB<>(User.class);
     }
 
@@ -53,23 +53,13 @@ public class UserController extends AbstractController {
                 HttpStatus.OK);
     }
 
-    @RequestMapping(PATH_DROP)
-    public ResponseEntity<ReplyMessage> drop() {
-        db.dropAndCreateTable();
-        return new ResponseEntity<>(
-                new ReplyMessage("Todos usuários foram deletados com sucesso!"),
-                HttpStatus.OK);
-    }
-
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createfakes() {
         List<User> created = Fakes.createUsers();
         created.stream().forEach((element) -> {
             create(element);
         });
-        return new ResponseEntity<>(
-                new ReplyMessage(created.size() + " fakes foram criados com sucesso!"),
-                HttpStatus.OK);
+        return fakesCreated(created.size());
     }
 
 }

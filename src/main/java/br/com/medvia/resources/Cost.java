@@ -4,7 +4,7 @@ import br.com.medvia.db.WkTable;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 public class Cost extends WkTable {
 

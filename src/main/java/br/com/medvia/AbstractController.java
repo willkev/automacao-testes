@@ -6,17 +6,24 @@ import org.springframework.http.ResponseEntity;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 class AbstractController {
 
     static final String ID_NOT_FOUND = "ID não encontrado!";
     static final String FIELD_MANDATORY = "Campo obrigatório não informado! ";
 
-    static final String PATH_DROP = "/drop";
     static final String PATH_FAKES = "/createfakes";
 
-    AbstractController() {
+    final String controllerName;
+
+    AbstractController(String controllerName) {
+        System.out.println("Started " + controllerName);
+        this.controllerName = controllerName;
+    }
+
+    public ResponseEntity<ReplyMessage> fakesCreated(int count) {
+        return returnOK(count + " fakes foram criados com sucesso! " + controllerName);
     }
 
     ResponseEntity<ReplyMessage> returnOK(String msg) {

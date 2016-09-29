@@ -4,7 +4,7 @@ import br.com.medvia.db.WkTable;
 
 /**
  *
- * @author willian.kirschner
+ * @author Willian Kirschner willkev@gmail.com.kirschner
  */
 public class User extends WkTable {
 

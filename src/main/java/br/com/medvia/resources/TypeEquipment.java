@@ -4,22 +4,25 @@ import br.com.medvia.db.WkTable;
 
 /**
  *
- * @author willian.kirschner
+ * @author Willian Kirschner willkev@gmail.com.kirschner
  */
 public class TypeEquipment extends WkTable {
 
-    private String name;
+    private String description;
 
-    public TypeEquipment(String name) {
-        this.name = name;
+    public TypeEquipment() {
+    }
+    
+    public TypeEquipment(String description) {
+        this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String name) {
+        this.description = name;
     }
 
     @Override

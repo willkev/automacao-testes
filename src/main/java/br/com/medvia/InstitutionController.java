@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 @RestController
 @RequestMapping("/api/institutions")
@@ -29,7 +29,7 @@ public class InstitutionController extends AbstractController {
     private final WkDB<Institution> db;
 
     public InstitutionController() {
-        System.out.println(InstitutionController.class.getSimpleName() + " OK!");
+        super(InstitutionController.class.getSimpleName());
         db = new WkDB<>(Institution.class);
     }
 
@@ -62,23 +62,13 @@ public class InstitutionController extends AbstractController {
         return equipmentController.list(fields, id);
     }
 
-    @RequestMapping(PATH_DROP)
-    public ResponseEntity<ReplyMessage> drop() {
-        db.dropAndCreateTable();
-        return new ResponseEntity<>(
-                new ReplyMessage("Todas instituições foram deletados com sucesso!"),
-                HttpStatus.OK);
-    }
-
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createfakes() {
         List<Institution> created = Fakes.createInstitutions();
         created.stream().forEach((element) -> {
             create(element);
         });
-        return new ResponseEntity<>(
-                new ReplyMessage(created.size() + " fakes foram criados com sucesso!"),
-                HttpStatus.OK);
+        return fakesCreated(created.size());
     }
 
 }

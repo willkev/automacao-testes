@@ -2,8 +2,8 @@ package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
 import br.com.medvia.resources.Equipment;
-import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.Institution;
+import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.util.List;
@@ -20,24 +20,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 @RestController
 @RequestMapping("/api/equipments")
 @CrossOrigin
 public class EquipmentController extends AbstractController {
 
-    public static final String QUERY_LIST = "";
+    public static final String QUERY_LIST = "select e.id, e.name equipment, i.description institution, te.description typeEquipment, case when e.active = 0 then 'i' else 'a' end status, '0' state from equipment e, Institution i, TypeEquipment te where e.institutionId = i.id and te.id = e.typeEquipmentId";
 
     private final WkDB<Equipment> db;
+    private final WkDB<TypeEquipment> dbTE;
 
     public EquipmentController() {
-        System.out.println(EquipmentController.class.getSimpleName() + " OK!");
+        super(EquipmentController.class.getSimpleName());
         db = new WkDB<>(Equipment.class);
+        dbTE = new WkDB<>(TypeEquipment.class);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<?>> list(@RequestParam(value = "fields", defaultValue = "") String fields) {
+        if (fields == null || fields.isEmpty()) {
+            List<Map<String, Object>> list = db.executeQuery(QUERY_LIST);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }
         return list(fields, null);
     }
 
@@ -54,13 +60,26 @@ public class EquipmentController extends AbstractController {
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/typesequipment", method = RequestMethod.GET)
+    public ResponseEntity<List<TypeEquipment>> listTypeEquipment() {
+        List<TypeEquipment> list = dbTE.selectAll();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Equipment> get(@PathVariable(value = "id") int id) {
+        Equipment selectOne = db.selectById(id);
+        return new ResponseEntity<>(selectOne, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Equipment equipment) {
         equipment.setActive(true);
         boolean insert = db.insert(equipment);
-        return new ResponseEntity<>(
-                new ReplyMessage(insert ? "Criou novo equipamento com sucesso!" : "Não foi possível criar um novo equipamento!"),
-                HttpStatus.OK);
+        if (insert) {
+            return returnOK("Criou novo equipamento com sucesso!");
+        }
+        return returnBadRequest("Não foi possível criar um novo equipamento!");
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
@@ -71,14 +90,6 @@ public class EquipmentController extends AbstractController {
             return returnOK("Update OK!");
         }
         return returnBadRequest("Update Fail!");
-    }
-
-    @RequestMapping(PATH_DROP)
-    public ResponseEntity<ReplyMessage> drop() {
-        boolean dropAndCreateTable = db.dropAndCreateTable();
-        return new ResponseEntity<>(
-                new ReplyMessage(dropAndCreateTable ? "Todos equipamentos deletados com sucesso!" : "Erro ao deletar todos equipamentos!"),
-                HttpStatus.OK);
     }
 
     @RequestMapping(PATH_FAKES)
@@ -97,9 +108,7 @@ public class EquipmentController extends AbstractController {
         created.stream().forEach((element) -> {
             create(element);
         });
-        return new ResponseEntity<>(
-                new ReplyMessage(created.size() + " fakes foram criados com sucesso!"),
-                HttpStatus.OK);
+        return fakesCreated(created.size());
     }
 
 }
