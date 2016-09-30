@@ -5,12 +5,12 @@ import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.resources.Note;
+import br.com.medvia.resources.NoteQualityControl;
 import br.com.medvia.resources.QualityControl;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
-import br.com.medvia.util.ReplyMessage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class ServerController {
     // user.home=/usr/share/tomcat8
     private final File fileDB;
 
-    private final List<WkDB> dbList = new ArrayList<WkDB>();
+    private final List<WkDB> dbList = new ArrayList<>();
     private final WkDB<Ticket> dbTicket;
     private final WkDB<Equipment> dbEquipment;
     private final WkDB<User> dbUser;
@@ -40,6 +40,7 @@ public class ServerController {
     private final WkDB<Institution> dbInstitution;
     private final WkDB<TypeEquipment> dbTypeEquipment;
     private final WkDB<QualityControl> dbQualityControl;
+    private final WkDB<NoteQualityControl> dbNoteQualityControl;
 
     public ServerController() {
         System.out.println(ServerController.class.getSimpleName());
@@ -67,6 +68,8 @@ public class ServerController {
         dbList.add(dbTypeEquipment);
         dbQualityControl = new WkDB<>(QualityControl.class);
         dbList.add(dbQualityControl);
+        dbNoteQualityControl = new WkDB<>(NoteQualityControl.class);
+        dbList.add(dbNoteQualityControl);
 
         // se o arquivo ainda não existir
         if (!fileDB.exists() || fileDB.length() < 1) {
@@ -96,6 +99,7 @@ public class ServerController {
         NoteController n = new NoteController();
         CostController c = new CostController();
         QualityControlController q = new QualityControlController();
+        NoteQualityControlController nqc = new NoteQualityControlController();
 
         List<TypeEquipment> createTypesEquipment = Fakes.createTypesEquipment();
         for (TypeEquipment typeEquipment : createTypesEquipment) {
@@ -104,32 +108,20 @@ public class ServerController {
 
         // Popula todas tabelas com fakes
         // Obs: Deve ser feito na ordem correta
-        ResponseEntity<ReplyMessage> resp = u.createfakes();
-        System.out.println(resp.toString());
-        resp = i.createfakes();
-        System.out.println(resp.toString());
-        resp = e.createfakes();
-        System.out.println(resp.toString());
-        resp = t.createFakes();
-        System.out.println(resp.toString());
-        resp = n.createFakes();
-        System.out.println(resp.toString());
-        resp = c.createFakes();
-        System.out.println(resp.toString());
-        resp = q.createFakes();
-        System.out.println(resp.toString());
+        System.out.println(u.createFakes().toString());
+        System.out.println(i.createFakes().toString());
+        System.out.println(e.createFakes().toString());
+        System.out.println(t.createFakes().toString());
+        System.out.println(n.createFakes().toString());
+        System.out.println(c.createFakes().toString());
+        System.out.println(q.createFakes().toString());
+        System.out.println(nqc.createFakes().toString());
 
         return new ResponseEntity<>("Banco criado e populado OK!", HttpStatus.OK);
     }
 
     @RequestMapping("/serverinfo")
     public Set<Map.Entry<Object, Object>> serverInfo() {
-//        String info = "";
-//        Set<Map.Entry<Object, Object>> entrySet = System.getProperties().entrySet();
-//        for (Map.Entry<Object, Object> entry : entrySet) {
-//            info += entry.getKey() + "=" + entry.getValue() + "<br>";
-//        }
-//        return info;
         return System.getProperties().entrySet();
     }
 

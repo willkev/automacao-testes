@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QualityControlController extends AbstractController {
 
     public static final String QUERY_LIST = "select q.id, e.name equipment, i.description institution, q.test, q.dateExecution, q.dateValidity, q.compliance from QualityControl q, Equipment e, Institution i where q.equipmentId = e.id and e.institutionId = i.id";
+    public static final String QUERY_LIST_ID = "select q.*, e.institutionId from QualityControl q, Equipment e where q.equipmentId = e.id and q.id = ";
 
     private final WkDB<QualityControl> db;
 
@@ -42,8 +43,9 @@ public class QualityControlController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<QualityControl> get(@PathVariable(value = "id") int id) {
-        return new ResponseEntity<>(db.selectById(id), HttpStatus.OK);
+    public ResponseEntity<?> get(@PathVariable(value = "id") int id) {
+        List<Map<String, Object>> select = db.executeQuery(QUERY_LIST_ID + id);
+        return new ResponseEntity<>(select.get(0), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)

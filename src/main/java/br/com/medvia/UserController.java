@@ -54,7 +54,7 @@ public class UserController extends AbstractController {
     }
 
     @RequestMapping(PATH_FAKES)
-    public ResponseEntity<ReplyMessage> createfakes() {
+    public ResponseEntity<ReplyMessage> createFakes() {
         List<User> created = Fakes.createUsers();
         created.stream().forEach((element) -> {
             create(element);

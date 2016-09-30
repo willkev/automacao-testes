@@ -63,7 +63,7 @@ public class InstitutionController extends AbstractController {
     }
 
     @RequestMapping(PATH_FAKES)
-    public ResponseEntity<ReplyMessage> createfakes() {
+    public ResponseEntity<ReplyMessage> createFakes() {
         List<Institution> created = Fakes.createInstitutions();
         created.stream().forEach((element) -> {
             create(element);

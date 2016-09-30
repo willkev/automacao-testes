@@ -4,6 +4,7 @@ import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
 import br.com.medvia.resources.Note;
+import br.com.medvia.resources.NoteQualityControl;
 import br.com.medvia.resources.QualityControl;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.TypeEquipment;
@@ -373,6 +374,35 @@ public class Fakes {
         q4.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 200)))); // +200 dias
         list.add(q4);
         return list;
+    }
+
+    public static List<NoteQualityControl> createNotesQualityControl(int idQC, List<User> users) {
+        List<NoteQualityControl> notes = new ArrayList<>();
+        // vai pegar randomicamente um user dentro dos disponíveis
+        Random random = new Random(System.currentTimeMillis());
+
+        NoteQualityControl n1 = new NoteQualityControl();
+        n1.setDescription("Não foi boa a avaliação do técnico sobre o teste do aparelho!");
+        n1.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 150)))); // -150hr
+        n1.setQualityControlId(idQC);
+        n1.setUserId(users.get(random.nextInt(users.size())).getId());
+        notes.add(n1);
+
+        NoteQualityControl n2 = new NoteQualityControl();
+        n2.setDescription("Pendência com o técnico, o mesmo retorna segunda-feira para refazer o teste.");
+        n2.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 300)))); // -300hr
+        n2.setQualityControlId(idQC);
+        n2.setUserId(users.get(random.nextInt(users.size())).getId());
+        notes.add(n2);
+
+        NoteQualityControl n3 = new NoteQualityControl();
+        n3.setDescription("Alterado o estado do chamado, pois é urgente que se faça novo teste!!!");
+        n3.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 50)))); // -50hr
+        n3.setQualityControlId(idQC);
+        n3.setUserId(users.get(random.nextInt(users.size())).getId());
+        notes.add(n3);
+
+        return notes;
     }
 
 }

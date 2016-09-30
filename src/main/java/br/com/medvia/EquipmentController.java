@@ -93,7 +93,7 @@ public class EquipmentController extends AbstractController {
     }
 
     @RequestMapping(PATH_FAKES)
-    public ResponseEntity<ReplyMessage> createfakes() {
+    public ResponseEntity<ReplyMessage> createFakes() {
         List<Institution> institutions = new WkDB<>(Institution.class).selectAll();
         // se ainda não existir nenhum 
         if (institutions.isEmpty()) {
