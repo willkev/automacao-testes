@@ -42,18 +42,14 @@ public class InstitutionController extends AbstractController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody Institution institution) {
         boolean insert = db.insert(institution);
-        return new ResponseEntity<>(
-                new ReplyMessage(insert ? "Criou nova instituição com sucesso!" : "Não foi possível criar uma nova instituição!"),
-                HttpStatus.OK);
+        return returnMsg(insert, "Criou nova instituição com sucesso!", "Não foi possível criar uma nova instituição!");
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestBody Institution institution, @PathVariable(value = "id") int id) {
         institution.setId(id);
         boolean update = db.update(institution);
-        return new ResponseEntity<>(
-                new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),
-                HttpStatus.OK);
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(path = "/{id}/equipments", method = RequestMethod.GET)

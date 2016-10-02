@@ -48,7 +48,7 @@ public class NoteQualityControl extends WkTable {
 
     @Override
     public String toString() {
-        return "Note" + meToJson();
+        return "NoteQualityControl" + meToJson();
     }
 
 }

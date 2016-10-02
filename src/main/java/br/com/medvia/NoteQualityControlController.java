@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class NoteQualityControlController extends AbstractController {
 
-    public static final String QUERY_LIST = "select n.id id,n.description,n.userId userId,u.name user,n.date from Note n,User u where n.userId = u.id and n.tickteId = ";
+    public static final String QUERY_LIST_ID = "select n.id id, n.description, n.userId userId, u.name user, n.date from NoteQualityControl n, User u where n.userId = u.id and n.qualityControlId = ";
 
     private static final String PATH_NOTE = "/api/notes-qc";
     private static final String PATH_NOTE_ID = PATH_NOTE + "/{id}";
@@ -37,15 +37,17 @@ public class NoteQualityControlController extends AbstractController {
     private static final String PUT_EDIT = "/api/quality-control/{idQControl}/notes-qc/{id}";
 
     private final WkDB<NoteQualityControl> db;
+    private final WkDB<QualityControl> dbQC;
 
     public NoteQualityControlController() {
         super(NoteQualityControlController.class.getSimpleName());
         db = new WkDB<>(NoteQualityControl.class);
+        dbQC = new WkDB<>(QualityControl.class);
     }
 
     @RequestMapping(path = GET_LIST, method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> list(@PathVariable(value = "id") int id) {
-        List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST + id);
+        List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST_ID + id);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
@@ -53,16 +55,21 @@ public class NoteQualityControlController extends AbstractController {
     public ResponseEntity<ReplyMessage> create(@PathVariable(value = "id") int id, @RequestBody NoteQualityControl note) {
         // Valida campos obrigatórios
         if (!isValueOK(note.getDescription())) {
-            return returnOK("Campo obrigatório não informado: Descrição");
+            return returnFieldMandatory("Descrição");
         }
         if (!isValueOK(note.getUserId())) {
-            return returnOK("Campo obrigatório não informado: Usuário");
+            return returnFieldMandatory("Usuário");
         }
+        // valida se o controle de qualidade existe
+        QualityControl qualityControl = dbQC.selectById(id);
+        if (qualityControl == null) {
+            return returnFail("Controle de qualidade não encontrado para o ID informado!");
+        }
+        note.setQualityControlId(id);
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         note.setDate(dateFormater.format(new Date()));
-        note.setQualityControlId(id);
         boolean insert = db.insert(note);
-        return returnOK(insert ? "Criou nova nota do controle de qualidade com sucesso!" : "Não foi possível criar nova nota do controle de qualidade!");
+        return returnMsg(insert, "Criou nova nota do controle de qualidade com sucesso!", "Não foi possível criar nova nota do controle de qualidade!");
     }
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.GET)
@@ -75,18 +82,18 @@ public class NoteQualityControlController extends AbstractController {
             @PathVariable(value = "id") int id, @RequestBody NoteQualityControl note) {
         NoteQualityControl noteOriginal = db.selectById(id);
         if (noteOriginal == null) {
-            return returnOK(ID_NOT_FOUND);
+            return returnFail(ID_NOT_FOUND);
         }
         // Se informou ID errado para o Ticket
         if (!Objects.equals(noteOriginal.getQualityControlId(), idQControl)) {
-            return returnOK("Nota não encontrada para o controle de qualidade ID!");
+            return returnFail("Nota não encontrada para o controle de qualidade ID!");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         // Altera apenas alguns campos
         noteOriginal.setDescription(note.getDescription());
         noteOriginal.setDate(dateFormater.format(new Date()));
         boolean update = db.update(noteOriginal);
-        return returnOK(update ? "Update OK!" : "Update FAIL!");
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.DELETE)
@@ -96,7 +103,7 @@ public class NoteQualityControlController extends AbstractController {
         if (delete) {
             delete = db.selectById(id) == null;
         }
-        return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
+        return returnMsgDelete(delete);
     }
 
     @RequestMapping(PATH_NOTE + PATH_FAKES)
@@ -104,12 +111,12 @@ public class NoteQualityControlController extends AbstractController {
         List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
-            return returnOK("Nenhum usuário ainda foi criado!");
+            return returnFail("Nenhum usuário ainda foi criado!");
         }
-        List<QualityControl> qualityControls = new WkDB<>(QualityControl.class).selectAll();
+        List<QualityControl> qualityControls = dbQC.selectAll();
         // se ainda não existir nenhum 
         if (qualityControls.isEmpty()) {
-            return returnOK("Nenhum chamado ainda foi criado!");
+            return returnFail("Nenhum chamado ainda foi criado!");
         }
         int count = 0;
         for (QualityControl qc : qualityControls) {

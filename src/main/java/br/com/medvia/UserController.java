@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController extends AbstractController {
 
     private final WkDB<User> db;
-    
+
     public UserController() {
         super(UserController.class.getSimpleName());
         db = new WkDB<>(User.class);
@@ -39,18 +39,14 @@ public class UserController extends AbstractController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody User user) {
         boolean insert = db.insert(user);
-        return new ResponseEntity<>(
-                new ReplyMessage(insert ? "Criou novo usuário com sucesso!" : "Não foi possível criar um novo usuário!"),
-                HttpStatus.OK);
+        return returnMsg(insert, "Criou novo usuário com sucesso!", "Não foi possível criar um novo usuário!");
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestBody User user, @PathVariable(value = "id") int id) {
         user.setId(id);
         boolean update = db.update(user);
-        return new ResponseEntity<>(
-                new ReplyMessage(update ? "Update OK!" : "Update FAIL!"),
-                HttpStatus.OK);
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(PATH_FAKES)

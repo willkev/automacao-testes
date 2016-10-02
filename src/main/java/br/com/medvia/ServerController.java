@@ -12,6 +12,7 @@ import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ServerController {
+public class ServerController extends AbstractController {
 
     // java.io.tmpdir=C:\Users\willian.kirschner\AppData\Roaming\NetBeans\8.1\apache-tomcat-8.0.27.0_base\temp
     // user.home=C:\Users\willian.kirschner
@@ -43,7 +44,7 @@ public class ServerController {
     private final WkDB<NoteQualityControl> dbNoteQualityControl;
 
     public ServerController() {
-        System.out.println(ServerController.class.getSimpleName());
+        super(ServerController.class.getSimpleName());
 
         //String propJavaTmp = System.getProperty("java.io.tmpdir");
         String propUserHome = System.getProperty("user.home");
@@ -131,8 +132,8 @@ public class ServerController {
     }
 
     @RequestMapping("/dbfile")
-    public File getDbFile() {
-        return fileDB;
+    public ResponseEntity<?> getDbFile() throws IOException {
+        return downloadFile(fileDB);
     }
 
     public class DbInfo {

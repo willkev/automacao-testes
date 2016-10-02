@@ -65,10 +65,7 @@ public class CostController extends AbstractController {
         cost.setTickteId(id);
         cost.setDate(dateFormater.format(new Date()));
         boolean insert = db.insert(cost);
-        if (insert) {
-            return returnOK("Criou novo custo com sucesso!");
-        }
-        return returnBadRequest("Não foi possível criar novo custo!");
+        return returnMsg(insert, "Criou novo custo com sucesso!", "Não foi possível criar novo custo!");
     }
 
     @RequestMapping(path = PATH_EDIT, method = RequestMethod.PUT)
@@ -83,11 +80,11 @@ public class CostController extends AbstractController {
         }
         Cost costOriginal = db.selectById(id);
         if (costOriginal == null) {
-            return returnBadRequest(ID_NOT_FOUND);
+            return returnFail(ID_NOT_FOUND);
         }
         // Se informou ID errado para o Ticket
         if (!Objects.equals(costOriginal.getTickteId(), idTicket)) {
-            return returnBadRequest("Custo não encontrado para o Ticket ID!");
+            return returnFail("Custo não encontrado para o Ticket ID!");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         // Altera apenas alguns campos
@@ -95,10 +92,7 @@ public class CostController extends AbstractController {
         costOriginal.setDescription(cost.getDescription());
         costOriginal.setDate(dateFormater.format(new Date()));
         boolean update = db.update(costOriginal);
-        if (update) {
-            return returnOK("Update OK!");
-        }
-        return returnBadRequest("Update Fail!");
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(path = PATH_COST_ID, method = RequestMethod.GET)
@@ -113,10 +107,7 @@ public class CostController extends AbstractController {
         if (delete) {
             delete = db.selectById(id) == null;
         }
-        if (delete) {
-            return returnOK("Delete OK!");
-        }
-        return returnBadRequest("Delete Fail!");
+        return returnMsgDelete(delete);
     }
 
     @RequestMapping(PATH_COST + PATH_FAKES)
@@ -124,12 +115,12 @@ public class CostController extends AbstractController {
         List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
-            return returnBadRequest("Nenhum usuário ainda foi criado!");
+            return returnFail("Nenhum usuário ainda foi criado!");
         }
         List<Ticket> tickets = new WkDB<>(Ticket.class).selectAll();
         // se ainda não existir nenhum 
         if (tickets.isEmpty()) {
-            return returnBadRequest("Nenhum chamado ainda foi criado!");
+            return returnFail("Nenhum chamado ainda foi criado!");
         }
         int count = 0;
         for (Ticket t : tickets) {

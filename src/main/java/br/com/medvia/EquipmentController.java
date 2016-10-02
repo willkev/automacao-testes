@@ -76,20 +76,14 @@ public class EquipmentController extends AbstractController {
     public ResponseEntity<ReplyMessage> create(@RequestBody Equipment equipment) {
         equipment.setActive(true);
         boolean insert = db.insert(equipment);
-        if (insert) {
-            return returnOK("Criou novo equipamento com sucesso!");
-        }
-        return returnBadRequest("Não foi possível criar um novo equipamento!");
+        return returnMsg(insert, "Criou novo equipamento com sucesso!", "Não foi possível criar um novo equipamento!");
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestBody Equipment equipment, @PathVariable(value = "id") int id) {
         equipment.setId(id);
         boolean update = db.update(equipment);
-        if (update) {
-            return returnOK("Update OK!");
-        }
-        return returnBadRequest("Update Fail!");
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(PATH_FAKES)
@@ -97,12 +91,12 @@ public class EquipmentController extends AbstractController {
         List<Institution> institutions = new WkDB<>(Institution.class).selectAll();
         // se ainda não existir nenhum 
         if (institutions.isEmpty()) {
-            return returnOK("Nenhuma instituição ainda foi criada!");
+            return returnFail("Nenhuma instituição ainda foi criada!");
         }
         List<TypeEquipment> typesEquipment = new WkDB<>(TypeEquipment.class).selectAll();
         // se ainda não existir nenhum 
         if (typesEquipment.isEmpty()) {
-            return returnOK("Nenhum tipo de equipamento ainda foi criado!");
+            return returnFail("Nenhum tipo de equipamento ainda foi criado!");
         }
         List<Equipment> created = Fakes.createEquipments(institutions, typesEquipment);
         created.stream().forEach((element) -> {

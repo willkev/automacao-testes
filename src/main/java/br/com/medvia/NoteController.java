@@ -57,16 +57,16 @@ public class NoteController extends AbstractController {
     public ResponseEntity<ReplyMessage> create(@PathVariable(value = "id") int id, @RequestBody Note note) {
         // Valida campos obrigatórios
         if (!isValueOK(note.getDescription())) {
-            return returnOK("Campo obrigatório não informado: Descrição");
+            return returnFieldMandatory("Descrição");
         }
         if (!isValueOK(note.getUserId())) {
-            return returnOK("Campo obrigatório não informado: Usuário");
+            return returnFieldMandatory("Usuário");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         note.setTickteId(id);
         note.setDate(dateFormater.format(new Date()));
         boolean insert = db.insert(note);
-        return returnOK(insert ? "Criou nova nota com sucesso!" : "Não foi possível criar nova nota!");
+        return returnMsg(insert, "Criou nova nota com sucesso!", "Não foi possível criar nova nota!");
     }
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.GET)
@@ -79,18 +79,18 @@ public class NoteController extends AbstractController {
             @PathVariable(value = "id") int id, @RequestBody Note note) {
         Note noteOriginal = db.selectById(id);
         if (noteOriginal == null) {
-            return returnOK(ID_NOT_FOUND);
+            return returnFail(ID_NOT_FOUND);
         }
         // Se informou ID errado para o Ticket
         if (!Objects.equals(noteOriginal.getTickteId(), idTicket)) {
-            return returnOK("Nota não encontrada para o Ticket ID!");
+            return returnFail("Nota não encontrada para o Ticket ID!");
         }
         SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         // Altera apenas alguns campos
         noteOriginal.setDescription(note.getDescription());
         noteOriginal.setDate(dateFormater.format(new Date()));
         boolean update = db.update(noteOriginal);
-        return returnOK(update ? "Update OK!" : "Update FAIL!");
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(path = PATH_NOTE_ID, method = RequestMethod.DELETE)
@@ -100,7 +100,7 @@ public class NoteController extends AbstractController {
         if (delete) {
             delete = db.selectById(id) == null;
         }
-        return returnOK(delete ? "Delete OK!" : "Delete FAIL!");
+        return returnMsgDelete(delete);
     }
 
     @RequestMapping(PATH_NOTE + PATH_FAKES)
@@ -108,12 +108,12 @@ public class NoteController extends AbstractController {
         List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
-            return returnOK("Nenhum usuário ainda foi criado!");
+            return returnFail("Nenhum usuário ainda foi criado!");
         }
         List<Ticket> tickets = new WkDB<>(Ticket.class).selectAll();
         // se ainda não existir nenhum 
         if (tickets.isEmpty()) {
-            return returnOK("Nenhum chamado ainda foi criado!");
+            return returnFail("Nenhum chamado ainda foi criado!");
         }
         int count = 0;
         for (Ticket t : tickets) {

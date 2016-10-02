@@ -59,10 +59,7 @@ public class TicketController extends AbstractController {
         }
         ticket.setState("a");
         boolean insert = db.insert(ticket);
-        if (insert) {
-            return returnOK("Criou novo chamado com sucesso!");
-        }
-        return returnBadRequest("Não foi possível criar um novo chamdo!");
+        return returnMsg(insert, "Criou novo chamado com sucesso!", "Não foi possível criar um novo chamdo!");
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
@@ -75,10 +72,7 @@ public class TicketController extends AbstractController {
     public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
         ticket.setId(id);
         boolean update = db.update(ticket);
-        if (update) {
-            return returnOK("Update OK!");
-        }
-        return returnBadRequest("Update Fail!");
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(path = PUT_CLOSE, method = RequestMethod.PUT)
@@ -91,17 +85,14 @@ public class TicketController extends AbstractController {
         }
         Ticket ticketOriginal = db.selectById(id);
         if (ticketOriginal == null) {
-            return returnBadRequest(ID_NOT_FOUND);
+            return returnFail(ID_NOT_FOUND);
         }
         // altera apenas os dados do fechamento
         ticketOriginal.setDateClosing(ticket.getDateClosing());
         ticketOriginal.setNoteClosing(ticket.getNoteClosing());
         ticketOriginal.setState("f");
         boolean update = db.update(ticketOriginal);
-        if (update) {
-            return returnOK("Close OK!");
-        }
-        return returnBadRequest("Close Fail!");
+        return returnMsg(update, "Close OK!", "Close Fail!");
     }
 
     @RequestMapping(path = PUT_DELETE, method = RequestMethod.PUT)
@@ -114,17 +105,14 @@ public class TicketController extends AbstractController {
         }
         Ticket ticketOriginal = db.selectById(id);
         if (ticketOriginal == null) {
-            return returnBadRequest(ID_NOT_FOUND);
+            return returnFail(ID_NOT_FOUND);
         }
         // altera apenas os dados da deleção
         ticketOriginal.setDateRemoving(ticket.getDateRemoving());
         ticketOriginal.setNoteRemoving(ticket.getNoteRemoving());
         ticketOriginal.setState("e");
-        boolean update = db.update(ticketOriginal);
-        if (update) {
-            return returnOK("Delete OK!");
-        }
-        return returnBadRequest("Delete Fail!");
+        boolean delete = db.update(ticketOriginal);
+        return returnMsgDelete(delete);
     }
 
     @RequestMapping(PATH_FAKES)
@@ -132,12 +120,12 @@ public class TicketController extends AbstractController {
         List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
-            return returnBadRequest("Nenhum usuário ainda foi criado!");
+            return returnFail("Nenhum usuário ainda foi criado!");
         }
         List<Equipment> equipments = new WkDB<>(Equipment.class).selectAll();
         // se ainda não existir nenhum 
         if (equipments.isEmpty()) {
-            return returnBadRequest("Nenhum equipamento ainda foi criado!");
+            return returnFail("Nenhum equipamento ainda foi criado!");
         }
         List<Ticket> created = Fakes.createTickets(users, equipments);
         created.stream().forEach((element) -> {

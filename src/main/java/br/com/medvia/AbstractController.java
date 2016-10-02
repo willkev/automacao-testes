@@ -1,7 +1,13 @@
 package br.com.medvia;
 
 import br.com.medvia.util.ReplyMessage;
+import java.io.File;
+import java.io.IOException;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -22,20 +28,49 @@ class AbstractController {
         this.controllerName = controllerName;
     }
 
-    public ResponseEntity<ReplyMessage> fakesCreated(int count) {
+    ResponseEntity<ReplyMessage> fakesCreated(int count) {
         return returnOK(count + " fakes foram criados com sucesso! " + controllerName);
+    }
+
+    ResponseEntity<ReplyMessage> returnFieldMandatory(String fieldName) {
+        return returnFail(FIELD_MANDATORY + fieldName);
+    }
+
+    ResponseEntity<ReplyMessage> returnMsgUpdate(boolean update) {
+        return returnMsg(update, "Update OK!", "Update FAIL!");
+    }
+
+    ResponseEntity<ReplyMessage> returnMsgDelete(boolean delete) {
+        return returnMsg(delete, "Delete OK!", "Delete FAIL!");
+    }
+
+    ResponseEntity<ReplyMessage> returnMsg(boolean executed, String msgOK, String msgFail) {
+        if (executed) {
+            return returnOK(msgOK);
+        }
+        return returnFail(msgFail);
+    }
+
+    ResponseEntity<ReplyMessage> returnFail(String msg) {
+        return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.BAD_REQUEST);
     }
 
     ResponseEntity<ReplyMessage> returnOK(String msg) {
         return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.OK);
     }
 
-    ResponseEntity<ReplyMessage> returnFieldMandatory(String fieldName) {
-        return returnBadRequest(FIELD_MANDATORY + fieldName);
-    }
-
-    ResponseEntity<ReplyMessage> returnBadRequest(String msg) {
-        return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.BAD_REQUEST);
+    ResponseEntity<InputStreamResource> downloadFile(File file) throws IOException {
+        ClassPathResource resourceFile = new ClassPathResource("file:///" + file.getAbsolutePath());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(resourceFile.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(new InputStreamResource(resourceFile.getInputStream()));
     }
 
     boolean isValueOK(String value) {

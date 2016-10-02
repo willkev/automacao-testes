@@ -58,20 +58,14 @@ public class QualityControlController extends AbstractController {
             return returnFieldMandatory("Descrição");
         }
         boolean insert = db.insert(qualityControl);
-        if (insert) {
-            return returnOK("Criou novo controle de qualidade com sucesso!");
-        }
-        return returnBadRequest("Não foi possível criar um controle de qualidade!");
+        return returnMsg(insert, "Criou novo controle de qualidade com sucesso!", "Não foi possível criar um controle de qualidade!");
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "id") int id, @RequestBody QualityControl qualityControl) {
         qualityControl.setId(id);
         boolean update = db.update(qualityControl);
-        if (update) {
-            return returnOK("Update OK!");
-        }
-        return returnBadRequest("Update Fail!");
+        return returnMsgUpdate(update);
     }
 
     @RequestMapping(PATH_FAKES)
@@ -79,12 +73,12 @@ public class QualityControlController extends AbstractController {
         List<User> users = new WkDB<>(User.class).selectAll();
         // se ainda não existir nenhum 
         if (users.isEmpty()) {
-            return returnBadRequest("Nenhum usuário ainda foi criado!");
+            return returnFail("Nenhum usuário ainda foi criado!");
         }
         List<Equipment> equipments = new WkDB<>(Equipment.class).selectAll();
         // se ainda não existir nenhum 
         if (equipments.isEmpty()) {
-            return returnBadRequest("Nenhum equipamento ainda foi criado!");
+            return returnFail("Nenhum equipamento ainda foi criado!");
         }
         List<QualityControl> created = Fakes.createQualityControl(users, equipments);
         created.stream().forEach((element) -> {
