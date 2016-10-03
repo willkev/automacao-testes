@@ -6,9 +6,11 @@ import br.com.medvia.resources.QualityControl;
 import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class QualityControlController extends AbstractController {
 
-    public static final String QUERY_LIST = "select q.id, e.name equipment, i.description institution, q.test, q.dateExecution, q.dateValidity, q.compliance from QualityControl q, Equipment e, Institution i where q.equipmentId = e.id and e.institutionId = i.id";
+    public static final String QUERY_LIST = "select q.id, e.name equipment, i.description institution, q.test, q.dateExecution, q.dateValidity, q.compliance, q.hasPDF from QualityControl q, Equipment e, Institution i where q.equipmentId = e.id and e.institutionId = i.id";
     public static final String QUERY_LIST_ID = "select q.*, e.institutionId from QualityControl q, Equipment e where q.equipmentId = e.id and q.id = ";
 
     private final WkDB<QualityControl> db;
@@ -46,6 +48,11 @@ public class QualityControlController extends AbstractController {
     public ResponseEntity<?> get(@PathVariable(value = "id") int id) {
         List<Map<String, Object>> select = db.executeQuery(QUERY_LIST_ID + id);
         return new ResponseEntity<>(select.get(0), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/{id}/pdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<?> getPDF(@PathVariable(value = "id") int id) throws IOException {
+        return downloadFile(WkDB.getFileDB());
     }
 
     @RequestMapping(method = RequestMethod.POST)

@@ -163,6 +163,10 @@ public class WkDB<T extends WkTable> {
         }
     }
 
+    public static File getFileDB() {
+        return fileDB;
+    }
+
     /**
      * Create a connection for this Table. It will be performed just in memory.
      *

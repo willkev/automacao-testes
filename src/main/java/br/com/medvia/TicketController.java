@@ -57,6 +57,9 @@ public class TicketController extends AbstractController {
         if (!isValueOK(ticket.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
+        if (!isValueOK(ticket.getEquipmentId(), 1, Integer.MAX_VALUE)) {
+            return returnFieldMandatory("Equipamento");
+        }
         ticket.setState("a");
         boolean insert = db.insert(ticket);
         return returnMsg(insert, "Criou novo chamado com sucesso!", "Não foi possível criar um novo chamdo!");
@@ -70,7 +73,32 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
-        ticket.setId(id);
+        // Valida campos
+        if (!isValueOK(ticket.getSituation())) {
+            return returnFieldMandatory("Situação");
+        }
+        if (!isValueOK(ticket.getState())) {
+            return returnFieldMandatory("Estado");
+        }
+        if (!isValueOK(ticket.getDateOcurrence())) {
+            return returnFieldMandatory("Data de ocorrência");
+        }
+        if (!isValueOK(ticket.getPrediction())) {
+            return returnFieldMandatory("Data de previsão de conserto");
+        }
+        if (!isValueOK(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
+            return returnFieldMandatory("Responsável");
+        }
+        Ticket ticketOriginal = db.selectById(id);
+        if (ticketOriginal == null) {
+            return returnFail(ID_NOT_FOUND);
+        }
+        // altera apenas os dados que podem ser alterados
+        ticketOriginal.setSituation(ticket.getSituation());
+        ticketOriginal.setState(ticket.getState());
+        ticketOriginal.setDateOcurrence(ticket.getDateOcurrence());
+        ticketOriginal.setPrediction(ticket.getPrediction());
+        ticketOriginal.setResponsableId(ticket.getResponsableId());
         boolean update = db.update(ticket);
         return returnMsgUpdate(update);
     }

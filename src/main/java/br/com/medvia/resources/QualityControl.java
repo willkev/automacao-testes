@@ -13,9 +13,18 @@ public class QualityControl extends WkTable {
      */
     // description/tilte
     private String test;
-    Integer equipmentId;
+    private Integer equipmentId;
     // Date pattern "dd/MM/yyyy HH:mm"
     private String dateExecution;
+    private Boolean hasPDF = false;
+
+    public Boolean getHasPDF() {
+        return hasPDF;
+    }
+
+    public void setHasPDF(Boolean hasPDF) {
+        this.hasPDF = hasPDF;
+    }
 
     public String getTest() {
         return test;

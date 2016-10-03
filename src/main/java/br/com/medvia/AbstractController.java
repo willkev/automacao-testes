@@ -2,8 +2,8 @@ package br.com.medvia;
 
 import br.com.medvia.util.ReplyMessage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -60,7 +60,6 @@ class AbstractController {
     }
 
     ResponseEntity<InputStreamResource> downloadFile(File file) throws IOException {
-        ClassPathResource resourceFile = new ClassPathResource("file:///" + file.getAbsolutePath());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
@@ -68,9 +67,9 @@ class AbstractController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .contentLength(resourceFile.contentLength())
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(new InputStreamResource(resourceFile.getInputStream()));
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(new FileInputStream(file)));
     }
 
     boolean isValueOK(String value) {

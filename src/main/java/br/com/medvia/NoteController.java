@@ -8,6 +8,7 @@ import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,19 +38,45 @@ public class NoteController extends AbstractController {
     private static final String PUT_EDIT = "/api/tickets/{idTicket}/notes/{id}";
 
     private final WkDB<Note> db;
+    private final WkDB<Ticket> dbT;
 
     public NoteController() {
         super(NoteController.class.getSimpleName());
         db = new WkDB<>(Note.class);
+        dbT = new WkDB<>(Ticket.class);
     }
 
     @RequestMapping(path = GET_LIST, method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> list(@PathVariable(value = "id") int id) {
         List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST + id);
-        // Adiciona as notas de Exclusão ou Fechamento
-        //
-        // ???
-        //
+        // Adiciona as notas de Exclusão ou Fechamento, se existir
+        Ticket ticket = dbT.selectById(id);
+        if (ticket != null) {
+            // Se possui nota de fechamento
+            if (isValueOK(ticket.getNoteClosing())) {
+                Map<String, Object> map = new HashMap<>();
+                //
+                // id=0 Significa que não pode ser alterado/exluido no Frontend
+                map.put("id", 0);
+                map.put("description", "[Fechamento] " + ticket.getNoteClosing());
+                map.put("date", ticket.getDateClosing());
+                map.put("userId", ticket.getUserId());
+                map.put("user", "UsuarioXYZ");
+                selectAll.add(map);
+            }
+            // Se possui nota de exclusão
+            if (isValueOK(ticket.getNoteRemoving())) {
+                Map<String, Object> map = new HashMap<>();
+                //
+                // id=0 Significa que não pode ser alterado/exluido no Frontend
+                map.put("id", 0);
+                map.put("description", "[Exclusão] " + ticket.getNoteRemoving());
+                map.put("date", ticket.getDateRemoving());
+                map.put("userId", ticket.getUserId());
+                map.put("user", "UsuarioXYZ");
+                selectAll.add(map);
+            }
+        }
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
@@ -110,7 +137,7 @@ public class NoteController extends AbstractController {
         if (users.isEmpty()) {
             return returnFail("Nenhum usuário ainda foi criado!");
         }
-        List<Ticket> tickets = new WkDB<>(Ticket.class).selectAll();
+        List<Ticket> tickets = dbT.selectAll();
         // se ainda não existir nenhum 
         if (tickets.isEmpty()) {
             return returnFail("Nenhum chamado ainda foi criado!");
