@@ -59,16 +59,19 @@ class AbstractController {
         return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.OK);
     }
 
-    ResponseEntity<InputStreamResource> downloadFile(File file) throws IOException {
+    ResponseEntity<InputStreamResource> downloadFile(File file, MediaType mediaType) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
+        if (MediaType.APPLICATION_PDF == mediaType) {
+            headers.add("Content-Disposition", "attachment; filename=pdf.pdf");
+        }
         return ResponseEntity
                 .ok()
                 .headers(headers)
                 .contentLength(file.length())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(mediaType)
                 .body(new InputStreamResource(new FileInputStream(file)));
     }
 

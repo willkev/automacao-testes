@@ -6,6 +6,7 @@ import br.com.medvia.resources.QualityControl;
 import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -50,9 +53,15 @@ public class QualityControlController extends AbstractController {
         return new ResponseEntity<>(select.get(0), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/{id}/pdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(path = "/{id}/pdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<?> getPDF(@PathVariable(value = "id") int id) throws IOException {
-        return downloadFile(WkDB.getFileDB());
+        File pdf = new File(getClass().getClassLoader().getResource("FakePDF.pdf").getFile());
+        return downloadFile(pdf, MediaType.APPLICATION_PDF);
+    }
+
+    @RequestMapping(path = "/{id}/pdf", method = RequestMethod.POST)
+    public ResponseEntity<?> getPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) throws IOException {
+        return returnOK("OK PDF size:" + pdf.getSize());
     }
 
     @RequestMapping(method = RequestMethod.POST)

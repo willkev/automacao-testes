@@ -133,9 +133,15 @@ public class ServerController extends AbstractController {
         return new ResponseEntity<>(new DbInfo(fileDB.getAbsolutePath(), fileDB.length()), HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/fakepdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<?> fakepdf() throws IOException {
+        File pdf = new File(getClass().getClassLoader().getResource("FakePDF.pdf").getFile());
+        return downloadFile(pdf, MediaType.APPLICATION_PDF);
+    }   
+    
     @RequestMapping(path = "/dbfile", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<?> getDbFile() throws IOException {
-        return downloadFile(fileDB);
+        return downloadFile(fileDB, MediaType.APPLICATION_OCTET_STREAM);
     }
 
     public class DbInfo {
