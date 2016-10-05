@@ -1,6 +1,7 @@
 package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
+import br.com.medvia.mail.AmazonSESSample;
 import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
@@ -133,15 +134,22 @@ public class ServerController extends AbstractController {
         return new ResponseEntity<>(new DbInfo(fileDB.getAbsolutePath(), fileDB.length()), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/fakepdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(path = "/dbfile", method = RequestMethod.GET)
+    public ResponseEntity<?> getDbFile() throws IOException {
+        return downloadFile(fileDB, MediaType.APPLICATION_OCTET_STREAM);
+    }
+
+    @RequestMapping(path = "/fakepdf", method = RequestMethod.GET)
     public ResponseEntity<?> fakepdf() throws IOException {
         File pdf = new File(getClass().getClassLoader().getResource("FakePDF.pdf").getFile());
         return downloadFile(pdf, MediaType.APPLICATION_PDF);
-    }   
-    
-    @RequestMapping(path = "/dbfile", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<?> getDbFile() throws IOException {
-        return downloadFile(fileDB, MediaType.APPLICATION_OCTET_STREAM);
+    }
+
+    @RequestMapping(path = "/sendemail", method = RequestMethod.GET)
+    public ResponseEntity<?> sendEmail() throws Exception {
+        AmazonSESSample amazonSES = new AmazonSESSample();
+        amazonSES.sendEmail();
+        return returnOK("OK");
     }
 
     public class DbInfo {
