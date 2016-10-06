@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="myApp" ng-controller="MainCtrl">
+    <head>
+        <meta charset="utf-8">
+        <script src="angular.min.js"></script>
+        <script src="angular-local-storage.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    </head>
+    <body>
+        <div id="load_1">carregando...</div>
+        <hr>
+        <div id="load_2">carregando...</div>
+        <script type="text/javascript">
+            var myApp = angular.module('myApp', ['LocalStorageModule']);
+            myApp.controller('MainCtrl', function (localStorageService, $http) {
+//                $http.get('http://localhost:8084/medvia/api/tickets/cookie')
+                $http.get('http://medviarestfulservic-env.sa-east-1.elasticbeanstalk.com/api/tickets/cookie')
+                        .then(function (response) {
+                            $("#load_1").html("JSON1:" + JSON.stringify(response.data));
+                            console.log(JSON.stringify(response.data));
+                        }, function (error) {
+                            console.log(error);
+                        });
+                console.log('localStorageService', localStorageService);
+                localStorageService.cookie.set('userId', 3);
+                console.log("localStorageService.cookie.get('userId')", localStorageService.cookie.get('userId'));
+                localStorageService.set('userId', 3);
+                console.log("localStorageService.get('userId')", localStorageService.get('userId'));
+                document.cookie = 'cookie1=testXYZ; path=/';
+            });
+        </script>
+        <script type="text/javascript">
+//                    $.get("http://localhost:8084/medvia/api/tickets/cookie", function (response) {
+                    $.get("http://medviarestfulservic-env.sa-east-1.elasticbeanstalk.com/api/tickets/cookie", function (response) {
+                        $("#load_2").html("JSON2:" + JSON.stringify(response));
+                    }).error(function () {
+                        alert("Sorry could not get JSON!");
+                    });
+        </script>
+    </body>
+</html>

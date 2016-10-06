@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +38,13 @@ public class TicketController extends AbstractController {
     public TicketController() {
         super(TicketController.class.getSimpleName());
         db = new WkDB<>(Ticket.class);
+    }
+
+    @RequestMapping(path = "/cookie", method = RequestMethod.GET)
+    public ResponseEntity<?> cookie(@CookieValue(value = "cookie1", required = false) String cookie1,
+            @CookieValue(value = "ls.userId", required = false) String userId,
+            @CookieValue(value = "other", required = false) String other) {
+        return returnOK("cookie1=" + cookie1 + "; userId=" + userId + "; other=" + other);
     }
 
     @RequestMapping(method = RequestMethod.GET)
