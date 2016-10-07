@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,11 +66,13 @@ public class QualityControlController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@RequestBody QualityControl qualityControl) {
+    public ResponseEntity<ReplyMessage> create(@RequestHeader(value = "userId", required = false) String userIdStr,
+            @RequestBody QualityControl qualityControl) {
+        qualityControl.setUserId(verifyUser(userIdStr));
         // valida campos obrigatórios
-        if (!isValueOK(qualityControl.getUserId(), 1, Integer.MAX_VALUE)) {
-            return returnFieldMandatory("Usuário Criador");
-        }
+//        if (!isValueOK(qualityControl.getUserId(), 1, Integer.MAX_VALUE)) {
+//            return returnFieldMandatory("Usuário Criador");
+//        }
         if (!isValueOK(qualityControl.getTest())) {
             return returnFieldMandatory("Descrição");
         }
@@ -98,7 +101,7 @@ public class QualityControlController extends AbstractController {
         }
         List<QualityControl> created = Fakes.createQualityControl(users, equipments);
         created.stream().forEach((element) -> {
-            create(element);
+            create("1", element);
         });
         return fakesCreated(created.size());
     }

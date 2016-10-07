@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,13 +40,6 @@ public class TicketController extends AbstractController {
         db = new WkDB<>(Ticket.class);
     }
 
-    @RequestMapping(path = "/cookie", method = RequestMethod.GET)
-    public ResponseEntity<?> cookie(@CookieValue(value = "cookie1", required = false) String cookie1,
-            @CookieValue(value = "ls.userId", required = false) String userId,
-            @CookieValue(value = "other", required = false) String other) {
-        return returnOK("cookie1=" + cookie1 + "; userId=" + userId + "; other=" + other);
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> list() {
         List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST);
@@ -54,11 +47,13 @@ public class TicketController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@RequestBody Ticket ticket) {
+    public ResponseEntity<ReplyMessage> create(@RequestHeader(value = "userId", required = false) String userIdStr,
+            @RequestBody Ticket ticket) {
+        ticket.setUserId(verifyUser(userIdStr));
         // valida campos obrigatórios
-        if (!isValueOK(ticket.getUserId(), 1, Integer.MAX_VALUE)) {
-            return returnFieldMandatory("Usuário Criador");
-        }
+//        if (!isValueOK(ticket.getUserId(), 1, Integer.MAX_VALUE)) {
+//            return returnFieldMandatory("Usuário Criador");
+//        }
         if (!isValueOK(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
             return returnFieldMandatory("Usuário Responsável");
         }
@@ -165,7 +160,7 @@ public class TicketController extends AbstractController {
         }
         List<Ticket> created = Fakes.createTickets(users, equipments);
         created.stream().forEach((element) -> {
-            create(element);
+            create("1", element);
         });
         return fakesCreated(created.size());
     }

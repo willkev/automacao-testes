@@ -21,19 +21,13 @@ import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ServerController extends AbstractController {
-
-    // java.io.tmpdir=C:\Users\willian.kirschner\AppData\Roaming\NetBeans\8.1\apache-tomcat-8.0.27.0_base\temp
-    // user.home=C:\Users\willian.kirschner
-    //
-    // java.io.tmpdir=/var/cache/tomcat8/temp
-    // user.home=/usr/share/tomcat8
-    private final File fileDB;
 
     private final List<WkDB> dbList = new ArrayList<>();
     private final WkDB<Ticket> dbTicket;
@@ -48,13 +42,6 @@ public class ServerController extends AbstractController {
 
     public ServerController() {
         super(ServerController.class.getSimpleName());
-
-        //String propJavaTmp = System.getProperty("java.io.tmpdir");
-        String propUserHome = System.getProperty("user.home");
-        fileDB = new File(propUserHome, "medvia.db");
-        System.out.println("fileDB=" + fileDB.getAbsolutePath());
-
-        WkDB.setFileDB(fileDB);
 
         dbTicket = new WkDB<>(Ticket.class);
         dbList.add(dbTicket);
@@ -76,11 +63,17 @@ public class ServerController extends AbstractController {
         dbList.add(dbNoteQualityControl);
 
         // se o arquivo ainda não existir
-        if (!fileDB.exists() || fileDB.length() < 1) {
+        if (!WkDB.getFileDB().exists() || WkDB.getFileDB().length() < 1) {
             for (WkDB db : dbList) {
                 db.createTable();
             }
         }
+    }
+
+    @RequestMapping(path = "/header", method = RequestMethod.GET)
+    public ResponseEntity<?> header(@RequestHeader(value = "userId", required = false) String userIdStr) {
+        Integer userId = verifyUser(userIdStr);
+        return returnOK("userId=" + userId);
     }
 
     @RequestMapping("/dbdrop")
@@ -131,12 +124,12 @@ public class ServerController extends AbstractController {
 
     @RequestMapping("/dbinfo")
     public ResponseEntity<DbInfo> dbInfo() {
-        return new ResponseEntity<>(new DbInfo(fileDB.getAbsolutePath(), fileDB.length()), HttpStatus.OK);
+        return new ResponseEntity<>(new DbInfo(WkDB.getFileDB().getAbsolutePath(), WkDB.getFileDB().length()), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/dbfile", method = RequestMethod.GET)
     public ResponseEntity<?> getDbFile() throws IOException {
-        return downloadFile(fileDB, MediaType.APPLICATION_OCTET_STREAM);
+        return downloadFile(WkDB.getFileDB(), MediaType.APPLICATION_OCTET_STREAM);
     }
 
     @RequestMapping(path = "/fakepdf", method = RequestMethod.GET)

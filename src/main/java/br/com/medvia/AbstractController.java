@@ -28,6 +28,19 @@ class AbstractController {
         this.controllerName = controllerName;
     }
 
+    Integer verifyUser(String userIdStr) {
+        Integer userId = null;
+        try {
+            userId = Integer.parseInt(userIdStr);
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("No permission!");
+        }
+        if (userId == null || userId <= 0) {
+            throw new UnsupportedOperationException("No permission!");
+        }
+        return userId;
+    }
+
     ResponseEntity<ReplyMessage> fakesCreated(int count) {
         return returnOK(count + " fakes foram criados com sucesso! " + controllerName);
     }

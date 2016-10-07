@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,14 +53,16 @@ public class NoteQualityControlController extends AbstractController {
     }
 
     @RequestMapping(path = POST_CREATE, method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@PathVariable(value = "id") int id, @RequestBody NoteQualityControl note) {
+    public ResponseEntity<ReplyMessage> create(@RequestHeader(value = "userId", required = false) String userIdStr,
+            @PathVariable(value = "id") int id, @RequestBody NoteQualityControl note) {
+        note.setUserId(verifyUser(userIdStr));
         // Valida campos obrigatórios
         if (!isValueOK(note.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
-        if (!isValueOK(note.getUserId())) {
-            return returnFieldMandatory("Usuário");
-        }
+//        if (!isValueOK(note.getUserId())) {
+//            return returnFieldMandatory("Usuário");
+//        }
         // valida se o controle de qualidade existe
         QualityControl qualityControl = dbQC.selectById(id);
         if (qualityControl == null) {
@@ -123,7 +126,7 @@ public class NoteQualityControlController extends AbstractController {
             List<NoteQualityControl> created = Fakes.createNotesQualityControl(qc.getId(), users);
             count += created.size();
             created.stream().forEach((element) -> {
-                create(element.getQualityControlId(), element);
+                create("1", element.getQualityControlId(), element);
             });
         }
         return fakesCreated(count);
