@@ -34,6 +34,7 @@ public class QualityControlController extends AbstractController {
 
     public static final String QUERY_LIST = "select q.id, e.name equipment, i.description institution, q.test, q.dateExecution, q.dateValidity, q.compliance, q.hasPDF from QualityControl q, Equipment e, Institution i where q.equipmentId = e.id and e.institutionId = i.id";
     public static final String QUERY_LIST_ID = "select q.*, e.institutionId from QualityControl q, Equipment e where q.equipmentId = e.id and q.id = ";
+    public static File dirPDF;
 
     private final WkDB<QualityControl> db;
 
@@ -55,14 +56,34 @@ public class QualityControlController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<?> getPDF(@PathVariable(value = "id") int id) throws IOException {
-        File pdf = new File(getClass().getClassLoader().getResource("FakePDF.pdf").getFile());
+    public ResponseEntity<?> downloadPDF(@PathVariable(value = "id") int id) throws IOException {
+        // verifyUser(userId);
+        //
+        File pdf = new File(createDirPDF(id), id + ".pdf");
+        // se não existe PDF para este ID
+        if (!pdf.exists() || pdf.isFile()) {
+            return returnFail("PDF não encontrado!");
+        }
         return downloadFile(pdf, MediaType.APPLICATION_PDF);
     }
 
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.POST)
-    public ResponseEntity<?> getPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) throws IOException {
-        return returnOK("OK PDF size:" + pdf.getSize());
+    public ResponseEntity<?> uploadPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) throws IOException {
+        // verifyUser(userId);
+        //
+        File dirPDFid = createDirPDF(id);
+        // cria pasta e salva PDF
+        dirPDF.mkdir();
+        try {
+            pdf.transferTo(new File(dirPDFid, id + ".pdf"));
+        } catch (Exception e) {
+            return returnFail("Erro ao salvar o PDF no servidor!");
+        }
+        return returnOK("PDF salvo com sucesso!");
+    }
+
+    private File createDirPDF(int id) {
+        return new File(dirPDF + File.separator + id);
     }
 
     @RequestMapping(method = RequestMethod.POST)

@@ -23,10 +23,14 @@ public class Application {
     public Application() {
         System.out.println("Medvia started OK!");
         //String propJavaTmp = System.getProperty("java.io.tmpdir");
-        File fileDB = new File(System.getProperty("user.home"), "medvia.db");
+        String dir = System.getProperty("user.home");
+        File fileDB = new File(dir, "medvia.db");
         System.out.println("fileDB=" + fileDB.getAbsolutePath());
         WkDB.setFileDB(fileDB);
-
+        File dirQC = new File(dir, "quality-control");
+        dirQC.mkdir();
+        QualityControlController.dirPDF = dirQC;
+                
         ServerController sc = new ServerController();
         sc.dbCreate();
     }

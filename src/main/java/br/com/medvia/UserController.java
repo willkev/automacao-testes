@@ -1,6 +1,7 @@
 package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
+import br.com.medvia.db.WkDB.Where;
 import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
@@ -47,6 +48,27 @@ public class UserController extends AbstractController {
         user.setId(id);
         boolean update = db.update(user);
         return returnMsgUpdate(update);
+    }
+
+    // required = false, para não expor a assinatura do método de login
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public User login(@RequestBody(required = false) User user) {
+        if (user == null || !isValueOK(user.getEmail()) || !isValueOK(user.getPassword())) {
+            // força dar uma exeção de permissão!
+            verifyUser(null);
+        }
+        List<User> select = db.selectAll(
+                Where.fields("email", "password"),
+                Where.conditions("=", "="),
+                Where.values(user.getEmail(), user.getPassword()), null);
+        if (select.isEmpty()) {
+            // força dar uma exeção de permissão!
+            verifyUser(null);
+        }
+        // Remove a senha antes de retornar!
+        User get = select.get(0);
+        get.setPassword("");
+        return get;
     }
 
     @RequestMapping(PATH_FAKES)

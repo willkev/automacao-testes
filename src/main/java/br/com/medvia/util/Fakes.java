@@ -168,26 +168,38 @@ public class Fakes {
 
         User user1 = new User();
         user1.setName("Dr. do Hospital");
+        user1.setEmail("user1");
+        user1.setPassword("1111");
         list.add(user1);
 
         User user2 = new User();
         user2.setName("Dr. Fulano Bento");
+        user2.setEmail("user2");
+        user2.setPassword("2222");
         list.add(user2);
 
         User user3 = new User();
         user3.setName("Dr. Flemming");
+        user3.setEmail("user3");
+        user3.setPassword("3333");
         list.add(user3);
 
         User user4 = new User();
         user4.setName("Técnico Radiologista");
+        user4.setEmail("user4");
+        user4.setPassword("4444");
         list.add(user4);
 
         User user5 = new User();
         user5.setName("Mario Luigui da Silva");
+        user5.setEmail("user5");
+        user5.setPassword("5555");
         list.add(user5);
 
         User user6 = new User();
         user6.setName("Doctor Who");
+        user6.setEmail("user6");
+        user6.setPassword("6666");
         list.add(user6);
 
         return list;
