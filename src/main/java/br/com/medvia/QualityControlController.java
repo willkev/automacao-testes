@@ -1,6 +1,7 @@
 package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
+import br.com.medvia.db.WkDB.Update;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.QualityControl;
 import br.com.medvia.resources.User;
@@ -8,6 +9,8 @@ import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -68,17 +71,19 @@ public class QualityControlController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.POST)
-    public ResponseEntity<?> uploadPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) throws IOException {
+    public ResponseEntity<?> uploadPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) {
         // verifyUser(userId);
         //
         File dirPDFid = createDirPDF(id);
         // cria pasta e salva PDF
-        dirPDF.mkdir();
+        dirPDFid.mkdir();
         try {
             pdf.transferTo(new File(dirPDFid, id + ".pdf"));
         } catch (Exception e) {
             return returnFail("Erro ao salvar o PDF no servidor!");
         }
+        // Atualizar no banco
+        db.updateById(Update.fields("hasPDF"), Update.values(true), id);
         return returnOK("PDF salvo com sucesso!");
     }
 
@@ -124,6 +129,21 @@ public class QualityControlController extends AbstractController {
         created.stream().forEach((element) -> {
             create("1", element);
         });
+        File pdf = new File(getClass().getClassLoader().getResource("FakePDF.pdf").getFile());
+        List<QualityControl> selectAll = db.selectAll();
+        for (QualityControl qc : selectAll) {
+            if (qc.getHasPDF()) {
+                // salva pdf
+                try {
+                    File dirPDFid = createDirPDF(qc.getId());
+                    // cria pasta de PDFs fakes
+                    dirPDFid.mkdir();
+                    File pdfQCByID = new File(dirPDFid, qc.getId() + ".pdf");
+                    Files.write(Paths.get(pdfQCByID.toURI()), Files.readAllBytes(Paths.get(pdf.toURI())));
+                } catch (Exception e) {
+                }
+            }
+        }
         return fakesCreated(created.size());
     }
 

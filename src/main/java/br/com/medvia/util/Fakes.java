@@ -357,6 +357,7 @@ public class Fakes {
         q1.setUserId(users.get(0).getId());
         q1.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 90)))); //-90 dias
         q1.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 90))));  //+90 dias
+        q1.setHasPDF(true);
         list.add(q1);
 
         QualityControl q2 = new QualityControl();
@@ -384,6 +385,7 @@ public class Fakes {
         q4.setUserId(users.get(3).getId());
         q4.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 50)))); //-50 dias
         q4.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 200)))); // +200 dias
+        q4.setHasPDF(true);
         list.add(q4);
         return list;
     }
