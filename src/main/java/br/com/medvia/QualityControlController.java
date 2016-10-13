@@ -58,7 +58,7 @@ public class QualityControlController extends AbstractController {
     }
 
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.GET)
-    public ResponseEntity<?> downloadPDF(@PathVariable(value = "id") int id) {
+    public Object downloadPDF(@PathVariable(value = "id") int id) {
         // verifyUser(userId);
         //
         // TODO: REMOVER! APENAS UM TESTE
@@ -74,7 +74,10 @@ public class QualityControlController extends AbstractController {
                 ex.printStackTrace();
             }
         }
-        return returnFail("PDF não encontrado!");
+        //
+        // Especialmente neste método o FrontEnd necessita que a messagem de erro seja apenas uma String
+        //
+        return "PDF não encontrado!";
     }
 
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.POST)
