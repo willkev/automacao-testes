@@ -8,7 +8,6 @@ import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -58,28 +57,37 @@ public class QualityControlController extends AbstractController {
         return new ResponseEntity<>(select.get(0), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/{id}/pdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<?> downloadPDF(@PathVariable(value = "id") int id) throws IOException {
+    @RequestMapping(path = "/{id}/pdf", method = RequestMethod.GET)
+    public ResponseEntity<?> downloadPDF(@PathVariable(value = "id") int id) {
         // verifyUser(userId);
         //
-        File pdf = new File(createDirPDF(id), id + ".pdf");
-        // se não existe PDF para este ID
-        if (!pdf.exists() || pdf.isFile()) {
-            return returnFail("PDF não encontrado!");
+        // TODO: REMOVER! APENAS UM TESTE
+        if (id == 1) {
+            id = 666;
         }
-        return downloadFile(pdf, MediaType.APPLICATION_PDF);
+        File pdf = new File(generateDirPDF(id), id + ".pdf");
+        // se existe um PDF para o ID
+        if (pdf.isFile() && pdf.length() > 0) {
+            try {
+                return downloadFile(pdf, MediaType.APPLICATION_PDF);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return returnFail("PDF não encontrado!");
     }
 
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.POST)
     public ResponseEntity<?> uploadPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) {
         // verifyUser(userId);
         //
-        File dirPDFid = createDirPDF(id);
+        File dirPDFid = generateDirPDF(id);
         // cria pasta e salva PDF
         dirPDFid.mkdir();
         try {
             pdf.transferTo(new File(dirPDFid, id + ".pdf"));
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return returnFail("Erro ao salvar o PDF no servidor!");
         }
         // Atualizar no banco
@@ -87,7 +95,7 @@ public class QualityControlController extends AbstractController {
         return returnOK("PDF salvo com sucesso!");
     }
 
-    private File createDirPDF(int id) {
+    private File generateDirPDF(int id) {
         return new File(dirPDF + File.separator + id);
     }
 
@@ -135,7 +143,7 @@ public class QualityControlController extends AbstractController {
             if (qc.getHasPDF()) {
                 // salva pdf
                 try {
-                    File dirPDFid = createDirPDF(qc.getId());
+                    File dirPDFid = generateDirPDF(qc.getId());
                     // cria pasta de PDFs fakes
                     dirPDFid.mkdir();
                     File pdfQCByID = new File(dirPDFid, qc.getId() + ".pdf");
