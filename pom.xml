@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.medvia</groupId>
     <artifactId>medvia</artifactId>
-    <version>0.84</version>
+    <version>0.85</version>
     <packaging>war</packaging>
     <name>Medvia</name>    
     <parent>

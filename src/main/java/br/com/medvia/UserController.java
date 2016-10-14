@@ -6,6 +6,7 @@ import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class UserController extends AbstractController {
 
+    public static final String QUERY_LIST = "select id, name from User";
+
     private final WkDB<User> db;
 
     public UserController() {
@@ -32,8 +35,8 @@ public class UserController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<User>> list() {
-        List<User> selectAll = db.selectAll();
+    public ResponseEntity<?> list() {
+        List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 

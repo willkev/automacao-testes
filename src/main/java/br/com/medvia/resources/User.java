@@ -11,6 +11,18 @@ public class User extends WkTable {
     private String email;
     private String password;
     private String name;
+    // 0 - Admin
+    // 1 - Normal (pode ver e editar)
+    // 2 - Visualizador (apenas pode ver)
+    private int permissionLevel = 1;
+
+    public int getPermissionLevel() {
+        return permissionLevel;
+    }
+
+    public void setPermissionLevel(int permissionLevel) {
+        this.permissionLevel = permissionLevel;
+    }
 
     public String getPassword() {
         return password;

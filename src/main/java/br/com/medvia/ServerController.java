@@ -12,7 +12,6 @@ import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.User;
 import br.com.medvia.util.Fakes;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,12 +68,6 @@ public class ServerController extends AbstractController {
         }
     }
 
-    @RequestMapping(path = "/header", method = RequestMethod.GET)
-    public ResponseEntity<?> header(@RequestHeader(value = "userId", required = false) String userIdStr) {
-        Integer userId = verifyUser(userIdStr);
-        return returnOK("userId=" + userId);
-    }
-
     @RequestMapping("/dbdrop")
     public ResponseEntity<String> dbReset() {
         for (WkDB db : dbList) {
@@ -86,7 +78,16 @@ public class ServerController extends AbstractController {
     }
 
     @RequestMapping("/dbcreate")
+    public ResponseEntity<String> dbCreateFakes() {
+        return dbCreate0(false);
+    }
+
+    @RequestMapping("/dbcreatefakes")
     public ResponseEntity<String> dbCreate() {
+        return dbCreate0(true);
+    }
+
+    private ResponseEntity<String> dbCreate0(boolean createFakes) {
         dbReset();
 
         UserController u = new UserController();
@@ -102,18 +103,19 @@ public class ServerController extends AbstractController {
         for (TypeEquipment typeEquipment : createTypesEquipment) {
             dbTypeEquipment.showSQL().insert(typeEquipment);
         }
-
-        // Popula todas tabelas com fakes
-        // Obs: Deve ser feito na ordem correta
-        System.out.println(u.createFakes().toString());
         System.out.println(i.createFakes().toString());
-        System.out.println(e.createFakes().toString());
-        System.out.println(t.createFakes().toString());
-        System.out.println(n.createFakes().toString());
-        System.out.println(c.createFakes().toString());
-        System.out.println(q.createFakes().toString());
-        System.out.println(nqc.createFakes().toString());
 
+        if (createFakes) {
+            // Popula todas tabelas com fakes
+            // Obs: Deve ser feito na ordem correta
+            System.out.println(u.createFakes().toString());
+            System.out.println(e.createFakes().toString());
+            System.out.println(t.createFakes().toString());
+            System.out.println(n.createFakes().toString());
+            System.out.println(c.createFakes().toString());
+            System.out.println(q.createFakes().toString());
+            System.out.println(nqc.createFakes().toString());
+        }
         return new ResponseEntity<>("Banco criado e populado OK!", HttpStatus.OK);
     }
 
@@ -132,13 +134,7 @@ public class ServerController extends AbstractController {
         return downloadFile(WkDB.getFileDB(), MediaType.APPLICATION_OCTET_STREAM);
     }
 
-    @RequestMapping(path = "/fakepdf", method = RequestMethod.GET)
-    public ResponseEntity<?> fakepdf() throws IOException {
-        File pdf = new File(getClass().getClassLoader().getResource("FakePDF.pdf").getFile());
-        return downloadFile(pdf, MediaType.APPLICATION_PDF);
-    }
-
-    @RequestMapping(path = "/sendemail", method = RequestMethod.GET)
+    @RequestMapping(path = "/email1", method = RequestMethod.GET)
     public ResponseEntity<?> sendEmail() throws Exception {
         AmazonSESSample amazonSES = new AmazonSESSample();
         amazonSES.sendEmail();
