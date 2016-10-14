@@ -61,10 +61,6 @@ public class QualityControlController extends AbstractController {
     public Object downloadPDF(@PathVariable(value = "id") int id) {
         // verifyUser(userId);
         //
-        // TODO: REMOVER! APENAS UM TESTE
-        if (id == 1) {
-            id = 666;
-        }
         File pdf = new File(generateDirPDF(id), id + ".pdf");
         // se existe um PDF para o ID
         if (pdf.isFile() && pdf.length() > 0) {
@@ -80,6 +76,7 @@ public class QualityControlController extends AbstractController {
         return "PDF não encontrado!";
     }
 
+    @CrossOrigin
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.POST)
     public ResponseEntity<?> uploadPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) {
         // verifyUser(userId);
@@ -89,13 +86,13 @@ public class QualityControlController extends AbstractController {
         dirPDFid.mkdir();
         try {
             pdf.transferTo(new File(dirPDFid, id + ".pdf"));
+            // Atualizar no banco
+            db.updateById(Update.fields("hasPDF"), Update.values(true), id);
+            return returnOK("PDF salvo com sucesso!");
         } catch (Exception ex) {
             ex.printStackTrace();
-            return returnFail("Erro ao salvar o PDF no servidor!");
         }
-        // Atualizar no banco
-        db.updateById(Update.fields("hasPDF"), Update.values(true), id);
-        return returnOK("PDF salvo com sucesso!");
+        return returnFail("Erro ao salvar o PDF no servidor!");
     }
 
     private File generateDirPDF(int id) {
