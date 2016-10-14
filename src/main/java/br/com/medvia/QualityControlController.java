@@ -76,16 +76,19 @@ public class QualityControlController extends AbstractController {
         return "PDF não encontrado!";
     }
 
-    @CrossOrigin
     @RequestMapping(path = "/{id}/pdf", method = RequestMethod.POST)
-    public ResponseEntity<?> uploadPDF(@PathVariable(value = "id") int id, @RequestParam("file") MultipartFile pdf) {
+    public ResponseEntity<ReplyMessage> pdfUpdate(@PathVariable(value = "id") int id,
+            @RequestParam(value = "multipartFile", required = false) MultipartFile multipartFile) {
         // verifyUser(userId);
         //
+        if (multipartFile == null) {
+            return returnFail("PDF não recebido!");
+        }
         File dirPDFid = generateDirPDF(id);
-        // cria pasta e salva PDF
-        dirPDFid.mkdir();
         try {
-            pdf.transferTo(new File(dirPDFid, id + ".pdf"));
+            // cria pasta e salva PDF
+            dirPDFid.mkdir();
+            multipartFile.transferTo(new File(dirPDFid, id + ".pdf"));
             // Atualizar no banco
             db.updateById(Update.fields("hasPDF"), Update.values(true), id);
             return returnOK("PDF salvo com sucesso!");
