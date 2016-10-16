@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.medvia</groupId>
     <artifactId>medvia</artifactId>
-    <version>0.85</version>
+    <version>0.86</version>
     <packaging>war</packaging>
     <name>Medvia</name>    
     <parent>
@@ -18,17 +18,14 @@
         <start-class>br.com.medvia.Application</start-class>
     </properties>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+        </dependency>        
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
         </dependency>
-        -->
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.5.2</version>
-        </dependency>        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -51,12 +48,14 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
+        <!--
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-ses</artifactId>
             <version>1.10.16</version>
             <type>jar</type>
         </dependency>
+        -->
     </dependencies>
     <build>
         <plugins>

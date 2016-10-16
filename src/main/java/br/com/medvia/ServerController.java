@@ -1,7 +1,8 @@
 package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
-import br.com.medvia.mail.AmazonSESSample;
+import br.com.medvia.mail.Gmail;
+import br.com.medvia.mail.Gmail2;
 import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
@@ -135,11 +136,18 @@ public class ServerController extends AbstractController {
     }
 
     @RequestMapping(path = "/email1", method = RequestMethod.GET)
-    public ResponseEntity<?> sendEmail() throws Exception {
-        AmazonSESSample amazonSES = new AmazonSESSample();
-        amazonSES.sendEmail();
-        return returnOK("OK");
+    public ResponseEntity<?> email1() throws Exception {
+        Gmail email = new Gmail();
+        email.send();
+        return returnOK("Email sent OK");
     }
+    
+    @RequestMapping(path = "/email2", method = RequestMethod.GET)
+    public ResponseEntity<?> email2() throws Exception {
+        Gmail2 email = new Gmail2();
+        email.send();
+        return returnOK("Email sent OK");
+    }    
 
     public class DbInfo {
 
