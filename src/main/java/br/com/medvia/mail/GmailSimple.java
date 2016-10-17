@@ -11,25 +11,23 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Willian
  */
-public class Gmail {
+public class GmailSimple {
 
     public void send() {
-        String userName = "willkev";
-        String from = "willkev@gmail.com";
-        String pass = "novozero1234";
+        String userName = "";
+        String from = userName + "@gmail.com";
+        String pass = "";
         String[] to = {from};
-        String subject = "Email Teste";
-        String body = "Corpo do email.";
+        String subject = "Email Signal OK";
+        String body = "Corpo do email mais uma vez \nquebra de linha\n3ª linha e fim!";
 
         Properties props = System.getProperties();
         String host = "smtp.gmail.com";
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", "587");// 465
-        
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-
+        props.put("mail.smtp.ssl.trust", host);
         // props.setProperty("mail.transport.protocol", "smtp");
         props.put("mail.smtp.user", userName);
         props.put("mail.smtp.password", pass);

@@ -1,8 +1,8 @@
 package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
-import br.com.medvia.mail.Gmail;
-import br.com.medvia.mail.Gmail2;
+import br.com.medvia.mail.EmailSender;
+import br.com.medvia.mail.GmailSimple;
 import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -135,19 +136,20 @@ public class ServerController extends AbstractController {
         return downloadFile(WkDB.getFileDB(), MediaType.APPLICATION_OCTET_STREAM);
     }
 
-    @RequestMapping(path = "/email1", method = RequestMethod.GET)
-    public ResponseEntity<?> email1() throws Exception {
-        Gmail email = new Gmail();
-        email.send();
-        return returnOK("Email sent OK");
+    @RequestMapping(path = "/email", method = RequestMethod.GET)
+    public ResponseEntity<?> email(@RequestParam(value = "subject") String subject,
+            @RequestParam(value = "content") String content) {
+        EmailSender email = new EmailSender();
+        return returnMsg(email.send("willkev@gmail.com", subject, content),
+                "Email sent!", "Email FAIL!");
     }
-    
-    @RequestMapping(path = "/email2", method = RequestMethod.GET)
-    public ResponseEntity<?> email2() throws Exception {
-        Gmail2 email = new Gmail2();
+
+    @RequestMapping(path = "/email1", method = RequestMethod.GET)
+    public ResponseEntity<?> email1() {
+        GmailSimple email = new GmailSimple();
         email.send();
-        return returnOK("Email sent OK");
-    }    
+        return returnOK("Email sent...");
+    }
 
     public class DbInfo {
 

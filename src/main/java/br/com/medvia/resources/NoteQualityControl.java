@@ -4,7 +4,7 @@ import br.com.medvia.db.WkTable;
 
 /**
  *
- * @author Willian Kirschner willkev@gmail.com.kirschner
+ * @author Willian Kirschner willkev@gmail.com
  */
 public class NoteQualityControl extends WkTable {
 

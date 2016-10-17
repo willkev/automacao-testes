@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  *
- * @author Willian Kirschner willkev@gmail.com.kirschner
+ * @author Willian Kirschner willkev@gmail.com
  */
 @JsonInclude(Include.NON_NULL)
 public class Equipment extends WkTable {

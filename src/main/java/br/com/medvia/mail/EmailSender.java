@@ -14,29 +14,31 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Willian
  */
-public class Gmail2 {
+public class EmailSender {
 
-    public void send() {
-        final String SSL = "javax.net.ssl.SSLSocketFactory";
-
+    public boolean send(String emailTo, String subject, String content) {
         Properties props = System.getProperties();
-        props.setProperty("mail.smtp.host", "smtp.gmail.com");
-        props.setProperty("mail.smtp.socketFactory.class", SSL);
-        props.setProperty("mail.smtp.socketFactory.fallback", "false");
-        props.setProperty("mail.smtp.port", "465");
-        props.setProperty("mail.smtp.socketFactory.port", "465");
+        final String host = "smtp.gmail.com";
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.ssl.trust", host);
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.debug", "true");
+        props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.store.protocol", "pop3");
         props.put("mail.transport.protocol", "smtp");
+//        props.put("mail.debug", "true");
         /*
          1. Login your google account
          2. In google search, search “Application-specific password”
          3. Enter a label for your reference and select “generate password”
          4. Copy that password and paste it in code at “//password here” line. 
          */
-        final String password = "upesbpahruibeefu"; //Password Generated using above steps
-        final String username = "medviamail"; // medviamail123456
+        final String password = ""; //Password Generated using above steps
+        final String username = "";
+        final String senderEmail = username + "@gmail.com";
         try {
             Session session = Session.getDefaultInstance(props,
                     new Authenticator() {
@@ -46,7 +48,7 @@ public class Gmail2 {
                     });
 
             Message msg = new MimeMessage(session);
-            String[] to = {"willkev@gmail.com", "daia.brites@gmail.com"};
+            String[] to = {senderEmail, "?@gmail.com"};
             InternetAddress[] toAddress = new InternetAddress[to.length];
             for (int i = 0; i < to.length; i++) {
                 toAddress[i] = new InternetAddress(to[i]);
@@ -55,15 +57,17 @@ public class Gmail2 {
                 msg.addRecipient(Message.RecipientType.TO, toAddress[i]);
             }
 //            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("willkev@gmail.com,daia.brites@gmail.com", false));            
-            msg.setFrom(new InternetAddress("medviamail@gmail.com"));
-            msg.setSubject("Email Teste007");
-            msg.setText("This email is a simples test!");
+            msg.setFrom(new InternetAddress(senderEmail));
+            msg.setSubject(subject);
+            msg.setText(content);
             msg.setSentDate(new Date());
             Transport.send(msg);
 
             System.out.println("Successfully sent emai!");
+            return true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return false;
     }
 }

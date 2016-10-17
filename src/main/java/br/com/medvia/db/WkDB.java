@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Willian Kirschner willkev@gmail.com Kirschner
+ * @author Willian Kirschner willkev@gmail.com
  * @version 2015 Ago, 01
  * @param <T> Class that represent a Table in DB, need to extends WkTable
  */
