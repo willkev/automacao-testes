@@ -2,7 +2,6 @@ package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
 import br.com.medvia.mail.EmailSender;
-import br.com.medvia.mail.GmailSimple;
 import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
@@ -80,12 +79,12 @@ public class ServerController extends AbstractController {
     }
 
     @RequestMapping("/dbcreate")
-    public ResponseEntity<String> dbCreateFakes() {
+    public ResponseEntity<String> dbCreate() {
         return dbCreate0(false);
     }
 
     @RequestMapping("/dbcreatefakes")
-    public ResponseEntity<String> dbCreate() {
+    public ResponseEntity<String> dbCreateFakes() {
         return dbCreate0(true);
     }
 
@@ -137,18 +136,13 @@ public class ServerController extends AbstractController {
     }
 
     @RequestMapping(path = "/email", method = RequestMethod.GET)
-    public ResponseEntity<?> email(@RequestParam(value = "subject") String subject,
+    public ResponseEntity<?> email(
+            @RequestParam(value = "to") String to,
+            @RequestParam(value = "subject") String subject,
             @RequestParam(value = "content") String content) {
         EmailSender email = new EmailSender();
-        return returnMsg(email.send("willkev@gmail.com", subject, content),
+        return returnMsg(email.send(to, subject, content),
                 "Email sent!", "Email FAIL!");
-    }
-
-    @RequestMapping(path = "/email1", method = RequestMethod.GET)
-    public ResponseEntity<?> email1() {
-        GmailSimple email = new GmailSimple();
-        email.send();
-        return returnOK("Email sent...");
     }
 
     public class DbInfo {

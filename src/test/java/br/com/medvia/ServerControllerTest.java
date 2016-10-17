@@ -32,6 +32,8 @@ public class ServerControllerTest {
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+        ServerController sc = new ServerController();
+        sc.dbCreateFakes();
     }
 
     @Test

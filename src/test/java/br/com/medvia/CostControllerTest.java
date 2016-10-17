@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isOneOf;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ public class CostControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Before
+    public void setUp() {
+        ServerController sc = new ServerController();
+        sc.dbCreateFakes();
+    }
 
     @Test
     public void listByTicket() throws Exception {

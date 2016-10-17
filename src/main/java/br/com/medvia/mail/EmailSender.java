@@ -9,6 +9,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,7 +18,9 @@ import javax.mail.internet.MimeMessage;
  */
 public class EmailSender {
 
-    public boolean send(String emailTo, String subject, String content) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailSender.class);
+
+    public boolean send(String to, String subject, String content) {
         Properties props = System.getProperties();
         final String host = "smtp.gmail.com";
         props.put("mail.smtp.host", host);
@@ -36,38 +40,31 @@ public class EmailSender {
          3. Enter a label for your reference and select “generate password”
          4. Copy that password and paste it in code at “//password here” line. 
          */
-        final String password = ""; //Password Generated using above steps
-        final String username = "";
+        final String password = "npdddzkxyrvzybhw"; //Password Generated using above steps
+        final String username = "willkev";
         final String senderEmail = username + "@gmail.com";
         try {
             Session session = Session.getDefaultInstance(props,
                     new Authenticator() {
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(username, password);
-                        }
-                    });
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
 
             Message msg = new MimeMessage(session);
-            String[] to = {senderEmail, "?@gmail.com"};
-            InternetAddress[] toAddress = new InternetAddress[to.length];
-            for (int i = 0; i < to.length; i++) {
-                toAddress[i] = new InternetAddress(to[i]);
-            }
-            for (int i = 0; i < toAddress.length; i++) {
-                msg.addRecipient(Message.RecipientType.TO, toAddress[i]);
-            }
-//            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("willkev@gmail.com,daia.brites@gmail.com", false));            
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             msg.setFrom(new InternetAddress(senderEmail));
             msg.setSubject(subject);
             msg.setText(content);
             msg.setSentDate(new Date());
             Transport.send(msg);
 
-            System.out.println("Successfully sent emai!");
+            LOGGER.info("Successfully sent emai!");
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        LOGGER.error("Fail to send emai!");
         return false;
     }
 }
