@@ -38,10 +38,10 @@ public class EmailSender {
          1. Login your google account
          2. In google search, search “Application-specific password”
          3. Enter a label for your reference and select “generate password”
-         4. Copy that password and paste it in code at “//password here” line. 
          */
-        final String password = "npdddzkxyrvzybhw"; //Password Generated using above steps
-        final String username = "willkev";
+        //Password Generated using above steps
+        final String password = "";
+        final String username = "";
         final String senderEmail = username + "@gmail.com";
         try {
             Session session = Session.getDefaultInstance(props,
