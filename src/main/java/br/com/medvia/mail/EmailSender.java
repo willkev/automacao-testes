@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Willian
+ * @author Willian Kirschner willkev@gmail.com
  */
 public class EmailSender {
 
