@@ -11,10 +11,21 @@ public class User extends WkTable {
     private String email;
     private String password;
     private String name;
-    // 0 - Admin
-    // 1 - Normal (pode ver e editar)
-    // 2 - Visualizador (apenas pode ver)
-    private int permissionLevel = 1;
+    // 0 - Super Admin (geral)
+    // 1 - Admin (por Instituição)
+    // 2 - Normal (pode ver e editar)
+    // 3 - Visualizador (apenas pode ver)
+    private int permissionLevel = 2;
+    // Lista de IDs, separados por virgula
+    private String institutionsList;
+
+    public String getInstitutionsList() {
+        return institutionsList;
+    }
+
+    public void setInstitutionsList(String institutionsList) {
+        this.institutionsList = institutionsList;
+    }
 
     public int getPermissionLevel() {
         return permissionLevel;

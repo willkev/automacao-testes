@@ -3,8 +3,10 @@ package br.com.medvia;
 import br.com.medvia.db.WkDB;
 import br.com.medvia.db.WkDB.Where;
 import br.com.medvia.resources.User;
+import br.com.medvia.resources.UserFull;
 import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
+import com.google.gson.Gson;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -40,9 +42,48 @@ public class UserController extends AbstractController {
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getById(@PathVariable(value = "id") int id) {
+        User user = db.selectById(id);;
+        if (user == null) {
+            return returnFail("Usuário não encontrado");
+        }
+        String userJson = user.meToJson();
+        UserFull userFull = new Gson().fromJson(userJson, UserFull.class);
+        try {
+            String[] ids = user.getInstitutionsList().split(",");
+            Integer[] institutions = new Integer[ids.length];
+            for (int i = 0; i < ids.length; i++) {
+                institutions[i] = Integer.valueOf(ids[i]);
+            }
+            userFull.setInstitutions(institutions);
+        } catch (Exception e) {
+        }
+        userFull.setPassword("");
+        userFull.setInstitutionsList("");
+        return new ResponseEntity<>(userFull, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@RequestBody User user) {
-        boolean insert = db.insert(user);
+    public ResponseEntity<ReplyMessage> create(@RequestBody UserFull userFull) {
+        boolean insert = false;
+        if (userFull.getEmail() != null && userFull.getEmail().matches("\\S{3,}@\\w{3,10}.\\S{2,}")) {
+            User user = userFull;
+            Integer[] institutions = userFull.getInstitutions();
+            if (institutions != null && institutions.length > 0) {
+                try {
+                    String IdList = "";
+                    for (Integer institutionId : institutions) {
+                        if (institutionId != null) {
+                            IdList += institutionId + ",";
+                        }
+                    }
+                    user.setInstitutionsList(IdList);
+                } catch (Exception e) {
+                }
+            }
+            insert = db.insert(user);
+        }
         return returnMsg(insert, "Criou novo usuário com sucesso!", "Não foi possível criar um novo usuário!");
     }
 
@@ -51,6 +92,12 @@ public class UserController extends AbstractController {
         user.setId(id);
         boolean update = db.update(user);
         return returnMsgUpdate(update);
+    }
+
+    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id) {
+        boolean deleteById = db.deleteById(id);
+        return returnMsgDelete(deleteById);
     }
 
     // required = false, para não expor a assinatura do método de login
@@ -71,16 +118,17 @@ public class UserController extends AbstractController {
         // Remove a senha antes de retornar!
         User get = select.get(0);
         get.setPassword("");
+        get.setInstitutionsList(null);
         return get;
     }
 
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
-        List<User> created = Fakes.createUsers();
-        created.stream().forEach((element) -> {
+        List<UserFull> createUsers = Fakes.createUsers();
+        createUsers.stream().forEach((element) -> {
             create(element);
         });
-        return fakesCreated(created.size());
+        return fakesCreated(createUsers.size());
     }
 
 }

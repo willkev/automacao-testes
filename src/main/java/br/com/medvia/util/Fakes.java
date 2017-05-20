@@ -9,6 +9,7 @@ import br.com.medvia.resources.QualityControl;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.TypeEquipment;
 import br.com.medvia.resources.User;
+import br.com.medvia.resources.UserFull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -163,43 +164,49 @@ public class Fakes {
         return list;
     }
 
-    public static List<User> createUsers() {
-        List<User> list = new ArrayList<>();
+    public static List<UserFull> createUsers() {
+        List<UserFull> list = new ArrayList<>();
 
-        User user1 = new User();
+        UserFull user1 = new UserFull();
         user1.setName("Dr. do Hospital");
-        user1.setEmail("user1");
+        user1.setEmail("user1@email.com");
         user1.setPassword("1111");
+        user1.setInstitutions(new Integer[]{1});
         list.add(user1);
 
-        User user2 = new User();
+        UserFull user2 = new UserFull();
         user2.setName("Dr. Fulano Bento");
-        user2.setEmail("user2");
+        user2.setEmail("user2@email.com");
         user2.setPassword("2222");
+        user2.setInstitutions(new Integer[]{1, 2});
         list.add(user2);
 
-        User user3 = new User();
+        UserFull user3 = new UserFull();
         user3.setName("Dr. Flemming");
-        user3.setEmail("user3");
+        user3.setEmail("user3@email.com");
         user3.setPassword("3333");
+        user3.setInstitutions(new Integer[]{1, 2, 3});
         list.add(user3);
 
-        User user4 = new User();
+        UserFull user4 = new UserFull();
         user4.setName("Técnico Radiologista");
-        user4.setEmail("user4");
+        user4.setEmail("user4@email.com");
         user4.setPassword("4444");
+        user4.setInstitutions(new Integer[]{1, 2, 3, 4});
         list.add(user4);
 
-        User user5 = new User();
+        UserFull user5 = new UserFull();
         user5.setName("Mario Luigui da Silva");
-        user5.setEmail("user5");
+        user5.setEmail("user5@email.com");
         user5.setPassword("5555");
+        user5.setInstitutions(new Integer[]{2});
         list.add(user5);
 
-        User user6 = new User();
+        UserFull user6 = new UserFull();
         user6.setName("Doctor Who");
-        user6.setEmail("user6");
+        user6.setEmail("user6@email.com");
         user6.setPassword("6666");
+        user6.setInstitutions(new Integer[]{3});
         list.add(user6);
 
         return list;

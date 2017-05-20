@@ -63,9 +63,9 @@ public class ServerController extends AbstractController {
 
         // se o arquivo ainda não existir
         if (!WkDB.getFileDB().exists() || WkDB.getFileDB().length() < 1) {
-            for (WkDB db : dbList) {
+            dbList.stream().forEach((db) -> {
                 db.createTable();
-            }
+            });
         }
     }
 

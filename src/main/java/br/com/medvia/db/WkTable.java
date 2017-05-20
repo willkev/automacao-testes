@@ -23,7 +23,7 @@ public class WkTable {
         this.id = id;
     }
 
-    protected String meToJson() {
+    public String meToJson() {
         return new Gson().toJson(this);
     }
 }
