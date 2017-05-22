@@ -19,6 +19,9 @@ public class User extends WkTable {
     // Lista de IDs, separados por virgula
     private String institutionsList;
 
+    public User() {
+    }
+
     public String getInstitutionsList() {
         return institutionsList;
     }
@@ -62,6 +65,21 @@ public class User extends WkTable {
     @Override
     public String toString() {
         return "User" + meToJson();
+    }
+
+    public void convertInstitutionsList(Integer[] institutions) {
+        if (institutions != null && institutions.length > 0) {
+            try {
+                String IdList = "";
+                for (Integer institutionId : institutions) {
+                    if (institutionId != null) {
+                        IdList += institutionId + ",";
+                    }
+                }
+                this.institutionsList = IdList;
+            } catch (Exception e) {
+            }
+        }
     }
 
 }

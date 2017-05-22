@@ -88,25 +88,25 @@ class AbstractController {
                 .body(new InputStreamResource(new FileInputStream(file)));
     }
 
-    boolean isValueOK(String value) {
+    boolean isNotNullNotEmpty(String value) {
         if (value == null) {
             return false;
         }
         return !value.isEmpty();
     }
 
-    boolean isValueOK(Integer value) {
-        return isValueOK(value, 0, Integer.MAX_VALUE);
+    boolean isNotNullPositive(Integer value) {
+        return isIntoRange(value, 0, Integer.MAX_VALUE);
     }
 
-    boolean isValueOK(Integer value, int min, int max) {
+    boolean isIntoRange(Integer value, int min, int max) {
         if (value == null) {
             return false;
         }
         return value >= min && value <= max;
     }
 
-    boolean isValueOK(Double value) {
+    boolean isNotNullPositive(Double value) {
         if (value == null) {
             return false;
         }

@@ -57,7 +57,7 @@ public class NoteQualityControlController extends AbstractController {
             @PathVariable(value = "id") int id, @RequestBody NoteQualityControl note) {
         note.setUserId(verifyUser(userIdStr));
         // Valida campos obrigatórios
-        if (!isValueOK(note.getDescription())) {
+        if (!isNotNullNotEmpty(note.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
 //        if (!isValueOK(note.getUserId())) {

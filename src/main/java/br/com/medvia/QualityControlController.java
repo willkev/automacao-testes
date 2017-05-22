@@ -110,7 +110,7 @@ public class QualityControlController extends AbstractController {
 //        if (!isValueOK(qualityControl.getUserId(), 1, Integer.MAX_VALUE)) {
 //            return returnFieldMandatory("Usuário Criador");
 //        }
-        if (!isValueOK(qualityControl.getTest())) {
+        if (!isNotNullNotEmpty(qualityControl.getTest())) {
             return returnFieldMandatory("Descrição");
         }
         boolean insert = db.insert(qualityControl);

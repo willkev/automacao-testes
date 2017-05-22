@@ -69,26 +69,16 @@ public class UserController extends AbstractController {
         boolean insert = false;
         if (userFull.getEmail() != null && userFull.getEmail().matches("\\S{3,}@\\w{3,10}.\\S{2,}")) {
             User user = userFull;
-            Integer[] institutions = userFull.getInstitutions();
-            if (institutions != null && institutions.length > 0) {
-                try {
-                    String IdList = "";
-                    for (Integer institutionId : institutions) {
-                        if (institutionId != null) {
-                            IdList += institutionId + ",";
-                        }
-                    }
-                    user.setInstitutionsList(IdList);
-                } catch (Exception e) {
-                }
-            }
+            user.convertInstitutionsList(userFull.getInstitutions());
             insert = db.insert(user);
         }
         return returnMsg(insert, "Criou novo usuário com sucesso!", "Não foi possível criar um novo usuário!");
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> edit(@RequestBody User user, @PathVariable(value = "id") int id) {
+    public ResponseEntity<ReplyMessage> edit(@RequestBody UserFull userFull, @PathVariable(value = "id") int id) {
+        User user = userFull;
+        user.convertInstitutionsList(userFull.getInstitutions());
         user.setId(id);
         boolean update = db.update(user);
         return returnMsgUpdate(update);
@@ -103,7 +93,7 @@ public class UserController extends AbstractController {
     // required = false, para não expor a assinatura do método de login
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public User login(@RequestBody(required = false) User user) {
-        if (user == null || !isValueOK(user.getEmail()) || !isValueOK(user.getPassword())) {
+        if (user == null || !isNotNullNotEmpty(user.getEmail()) || !isNotNullNotEmpty(user.getPassword())) {
             // força dar uma exeção de permissão!
             verifyUser(null);
         }

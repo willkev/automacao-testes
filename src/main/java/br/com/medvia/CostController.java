@@ -55,10 +55,10 @@ public class CostController extends AbstractController {
             @PathVariable(value = "id") int id, @RequestBody Cost cost) {
         cost.setUserId(verifyUser(userIdStr));
         // Valida campos obrigatórios
-        if (!isValueOK(cost.getValue())) {
+        if (!isNotNullPositive(cost.getValue())) {
             return returnFieldMandatory("Valor");
         }
-        if (!isValueOK(cost.getDescription())) {
+        if (!isNotNullNotEmpty(cost.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
 //        if (!isValueOK(cost.getUserId(), 1, Integer.MAX_VALUE)) {
@@ -75,10 +75,10 @@ public class CostController extends AbstractController {
     public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "idTicket") int idTicket,
             @PathVariable(value = "id") int id, @RequestBody Cost cost) {
         // Valida campos obrigatórios
-        if (!isValueOK(cost.getValue())) {
+        if (!isNotNullPositive(cost.getValue())) {
             return returnFieldMandatory("Valor");
         }
-        if (!isValueOK(cost.getDescription())) {
+        if (!isNotNullNotEmpty(cost.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
         Cost costOriginal = db.selectById(id);

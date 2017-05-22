@@ -54,13 +54,13 @@ public class TicketController extends AbstractController {
 //        if (!isValueOK(ticket.getUserId(), 1, Integer.MAX_VALUE)) {
 //            return returnFieldMandatory("Usuário Criador");
 //        }
-        if (!isValueOK(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
+        if (!isIntoRange(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
             return returnFieldMandatory("Usuário Responsável");
         }
-        if (!isValueOK(ticket.getDescription())) {
+        if (!isNotNullNotEmpty(ticket.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
-        if (!isValueOK(ticket.getEquipmentId(), 1, Integer.MAX_VALUE)) {
+        if (!isIntoRange(ticket.getEquipmentId(), 1, Integer.MAX_VALUE)) {
             return returnFieldMandatory("Equipamento");
         }
         ticket.setState("a");
@@ -77,19 +77,19 @@ public class TicketController extends AbstractController {
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
         // Valida campos
-        if (!isValueOK(ticket.getSituation())) {
+        if (!isNotNullNotEmpty(ticket.getSituation())) {
             return returnFieldMandatory("Situação");
         }
-        if (!isValueOK(ticket.getState())) {
+        if (!isNotNullNotEmpty(ticket.getState())) {
             return returnFieldMandatory("Estado");
         }
-        if (!isValueOK(ticket.getDateOcurrence())) {
+        if (!isNotNullNotEmpty(ticket.getDateOcurrence())) {
             return returnFieldMandatory("Data de ocorrência");
         }
-        if (!isValueOK(ticket.getPrediction())) {
+        if (!isNotNullNotEmpty(ticket.getPrediction())) {
             return returnFieldMandatory("Data de previsão de conserto");
         }
-        if (!isValueOK(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
+        if (!isIntoRange(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
             return returnFieldMandatory("Responsável");
         }
         Ticket ticketOriginal = db.selectById(id);
@@ -108,10 +108,10 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(path = PUT_CLOSE, method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> close(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
-        if (!isValueOK(ticket.getDateClosing())) {
+        if (!isNotNullNotEmpty(ticket.getDateClosing())) {
             return returnFieldMandatory("Data de Fechamento");
         }
-        if (!isValueOK(ticket.getNoteClosing())) {
+        if (!isNotNullNotEmpty(ticket.getNoteClosing())) {
             return returnFieldMandatory("Nota de Fechamento");
         }
         Ticket ticketOriginal = db.selectById(id);
@@ -128,10 +128,10 @@ public class TicketController extends AbstractController {
 
     @RequestMapping(path = PUT_DELETE, method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
-        if (!isValueOK(ticket.getDateRemoving())) {
+        if (!isNotNullNotEmpty(ticket.getDateRemoving())) {
             return returnFieldMandatory("Data de Exclusão");
         }
-        if (!isValueOK(ticket.getNoteRemoving())) {
+        if (!isNotNullNotEmpty(ticket.getNoteRemoving())) {
             return returnFieldMandatory("Nota de Exclusão");
         }
         Ticket ticketOriginal = db.selectById(id);

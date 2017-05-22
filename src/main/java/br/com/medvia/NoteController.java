@@ -54,7 +54,7 @@ public class NoteController extends AbstractController {
         Ticket ticket = dbT.selectById(id);
         if (ticket != null) {
             // Se possui nota de fechamento
-            if (isValueOK(ticket.getNoteClosing())) {
+            if (isNotNullNotEmpty(ticket.getNoteClosing())) {
                 Map<String, Object> map = new HashMap<>();
                 //
                 // id=0 Significa que não pode ser alterado/exluido no Frontend
@@ -66,7 +66,7 @@ public class NoteController extends AbstractController {
                 selectAll.add(map);
             }
             // Se possui nota de exclusão
-            if (isValueOK(ticket.getNoteRemoving())) {
+            if (isNotNullNotEmpty(ticket.getNoteRemoving())) {
                 Map<String, Object> map = new HashMap<>();
                 //
                 // id=0 Significa que não pode ser alterado/exluido no Frontend
@@ -86,7 +86,7 @@ public class NoteController extends AbstractController {
             @PathVariable(value = "id") int id, @RequestBody Note note) {
         note.setUserId(verifyUser(userIdStr));
         // Valida campos obrigatórios
-        if (!isValueOK(note.getDescription())) {
+        if (!isNotNullNotEmpty(note.getDescription())) {
             return returnFieldMandatory("Descrição");
         }
 //        if (!isValueOK(note.getUserId())) {
