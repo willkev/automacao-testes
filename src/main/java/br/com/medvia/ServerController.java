@@ -2,6 +2,7 @@ package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
 import br.com.medvia.mail.EmailSender;
+import br.com.medvia.mail.MailEnvelope;
 import br.com.medvia.resources.Cost;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Institution;
@@ -20,9 +21,9 @@ import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -135,13 +136,18 @@ public class ServerController extends AbstractController {
         return downloadFile(WkDB.getFileDB(), MediaType.APPLICATION_OCTET_STREAM);
     }
 
-    @RequestMapping(path = "/email", method = RequestMethod.GET)
-    public ResponseEntity<?> email(
-            @RequestParam(value = "to") String to,
-            @RequestParam(value = "subject") String subject,
-            @RequestParam(value = "content") String content) {
+    // required = false, para não expor a assinatura do método de login
+    @RequestMapping(path = "/email", method = RequestMethod.POST)
+    public ResponseEntity<?> email(@RequestBody(required = false) MailEnvelope mailEnvelope) {
+        if (mailEnvelope == null
+                || !isNotNullNotEmpty(mailEnvelope.getTo())
+                || !isNotNullNotEmpty(mailEnvelope.getSubject())
+                || !isNotNullNotEmpty(mailEnvelope.getContent())) {
+            // força dar uma exeção de permissão!
+            verifyUser(null);
+        }
         EmailSender email = new EmailSender();
-        return returnMsg(email.send(to, subject, content),
+        return returnMsg(email.send(mailEnvelope.getTo(), mailEnvelope.getSubject(), mailEnvelope.getContent()),
                 "Email sent!", "Email FAIL!");
     }
 

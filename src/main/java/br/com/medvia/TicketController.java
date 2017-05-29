@@ -49,11 +49,9 @@ public class TicketController extends AbstractController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestHeader(value = "userId", required = false) String userIdStr,
             @RequestBody Ticket ticket) {
+        // antes de setar, verifica User
         ticket.setUserId(verifyUser(userIdStr));
         // valida campos obrigatórios
-//        if (!isValueOK(ticket.getUserId(), 1, Integer.MAX_VALUE)) {
-//            return returnFieldMandatory("Usuário Criador");
-//        }
         if (!isIntoRange(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
             return returnFieldMandatory("Usuário Responsável");
         }

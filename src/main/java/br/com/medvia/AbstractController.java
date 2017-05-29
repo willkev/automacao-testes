@@ -35,7 +35,7 @@ class AbstractController {
         } catch (Exception e) {
             throw new UnsupportedOperationException("No permission!");
         }
-        if (userId == null || userId <= 0) {
+        if (userId <= 0) {
             throw new UnsupportedOperationException("No permission!");
         }
         return userId;
