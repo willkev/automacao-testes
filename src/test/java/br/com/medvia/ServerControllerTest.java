@@ -1,5 +1,6 @@
 package br.com.medvia;
 
+import br.com.medvia.mail.EmailSender;
 import br.com.medvia.util.TestUtil;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.isA;
@@ -31,6 +32,7 @@ public class ServerControllerTest {
 
     @Before
     public void setUp() {
+        EmailSender.TEST_RUNNING = true;
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
         ServerController sc = new ServerController();
         sc.dbCreateFakes();

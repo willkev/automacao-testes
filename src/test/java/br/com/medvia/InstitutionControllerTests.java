@@ -25,6 +25,11 @@
 //
 //    @Autowired
 //    private MockMvc mockMvc;
+
+//    @Before
+//    public void setUp() {
+//        EmailSender.TEST_RUNNING = true;
+//    }
 //
 //    @Test
 //    public void getInstitutions() throws Exception {

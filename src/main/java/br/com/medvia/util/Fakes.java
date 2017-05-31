@@ -169,43 +169,45 @@ public class Fakes {
 
         UserFull user1 = new UserFull();
         user1.setName("Dr. do Hospital");
-        user1.setEmail("user1@email.com");
-        user1.setPassword("1111");
+        user1.setEmail("willkev@gmail.com");
+        user1.setPassword("mudar1111");
         user1.setInstitutions(new Integer[]{1});
+        user1.setPermissionLevel(0); // 0 - Super Admin (geral)
         list.add(user1);
 
         UserFull user2 = new UserFull();
         user2.setName("Dr. Fulano Bento");
         user2.setEmail("user2@email.com");
-        user2.setPassword("2222");
-        user2.setInstitutions(new Integer[]{1, 2});
+        user2.setPassword("mudar2222");
+        user2.setInstitutions(new Integer[]{1});
+        user1.setPermissionLevel(1); // 1 - Admin (por Instituição)
         list.add(user2);
 
         UserFull user3 = new UserFull();
         user3.setName("Dr. Flemming");
         user3.setEmail("user3@email.com");
-        user3.setPassword("3333");
+        user3.setPassword("mudar3333");
         user3.setInstitutions(new Integer[]{1, 2, 3});
         list.add(user3);
 
         UserFull user4 = new UserFull();
         user4.setName("Técnico Radiologista");
         user4.setEmail("user4@email.com");
-        user4.setPassword("4444");
+        user4.setPassword("mudar4444");
         user4.setInstitutions(new Integer[]{1, 2, 3, 4});
         list.add(user4);
 
         UserFull user5 = new UserFull();
         user5.setName("Mario Luigui da Silva");
         user5.setEmail("user5@email.com");
-        user5.setPassword("5555");
+        user5.setPassword("mudar5555");
         user5.setInstitutions(new Integer[]{2});
         list.add(user5);
 
         UserFull user6 = new UserFull();
         user6.setName("Doctor Who");
         user6.setEmail("user6@email.com");
-        user6.setPassword("6666");
+        user6.setPassword("mudar6666");
         user6.setInstitutions(new Integer[]{3});
         list.add(user6);
 
@@ -276,12 +278,12 @@ public class Fakes {
         list.add(t4);
 
         Ticket t5 = new Ticket();
-        t5.setTitle("Quarto chamado!");
+        t5.setTitle("Quinto chamado para maca elétrica");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 80)); // -80hr
         t5.setDateOcurrence(dateFormater.format(date));
         date = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 200)); // +200hr
         t5.setPrediction(dateFormater.format(date));
-        t5.setDescription("3 grupos de LEDs queimaram na máquina de café");
+        t5.setDescription("A maca elétrica está falhando");
         t5.setEquipmentId(equipments.get(4).getId());
         t5.setResponsableId(users.get(2).getId());
         t5.setUserId(users.get(4).getId());
@@ -290,6 +292,21 @@ public class Fakes {
         t5.setPriority("b");
         list.add(t5);
 
+        Ticket t6 = new Ticket();
+        t6.setTitle("Revisão da RM");
+        date = new Date();
+        t6.setDateOcurrence(dateFormater.format(date));
+        date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 19)); // -19hr
+        t6.setPrediction(dateFormater.format(date));
+        t6.setDescription("Falta 1 mês para a revisão da RM");
+        t6.setEquipmentId(equipments.get(1).getId());
+        t6.setResponsableId(users.get(0).getId());
+        t6.setUserId(users.get(3).getId());
+        t6.setSituation("50");
+        t6.setState("a");
+        t6.setPriority("n");
+        list.add(t6);        
+        
         return list;
     }
 

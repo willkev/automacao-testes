@@ -36,6 +36,16 @@ public class Ticket extends WkTable {
     private String priority = "b";
     private String noteClosing = "";
     private String noteRemoving = "";
+    // Lista com emails adicionais, separados por vírgula
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public void setDateClosing(String dateClosing) {
         this.dateClosing = dateClosing;

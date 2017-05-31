@@ -1,5 +1,6 @@
 package br.com.medvia;
 
+import br.com.medvia.mail.EmailSender;
 import br.com.medvia.util.TestUtil;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -31,6 +32,7 @@ public class EquipmentControllerTest {
 
     @Before
     public void setUp() {
+        EmailSender.TEST_RUNNING = true;
         ServerController sc = new ServerController();
         sc.dbCreateFakes();
     }

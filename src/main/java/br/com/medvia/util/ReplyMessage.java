@@ -7,9 +7,19 @@ package br.com.medvia.util;
 public class ReplyMessage {
 
     private final String message;
+    private final String warnning;
 
     public ReplyMessage(String message) {
+        this(message, "");
+    }
+
+    public ReplyMessage(String message, String warnning) {
         this.message = message;
+        this.warnning = warnning;
+    }
+
+    public String getWarnning() {
+        return warnning;
     }
 
     public String getMessage() {

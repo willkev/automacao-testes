@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,24 +27,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 @CrossOrigin
 public class UserController extends AbstractController {
-
+    
     public static final String QUERY_LIST = "select id, name from User";
-
+    
     private final WkDB<User> db;
-
+    
     public UserController() {
         super(UserController.class.getSimpleName());
         db = new WkDB<>(User.class);
     }
-
+    
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> list() {
+    public ResponseEntity<?> list(@RequestHeader(value = "userId", required = false) String token) {
+        Integer verifyUser = verifyUser(token);
         List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
-
+    
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getById(@PathVariable(value = "id") int id) {
+    public ResponseEntity<?> getById(@RequestHeader(value = "userId", required = false) String token,
+            @PathVariable(value = "id") int id) {
         User user = db.selectById(id);;
         if (user == null) {
             return returnFail("Usuário não encontrado");
@@ -63,18 +66,22 @@ public class UserController extends AbstractController {
         userFull.setInstitutionsList("");
         return new ResponseEntity<>(userFull, HttpStatus.OK);
     }
-
+    
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ReplyMessage> create(@RequestBody UserFull userFull) {
         boolean insert = false;
         if (userFull.getEmail() != null && userFull.getEmail().matches("\\S{3,}@\\w{3,10}.\\S{2,}")) {
             User user = userFull;
             user.convertInstitutionsList(userFull.getInstitutions());
+            // se não for um nível de permissão permitido, seta como User Normal
+            if (user.getPermissionLevel() < 0 || user.getPermissionLevel() > 2) {
+                user.setPermissionLevel(2);
+            }
             insert = db.insert(user);
         }
         return returnMsg(insert, "Criou novo usuário com sucesso!", "Não foi possível criar um novo usuário!");
     }
-
+    
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestBody UserFull userFull, @PathVariable(value = "id") int id) {
         User user = userFull;
@@ -83,7 +90,7 @@ public class UserController extends AbstractController {
         boolean update = db.update(user);
         return returnMsgUpdate(update);
     }
-
+    
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id) {
         boolean deleteById = db.deleteById(id);
@@ -111,7 +118,7 @@ public class UserController extends AbstractController {
         get.setInstitutionsList(null);
         return get;
     }
-
+    
     @RequestMapping(PATH_FAKES)
     public ResponseEntity<ReplyMessage> createFakes() {
         List<UserFull> createUsers = Fakes.createUsers();
@@ -120,5 +127,5 @@ public class UserController extends AbstractController {
         });
         return fakesCreated(createUsers.size());
     }
-
+    
 }

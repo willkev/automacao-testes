@@ -72,9 +72,9 @@ public class ServerController extends AbstractController {
 
     @RequestMapping("/dbdrop")
     public ResponseEntity<String> dbReset() {
-        for (WkDB db : dbList) {
+        dbList.stream().forEach((db) -> {
             db.dropAndCreateTable();
-        }
+        });
         System.out.println("dropAndCreateTable!");
         return new ResponseEntity<>("DB droped OK!", HttpStatus.OK);
     }
@@ -108,6 +108,8 @@ public class ServerController extends AbstractController {
         System.out.println(i.createFakes().toString());
 
         if (createFakes) {
+            // Para não enviar emails enquanto estiver criando
+            EmailSender.TEST_RUNNING = true;
             // Popula todas tabelas com fakes
             // Obs: Deve ser feito na ordem correta
             System.out.println(u.createFakes().toString());
@@ -117,6 +119,8 @@ public class ServerController extends AbstractController {
             System.out.println(c.createFakes().toString());
             System.out.println(q.createFakes().toString());
             System.out.println(nqc.createFakes().toString());
+            // retorna flag!
+            EmailSender.TEST_RUNNING = false;
         }
         return new ResponseEntity<>("Banco criado e populado OK!", HttpStatus.OK);
     }

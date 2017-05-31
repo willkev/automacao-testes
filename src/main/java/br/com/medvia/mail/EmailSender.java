@@ -1,5 +1,7 @@
 package br.com.medvia.mail;
 
+import br.com.medvia.resources.Equipment;
+import br.com.medvia.resources.User;
 import java.util.Date;
 import java.util.Properties;
 import javax.mail.Authenticator;
@@ -18,9 +20,37 @@ import org.slf4j.LoggerFactory;
  */
 public class EmailSender {
 
+    public static boolean TEST_RUNNING = false;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailSender.class);
 
+    public enum Template {
+        createTicket, closeTicket, deleteTicket
+    }
+
+    private static final String CREATE_TICKET_SUBJECT = "Novo Chamado Aberto \"%s\"";
+    private static final String CREATE_TICKET_CONTENT = "Um novo chamando foi aberto!\n\n"
+            + "Aberto por: %s\n"
+            + "Responsável: %s\n"
+            + "Previsão de conserto: %s\n"
+            + "Equipamento: %s\n"
+            + "\n\n\n\nEsta é uma mensagem automática.";
+
+    public boolean sendCreateTicket(User userTo, User responsable, String titleTicket, String predictionDate, Equipment equipment) {
+        String subject = String.format(CREATE_TICKET_SUBJECT, titleTicket);
+        String content = String.format(CREATE_TICKET_CONTENT,
+                userTo.getName(),
+                responsable.getName(),
+                predictionDate == null || predictionDate.isEmpty() ? "Sem previsão." : predictionDate,
+                equipment == null ? "<Equipamento sem nome!>" : equipment.getName());
+        return send(userTo.getEmail(), subject, content);
+    }
+
     public boolean send(String to, String subject, String content) {
+        // Se estiver rodando testes
+        if (TEST_RUNNING) {
+            return true;
+        }
         Properties props = System.getProperties();
         final String host = "smtp.gmail.com";
         props.put("mail.smtp.host", host);
@@ -40,8 +70,8 @@ public class EmailSender {
          3. Enter a label for your reference and select “generate password”
          */
         //Password Generated using above steps
-        final String password = "";
-        final String username = "";
+        final String password = "ssptvdjolpqucepk";
+        final String username = "medvia.suporte";
         final String senderEmail = username + "@gmail.com";
         try {
             Session session = Session.getDefaultInstance(props,

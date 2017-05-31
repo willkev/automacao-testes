@@ -1,5 +1,6 @@
 package br.com.medvia;
 
+import br.com.medvia.mail.EmailSender;
 import br.com.medvia.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.hamcrest.Matchers.equalTo;
@@ -35,6 +36,7 @@ public class UserControllerTest {
 
     @Before
     public void setUp() {
+        EmailSender.TEST_RUNNING = true;
         ServerController sc = new ServerController();
         sc.dbCreateFakes();
     }

@@ -58,18 +58,30 @@ class AbstractController {
     }
 
     ResponseEntity<ReplyMessage> returnMsg(boolean executed, String msgOK, String msgFail) {
+        return returnMsg(executed, msgOK, msgFail, "");
+    }
+
+    ResponseEntity<ReplyMessage> returnMsg(boolean executed, String msgOK, String msgFail, String warnMsg) {
         if (executed) {
-            return returnOK(msgOK);
+            return returnOK(msgOK, warnMsg);
         }
-        return returnFail(msgFail);
+        return returnFail(msgFail, warnMsg);
     }
 
     ResponseEntity<ReplyMessage> returnFail(String msg) {
-        return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.BAD_REQUEST);
+        return returnFail(msg, "");
+    }
+
+    ResponseEntity<ReplyMessage> returnFail(String msg, String warnMsg) {
+        return new ResponseEntity<>(new ReplyMessage(msg, warnMsg), HttpStatus.BAD_REQUEST);
     }
 
     ResponseEntity<ReplyMessage> returnOK(String msg) {
-        return new ResponseEntity<>(new ReplyMessage(msg), HttpStatus.OK);
+        return returnOK(msg, "");
+    }
+
+    ResponseEntity<ReplyMessage> returnOK(String msg, String warnMsg) {
+        return new ResponseEntity<>(new ReplyMessage(msg, warnMsg), HttpStatus.OK);
     }
 
     ResponseEntity<InputStreamResource> downloadFile(File file, MediaType mediaType) throws IOException {

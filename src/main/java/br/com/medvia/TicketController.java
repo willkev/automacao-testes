@@ -1,6 +1,7 @@
 package br.com.medvia;
 
 import br.com.medvia.db.WkDB;
+import br.com.medvia.mail.EmailSender;
 import br.com.medvia.resources.Equipment;
 import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.User;
@@ -34,23 +35,36 @@ public class TicketController extends AbstractController {
     private static final String PUT_DELETE = "/{id}/delete";
 
     private final WkDB<Ticket> db;
+    private final WkDB<User> dbUser;
+    private final WkDB<Equipment> dbEquipment;
 
     public TicketController() {
         super(TicketController.class.getSimpleName());
         db = new WkDB<>(Ticket.class);
+        dbUser = new WkDB<>(User.class);
+        dbEquipment = new WkDB<>(Equipment.class);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> list() {
-        List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST);
+    public ResponseEntity<?> list(@RequestHeader(value = "userId", required = false) String token) {
+        Integer userId = verifyUser(token);
+        User currentUser = dbUser.selectById(userId);
+        // retorna resultados conforme o nível de permissão do User
+        String filter = "";
+        if (currentUser.getPermissionLevel() >= 1) {
+            // a lista termina com uma virgula
+            String institutionsList = currentUser.getInstitutionsList();
+            filter = " and i.id in (" + institutionsList.substring(0, institutionsList.length() - 1) + ")";
+        }
+        List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST + filter);
         return new ResponseEntity<>(selectAll, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<ReplyMessage> create(@RequestHeader(value = "userId", required = false) String userIdStr,
+    public ResponseEntity<ReplyMessage> create(@RequestHeader(value = "userId", required = false) String token,
             @RequestBody Ticket ticket) {
         // antes de setar, verifica User
-        ticket.setUserId(verifyUser(userIdStr));
+        ticket.setUserId(verifyUser(token));
         // valida campos obrigatórios
         if (!isIntoRange(ticket.getResponsableId(), 1, Integer.MAX_VALUE)) {
             return returnFieldMandatory("Usuário Responsável");
@@ -63,17 +77,51 @@ public class TicketController extends AbstractController {
         }
         ticket.setState("a");
         boolean insert = db.insert(ticket);
-        return returnMsg(insert, "Criou novo chamado com sucesso!", "Não foi possível criar um novo chamdo!");
+        String extraMsg = "";
+        if (insert) {
+            Equipment equipment = dbEquipment.selectById(ticket.getEquipmentId());
+            User userCreator = dbUser.selectById(ticket.getUserId());
+            User userResponsable = userCreator;
+            // Se o criador for diferente do responsável
+            if (ticket.getUserId() != ticket.getResponsableId()) {
+                userResponsable = dbUser.selectById(ticket.getResponsableId());
+            }
+            EmailSender emailSender = new EmailSender();
+            if (userCreator == null) {
+                extraMsg = "Não foi possível enviar email para o usuário criador do chamado.";
+            } else {
+                emailSender.sendCreateTicket(userCreator,
+                        userResponsable,
+                        ticket.getTitle(),
+                        ticket.getPrediction(),
+                        equipment);
+            }
+            if (ticket.getUserId() != ticket.getResponsableId()) {
+                if (userCreator == null) {
+                    extraMsg += "Não foi possível enviar email para o usuário responsável pelo chamado.";
+                } else {
+                    emailSender.sendCreateTicket(userResponsable,
+                            userResponsable,
+                            ticket.getTitle(),
+                            ticket.getPrediction(),
+                            equipment);
+                }
+            }
+        }
+        return returnMsg(insert, "Criou novo chamado com sucesso!",
+                "Não foi possível criar um novo chamdo!", extraMsg);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> get(@PathVariable(value = "id") int id) {
+    public ResponseEntity<?> get(@RequestHeader(value = "userId", required = false) String token,
+            @PathVariable(value = "id") int id) {
         List<Map<String, Object>> selectOne = db.executeQuery(QUERY_LIST_ID + id);
         return new ResponseEntity<>(selectOne.get(0), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> edit(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+    public ResponseEntity<ReplyMessage> edit(@RequestHeader(value = "userId", required = false) String token,
+            @PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
         // Valida campos
         if (!isNotNullNotEmpty(ticket.getSituation())) {
             return returnFieldMandatory("Situação");
@@ -105,7 +153,8 @@ public class TicketController extends AbstractController {
     }
 
     @RequestMapping(path = PUT_CLOSE, method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> close(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+    public ResponseEntity<ReplyMessage> close(@RequestHeader(value = "userId", required = false) String token,
+            @PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
         if (!isNotNullNotEmpty(ticket.getDateClosing())) {
             return returnFieldMandatory("Data de Fechamento");
         }
@@ -125,7 +174,8 @@ public class TicketController extends AbstractController {
     }
 
     @RequestMapping(path = PUT_DELETE, method = RequestMethod.PUT)
-    public ResponseEntity<ReplyMessage> delete(@PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+    public ResponseEntity<ReplyMessage> delete(@RequestHeader(value = "userId", required = false) String token,
+            @PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
         if (!isNotNullNotEmpty(ticket.getDateRemoving())) {
             return returnFieldMandatory("Data de Exclusão");
         }
@@ -158,7 +208,7 @@ public class TicketController extends AbstractController {
         }
         List<Ticket> created = Fakes.createTickets(users, equipments);
         created.stream().forEach((element) -> {
-            create("1", element);
+            create("" + element.getUserId(), element);
         });
         return fakesCreated(created.size());
     }
