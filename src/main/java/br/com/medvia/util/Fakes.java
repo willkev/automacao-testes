@@ -21,30 +21,30 @@ import java.util.Random;
  * @author Willian Kirschner willkev@gmail.com
  */
 public class Fakes {
-
+    
     public static final SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
+    
     public static List<Institution> createInstitutions() {
         List<Institution> list = new ArrayList<>();
-
+        
         Institution i1 = new Institution();
         i1.setDescription("Menino Deus");
         list.add(i1);
-
+        
         Institution i2 = new Institution();
         i2.setDescription("Hospital de Clínicas (POA)");
         list.add(i2);
-
+        
         Institution i3 = new Institution();
         i3.setDescription("Moinhos de Vento");
         list.add(i3);
-
+        
         return list;
     }
-
+    
     public static List<TypeEquipment> createTypesEquipment() {
         List<TypeEquipment> list = new ArrayList<>();
-
+        
         list.add(new TypeEquipment("ACESSÓRIOS"));
         list.add(new TypeEquipment("ANALISADOR PORTÁTIL DE LIGAS"));
         list.add(new TypeEquipment("APARELHO DE ANESTESIA"));
@@ -100,13 +100,13 @@ public class Fakes {
         list.add(new TypeEquipment("SOFTWARE"));
         list.add(new TypeEquipment("STEREOTAXIA"));
         list.add(new TypeEquipment("TOMOGRAFIA COMPUTADORIZADA"));
-
+        
         return list;
     }
-
+    
     public static List<Equipment> createEquipments(List<Institution> institutions, List<TypeEquipment> typesEquipment) {
         List<Equipment> list = new ArrayList<>();
-
+        
         Equipment equip1 = new Equipment();
         equip1.setName("Tomografia 24 Horas");
         equip1.setInstitutionId(institutions.get(0).getId());
@@ -115,7 +115,7 @@ public class Fakes {
         equip1.setSerieNumber("EGH-90876-UKMG");
         equip1.setTypeEquipmentId(typesEquipment.get(0).getId());
         list.add(equip1);
-
+        
         Equipment equip2 = new Equipment();
         equip2.setName("Ressonancia 20 Tesla");
         equip2.setInstitutionId(institutions.get(0).getId());
@@ -124,7 +124,7 @@ public class Fakes {
         equip2.setSerieNumber("823928276-UKMG");
         equip2.setTypeEquipmentId(typesEquipment.get(10).getId());
         list.add(equip2);
-
+        
         Equipment equip3 = new Equipment();
         equip3.setName("Cama levantadora");
         equip3.setInstitutionId(institutions.get(1).getId());
@@ -133,7 +133,7 @@ public class Fakes {
         equip3.setSerieNumber("OLPK-490196-UKMG");
         equip3.setTypeEquipmentId(typesEquipment.get(20).getId());
         list.add(equip3);
-
+        
         Equipment equip4 = new Equipment();
         equip4.setName("Arco de luz LED");
         equip4.setInstitutionId(institutions.get(2).getId());
@@ -142,7 +142,7 @@ public class Fakes {
         equip4.setSerieNumber("45590-AJQOA-39404");
         equip4.setTypeEquipmentId(typesEquipment.get(30).getId());
         list.add(equip4);
-
+        
         Equipment equip5 = new Equipment();
         equip5.setName("Furador de crânio");
         equip5.setInstitutionId(institutions.get(2).getId());
@@ -151,7 +151,7 @@ public class Fakes {
         equip5.setSerieNumber("906627119909");
         equip5.setTypeEquipmentId(typesEquipment.get(40).getId());
         list.add(equip5);
-
+        
         Equipment equip6 = new Equipment();
         equip6.setName("Nobreak 900mA");
         equip6.setInstitutionId(institutions.get(2).getId());
@@ -160,63 +160,64 @@ public class Fakes {
         equip6.setSerieNumber("0918204-49");
         equip6.setTypeEquipmentId(typesEquipment.get(50).getId());
         list.add(equip6);
-
+        
         return list;
     }
-
+    
     public static List<UserFull> createUsers() {
         List<UserFull> list = new ArrayList<>();
-
+        
         UserFull user1 = new UserFull();
         user1.setName("Dr. do Hospital");
         user1.setEmail("willkev@gmail.com");
         user1.setPassword("mudar1111");
         user1.setInstitutions(new Integer[]{1});
         user1.setPermissionLevel(0); // 0 - Super Admin (geral)
+        user1.setId(-666); // ID específico para ser usado como Token específico
         list.add(user1);
-
+        
         UserFull user2 = new UserFull();
         user2.setName("Dr. Fulano Bento");
         user2.setEmail("user2@email.com");
         user2.setPassword("mudar2222");
         user2.setInstitutions(new Integer[]{1});
-        user1.setPermissionLevel(1); // 1 - Admin (por Instituição)
+        user2.setPermissionLevel(1); // 1 - Admin (por Instituição)
         list.add(user2);
-
+        
         UserFull user3 = new UserFull();
         user3.setName("Dr. Flemming");
         user3.setEmail("user3@email.com");
         user3.setPassword("mudar3333");
         user3.setInstitutions(new Integer[]{1, 2, 3});
         list.add(user3);
-
+        
         UserFull user4 = new UserFull();
         user4.setName("Técnico Radiologista");
         user4.setEmail("user4@email.com");
         user4.setPassword("mudar4444");
         user4.setInstitutions(new Integer[]{1, 2, 3, 4});
         list.add(user4);
-
+        
         UserFull user5 = new UserFull();
         user5.setName("Mario Luigui da Silva");
         user5.setEmail("user5@email.com");
         user5.setPassword("mudar5555");
         user5.setInstitutions(new Integer[]{2});
         list.add(user5);
-
+        
         UserFull user6 = new UserFull();
         user6.setName("Doctor Who");
         user6.setEmail("user6@email.com");
         user6.setPassword("mudar6666");
         user6.setInstitutions(new Integer[]{3});
         list.add(user6);
-
+        
         return list;
     }
-
+    
     public static List<Ticket> createTickets(List<User> users, List<Equipment> equipments) {
         List<Ticket> list = new ArrayList<>();
-
+        
         Ticket t1 = new Ticket();
         t1.setTitle("Fonte queimada");
         Date date = new Date();
@@ -231,7 +232,7 @@ public class Fakes {
         t1.setState("a");
         t1.setPriority("a");
         list.add(t1);
-
+        
         Ticket t2 = new Ticket();
         t2.setTitle("Arrumar luz urgente");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24)); // -24hr
@@ -246,7 +247,7 @@ public class Fakes {
         t2.setState("a");
         t2.setPriority("a");
         list.add(t2);
-
+        
         Ticket t3 = new Ticket();
         t3.setTitle("Chamado para mecânico");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 10)); // -10hr
@@ -261,7 +262,7 @@ public class Fakes {
         t3.setState("a");
         t3.setPriority("n");
         list.add(t3);
-
+        
         Ticket t4 = new Ticket();
         t4.setTitle("Quarto chamado!");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 8)); // -8hr
@@ -276,7 +277,7 @@ public class Fakes {
         t4.setState("f");
         t4.setPriority("b");
         list.add(t4);
-
+        
         Ticket t5 = new Ticket();
         t5.setTitle("Quinto chamado para maca elétrica");
         date = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 80)); // -80hr
@@ -291,7 +292,7 @@ public class Fakes {
         t5.setState("e");
         t5.setPriority("b");
         list.add(t5);
-
+        
         Ticket t6 = new Ticket();
         t6.setTitle("Revisão da RM");
         date = new Date();
@@ -309,12 +310,12 @@ public class Fakes {
         
         return list;
     }
-
+    
     public static List<Cost> createCosts(int ticketId, List<User> users) {
         List<Cost> costs = new ArrayList<>();
         // vai pegar randomicamente um user dentro dos disponíveis
         Random random = new Random(System.currentTimeMillis());
-
+        
         Cost c1 = new Cost();
         c1.setValue(120.77);
         c1.setDescription("2 horas do técnico para instalar o equipamento");
@@ -322,7 +323,7 @@ public class Fakes {
         c1.setTickteId(ticketId);
         c1.setUserId(users.get(random.nextInt(users.size())).getId());
         costs.add(c1);
-
+        
         Cost c2 = new Cost();
         c2.setValue(240.00);
         c2.setDescription("Necessitou chamar um técnico na madrugada do final de semana, por isso custou mais caro");
@@ -330,7 +331,7 @@ public class Fakes {
         c2.setTickteId(ticketId);
         c2.setUserId(users.get(random.nextInt(users.size())).getId());
         costs.add(c2);
-
+        
         Cost c3 = new Cost();
         c3.setValue(50.00);
         c3.setDescription("50 pila de cabos blindados");
@@ -338,42 +339,42 @@ public class Fakes {
         c3.setTickteId(ticketId);
         c3.setUserId(users.get(random.nextInt(users.size())).getId());
         costs.add(c3);
-
+        
         return costs;
     }
-
+    
     public static List<Note> createNotes(int ticketId, List<User> users) {
         List<Note> notes = new ArrayList<>();
         // vai pegar randomicamente um user dentro dos disponíveis
         Random random = new Random(System.currentTimeMillis());
-
+        
         Note n1 = new Note();
         n1.setDescription("Este chamado está demorando muito, pois os responsáveis não foram avisados no dia do ocorrido");
         n1.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 150)))); // -150hr
         n1.setTickteId(ticketId);
         n1.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n1);
-
+        
         Note n2 = new Note();
         n2.setDescription("Pendência com o técnico, o mesmo retorna segunda-feira");
         n2.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 300)))); // -300hr
         n2.setTickteId(ticketId);
         n2.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n2);
-
+        
         Note n3 = new Note();
         n3.setDescription("Alterado o estado do chamado, pois é urgente!!!");
         n3.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 50)))); // -50hr
         n3.setTickteId(ticketId);
         n3.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n3);
-
+        
         return notes;
     }
-
+    
     public static List<QualityControl> createQualityControl(List<User> users, List<Equipment> equipments) {
         List<QualityControl> list = new ArrayList<>();
-
+        
         QualityControl q1 = new QualityControl();
         q1.setTest("Máquina validada OK");
         q1.setCompliance(true);
@@ -383,7 +384,7 @@ public class Fakes {
         q1.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 90))));  //+90 dias
         q1.setHasPDF(true);
         list.add(q1);
-
+        
         QualityControl q2 = new QualityControl();
         q2.setTest("Teste de estress falhou");
         q2.setCompliance(false);
@@ -392,7 +393,7 @@ public class Fakes {
         q2.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 10)))); //-10 dias
         q2.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 10)))); //+10 dias
         list.add(q2);
-
+        
         QualityControl q3 = new QualityControl();
         q3.setTest("Teste falhou novamente!!!");
         q3.setCompliance(false);
@@ -401,7 +402,7 @@ public class Fakes {
         q3.setDateExecution(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 5)))); //-5 dias
         q3.setDateValidity(dateFormater.format(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 3)))); // +3 dias
         list.add(q3);
-
+        
         QualityControl q4 = new QualityControl();
         q4.setTest("Validação OK 100%");
         q4.setCompliance(true);
@@ -413,34 +414,34 @@ public class Fakes {
         list.add(q4);
         return list;
     }
-
+    
     public static List<NoteQualityControl> createNotesQualityControl(int idQC, List<User> users) {
         List<NoteQualityControl> notes = new ArrayList<>();
         // vai pegar randomicamente um user dentro dos disponíveis
         Random random = new Random(System.currentTimeMillis());
-
+        
         NoteQualityControl n1 = new NoteQualityControl();
         n1.setDescription("Não foi boa a avaliação do técnico sobre o teste do aparelho!");
         n1.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 150)))); // -150hr
         n1.setQualityControlId(idQC);
         n1.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n1);
-
+        
         NoteQualityControl n2 = new NoteQualityControl();
         n2.setDescription("Pendência com o técnico, o mesmo retorna segunda-feira para refazer o teste.");
         n2.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 300)))); // -300hr
         n2.setQualityControlId(idQC);
         n2.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n2);
-
+        
         NoteQualityControl n3 = new NoteQualityControl();
         n3.setDescription("Alterado o estado do chamado, pois é urgente que se faça novo teste!!!");
         n3.setDate(dateFormater.format(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 50)))); // -50hr
         n3.setQualityControlId(idQC);
         n3.setUserId(users.get(random.nextInt(users.size())).getId());
         notes.add(n3);
-
+        
         return notes;
     }
-
+    
 }

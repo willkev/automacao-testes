@@ -29,12 +29,12 @@ public class EmailSender {
     }
 
     private static final String CREATE_TICKET_SUBJECT = "Novo Chamado Aberto \"%s\"";
-    private static final String CREATE_TICKET_CONTENT = "Um novo chamando foi aberto!\n\n"
-            + "Aberto por: %s\n"
-            + "Responsável: %s\n"
-            + "Previsão de conserto: %s\n"
-            + "Equipamento: %s\n"
-            + "\n\n\n\nEsta é uma mensagem automática.";
+    private static final String CREATE_TICKET_CONTENT = "Um novo chamando foi aberto!<br><br>"
+            + "<b>Aberto por:</b> %s<br>"
+            + "<b>Responsável:</b> %s<br>"
+            + "<b>Previsão de conserto:</b> %s<br>"
+            + "<b>Equipamento:</b> %s<br>"
+            + "<br><br><br><br><i><small>Esta é uma mensagem automática.</small></i>";
 
     public boolean sendCreateTicket(User userTo, User responsable, String titleTicket, String predictionDate, Equipment equipment) {
         String subject = String.format(CREATE_TICKET_SUBJECT, titleTicket);
@@ -42,7 +42,7 @@ public class EmailSender {
                 userTo.getName(),
                 responsable.getName(),
                 predictionDate == null || predictionDate.isEmpty() ? "Sem previsão." : predictionDate,
-                equipment == null ? "<Equipamento sem nome!>" : equipment.getName());
+                equipment == null ? "Equipamento sem nome." : equipment.getName());
         return send(userTo.getEmail(), subject, content);
     }
 
@@ -85,7 +85,8 @@ public class EmailSender {
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             msg.setFrom(new InternetAddress(senderEmail));
             msg.setSubject(subject);
-            msg.setText(content);
+            //msg.setText(content);
+            msg.setContent(content, "text/html; charset=utf-8");
             msg.setSentDate(new Date());
             Transport.send(msg);
 

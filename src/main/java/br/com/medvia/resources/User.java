@@ -15,7 +15,7 @@ public class User extends WkTable {
     // 1 - Admin (por Instituição)
     // 2 - Normal (pode ver e editar)
     // 3 - Visualizador (apenas pode ver)
-    private int permissionLevel = 2;
+    private Integer permissionLevel = 2;
     // Lista de IDs, separados por virgula
     private String institutionsList;
 
@@ -30,11 +30,11 @@ public class User extends WkTable {
         this.institutionsList = institutionsList;
     }
 
-    public int getPermissionLevel() {
+    public Integer getPermissionLevel() {
         return permissionLevel;
     }
 
-    public void setPermissionLevel(int permissionLevel) {
+    public void setPermissionLevel(Integer permissionLevel) {
         this.permissionLevel = permissionLevel;
     }
 

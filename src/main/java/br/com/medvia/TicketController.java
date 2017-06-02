@@ -107,6 +107,7 @@ public class TicketController extends AbstractController {
                             equipment);
                 }
             }
+            //
         }
         return returnMsg(insert, "Criou novo chamado com sucesso!",
                 "Não foi possível criar um novo chamdo!", extraMsg);

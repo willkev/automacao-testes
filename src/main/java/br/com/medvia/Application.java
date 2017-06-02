@@ -32,8 +32,8 @@ public class Application {
         dirQC.mkdir();
         QualityControlController.dirPDF = dirQC;
 
-        ServerController sc = new ServerController();
-        sc.dbCreate();
+//        ServerController sc = new ServerController();
+//        sc.dbCreate();
     }
 
 }
