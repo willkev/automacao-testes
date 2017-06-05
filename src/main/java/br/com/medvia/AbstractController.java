@@ -45,6 +45,10 @@ class AbstractController {
         return returnOK(count + " fakes foram criados com sucesso! " + controllerName);
     }
 
+    ResponseEntity<ReplyMessage> returnNotFound(String msg) {
+        return returnFail(msg);
+    }
+
     ResponseEntity<ReplyMessage> returnFieldMandatory(String fieldName) {
         return returnFail(FIELD_MANDATORY + fieldName);
     }
@@ -53,6 +57,10 @@ class AbstractController {
         return returnMsg(update, "Update OK!", "Update FAIL!");
     }
 
+    ResponseEntity<ReplyMessage> returnMsgUpdate(boolean update, String warnMsg) {
+        return returnMsg(update, "Update OK!", "Update FAIL!", warnMsg);
+    }    
+    
     ResponseEntity<ReplyMessage> returnMsgDelete(boolean delete) {
         return returnMsg(delete, "Delete OK!", "Delete FAIL!");
     }

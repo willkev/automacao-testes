@@ -1,6 +1,7 @@
 package br.com.medvia.mail;
 
 import br.com.medvia.resources.Equipment;
+import br.com.medvia.resources.Ticket;
 import br.com.medvia.resources.User;
 import java.util.Date;
 import java.util.Properties;
@@ -22,28 +23,45 @@ public class EmailSender {
 
     public static boolean TEST_RUNNING = false;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmailSender.class);
+    private static final Logger log = LoggerFactory.getLogger(EmailSender.class);
 
-    public enum Template {
-        createTicket, closeTicket, deleteTicket
-    }
-
-    private static final String CREATE_TICKET_SUBJECT = "Novo Chamado Aberto \"%s\"";
-    private static final String CREATE_TICKET_CONTENT = "Um novo chamando foi aberto!<br><br>"
+    private static final String CREATE_TICKET_SUBJECT = "Novo Chamado Aberto: \"%s\"";
+    private static final String EDIT_TICKET_SUBJECT = "Aviso de Chamado Editado: \"%s\"";
+    private static final String CLOSE_TICKET_SUBJECT = "Chamado foi Fechado: \"%s\"";
+    private static final String TEMPLATE_TICKET_CONTENT = "<br><br>"
             + "<b>Aberto por:</b> %s<br>"
             + "<b>Responsável:</b> %s<br>"
             + "<b>Previsão de conserto:</b> %s<br>"
             + "<b>Equipamento:</b> %s<br>"
+            + "%s" // usada para inserir "Data de fechamento" quando for Close
             + "<br><br><br><br><i><small>Esta é uma mensagem automática.</small></i>";
 
-    public boolean sendCreateTicket(User userTo, User responsable, String titleTicket, String predictionDate, Equipment equipment) {
-        String subject = String.format(CREATE_TICKET_SUBJECT, titleTicket);
-        String content = String.format(CREATE_TICKET_CONTENT,
-                userTo.getName(),
-                responsable.getName(),
-                predictionDate == null || predictionDate.isEmpty() ? "Sem previsão." : predictionDate,
-                equipment == null ? "Equipamento sem nome." : equipment.getName());
-        return send(userTo.getEmail(), subject, content);
+    public boolean sendCreateTicket(String emailTo, User creator, User responsable, Ticket ticket, Equipment equipment) {
+        return sendTicket(emailTo, creator, responsable, String.format(CREATE_TICKET_SUBJECT, ticket.getDescription()),
+                ticket, equipment);
+    }
+
+    public boolean sendEditTicket(String emailTo, User creator, User responsable, Ticket ticket, Equipment equipment) {
+        return sendTicket(emailTo, creator, responsable, String.format(EDIT_TICKET_SUBJECT, ticket.getDescription()),
+                ticket, equipment);
+    }
+
+    public boolean sendCloseTicket(String emailTo, User creator, User responsable, Ticket ticket, Equipment equipment) {
+        return sendTicket(emailTo, creator, responsable, String.format(CLOSE_TICKET_SUBJECT, ticket.getDescription()),
+                ticket, equipment);
+    }
+
+    private boolean sendTicket(String emailTo, User creator, User responsable, String subject, Ticket ticket, Equipment equipment) {
+        String content = String.format(TEMPLATE_TICKET_CONTENT,
+                creator.getName(),
+                (responsable == null) ? "Responsável desconhecido." : responsable.getName(),
+                (ticket.getPrediction() == null || ticket.getPrediction().isEmpty()) ? "Sem previsão." : ticket.getPrediction(),
+                equipment == null ? "Equipamento sem nome." : equipment.getName(),
+                // adiciona data de fechamento se houver!
+                (ticket.getDateClosing() == null || ticket.getDateClosing().isEmpty()) ? ""
+                        : "<b>Equipamento:</b> " + ticket.getDateClosing() + "<br>"
+        );
+        return send(emailTo, subject, content);
     }
 
     public boolean send(String to, String subject, String content) {
@@ -82,7 +100,7 @@ public class EmailSender {
             });
 
             Message msg = new MimeMessage(session);
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to.trim()));
             msg.setFrom(new InternetAddress(senderEmail));
             msg.setSubject(subject);
             //msg.setText(content);
@@ -90,12 +108,12 @@ public class EmailSender {
             msg.setSentDate(new Date());
             Transport.send(msg);
 
-            LOGGER.info("Successfully sent emai!");
+            log.info("Successfully sent emai to {}!" + to);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        LOGGER.error("Fail to send emai!");
+        log.error("Fail to send emai to {}!" + to);
         return false;
     }
 }

@@ -9,6 +9,8 @@ import br.com.medvia.util.Fakes;
 import br.com.medvia.util.ReplyMessage;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/tickets")
 @CrossOrigin
 public class TicketController extends AbstractController {
+
+    private static final Logger log = LoggerFactory.getLogger(TicketController.class);
 
     public static final String QUERY_LIST = "select uO.name openedBy, uR.name responsable, t.id id, t.state state, t.title title, i.description institution,(e.name || ' - ' || e.manufacturer) equipment, t.dateOcurrence dateOcurrence, t.prediction prediction, t.situation situation, t.priority priority from Ticket t, Equipment e, Institution i, (select * from User) uO, (select * from User) uR where t.userId = uO.id and t.responsableId = uR.id and t.equipmentId = e.id and e.institutionId = i.id";
     public static final String QUERY_LIST_ID = "select t.*,e.institutionId from Ticket t, Equipment e where t.equipmentId = e.id and t.id = ";
@@ -49,6 +53,10 @@ public class TicketController extends AbstractController {
     public ResponseEntity<?> list(@RequestHeader(value = "userId", required = false) String token) {
         Integer userId = verifyUser(token);
         User currentUser = dbUser.selectById(userId);
+        if (currentUser == null) {
+            // força exceção de permissão
+            verifyUser(null);
+        }
         // retorna resultados conforme o nível de permissão do User
         String filter = "";
         if (currentUser.getPermissionLevel() >= 1) {
@@ -79,38 +87,63 @@ public class TicketController extends AbstractController {
         boolean insert = db.insert(ticket);
         String extraMsg = "";
         if (insert) {
-            Equipment equipment = dbEquipment.selectById(ticket.getEquipmentId());
-            User userCreator = dbUser.selectById(ticket.getUserId());
-            User userResponsable = userCreator;
-            // Se o criador for diferente do responsável
-            if (ticket.getUserId() != ticket.getResponsableId()) {
-                userResponsable = dbUser.selectById(ticket.getResponsableId());
-            }
-            EmailSender emailSender = new EmailSender();
-            if (userCreator == null) {
-                extraMsg = "Não foi possível enviar email para o usuário criador do chamado.";
-            } else {
-                emailSender.sendCreateTicket(userCreator,
-                        userResponsable,
-                        ticket.getTitle(),
-                        ticket.getPrediction(),
-                        equipment);
-            }
-            if (ticket.getUserId() != ticket.getResponsableId()) {
-                if (userCreator == null) {
-                    extraMsg += "Não foi possível enviar email para o usuário responsável pelo chamado.";
-                } else {
-                    emailSender.sendCreateTicket(userResponsable,
-                            userResponsable,
-                            ticket.getTitle(),
-                            ticket.getPrediction(),
-                            equipment);
-                }
-            }
-            //
+            extraMsg = sendEmails(ticket, extraMsg);
         }
         return returnMsg(insert, "Criou novo chamado com sucesso!",
                 "Não foi possível criar um novo chamdo!", extraMsg);
+    }
+
+    private String sendEmails(Ticket ticket, String extraMsg) {
+        Equipment equipment = dbEquipment.selectById(ticket.getEquipmentId());
+        User userCreator = dbUser.selectById(ticket.getUserId());
+        User userResponsable = null;
+        // Se o criador for diferente do responsável
+        if (ticket.getUserId() != ticket.getResponsableId()) {
+            userResponsable = dbUser.selectById(ticket.getResponsableId());
+        }
+        EmailSender emailSender = new EmailSender();
+        boolean sentEmailOK = true;
+        if (userCreator != null) {
+            sentEmailOK = emailSender.sendCreateTicket(userCreator.getEmail(), userCreator, userResponsable, ticket, equipment);
+        }
+        if (userCreator == null || !sentEmailOK) {
+            extraMsg += "Não foi possível enviar email para o usuário criador pelo chamado.";
+        }
+        sentEmailOK = true;
+        if (userResponsable != null) {
+            sentEmailOK = emailSender.sendCreateTicket(userResponsable.getEmail(), userCreator, userResponsable, ticket, equipment);
+        }
+        // Se o criador for diferente do responsável, mas não foi possível encontrar o responsável OU
+        // não foi possível enviar o email ao responsável
+        if ((ticket.getUserId() != ticket.getResponsableId() && userResponsable == null) || !sentEmailOK) {
+            extraMsg += "Não foi possível enviar email para o usuário responsável pelo chamado.";
+        }
+        // envia emails para os emails adicionados no campo opcional
+        if (ticket.getEmail() != null) {
+            boolean sentOk = true;
+            try {
+                String ucEmail = userCreator.getEmail();
+                String urEmail = userResponsable == null ? "" : userResponsable.getEmail();
+
+                String[] emails = ticket.getEmail().split(",");
+                for (String email : emails) {
+                    email = email.trim();
+                    // Se for diferente do criador e do responsável
+                    if (!ucEmail.equals(email) && !urEmail.equals(email)) {
+                        if (!emailSender.sendCreateTicket(email, userResponsable, userResponsable, ticket, equipment)) {
+                            sentOk = false;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Erro a enviar emails adicionais!", e);
+            }
+            // se houve algum erro ao enviar os emails adicionais
+            if (!sentOk) {
+                extraMsg += "Não foi possível enviar email para usuário(s) adicional(is).";
+            }
+        }
+        return extraMsg;
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
@@ -123,6 +156,13 @@ public class TicketController extends AbstractController {
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> edit(@RequestHeader(value = "userId", required = false) String token,
             @PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+        // verifica User
+        Integer userId = verifyUser(token);
+        User currentUser = dbUser.selectById(userId);
+        if (currentUser == null) {
+            // força exceção de permissão
+            verifyUser(null);
+        }
         // Valida campos
         if (!isNotNullNotEmpty(ticket.getSituation())) {
             return returnFieldMandatory("Situação");
@@ -150,12 +190,31 @@ public class TicketController extends AbstractController {
         ticketOriginal.setPrediction(ticket.getPrediction());
         ticketOriginal.setResponsableId(ticket.getResponsableId());
         boolean update = db.update(ticket);
-        return returnMsgUpdate(update);
+
+        EmailSender emailSender = new EmailSender();
+        String extraMsg = "";
+        if (!update) {
+            extraMsg = "Não foi possível enviar email para o usuário editor do chamado.";
+        } else {
+            User userCreator = dbUser.selectById(ticket.getUserId());
+            User userResponsable = dbUser.selectById(ticket.getResponsableId());
+            Equipment equipment = dbEquipment.selectById(ticket.getEquipmentId());
+
+            emailSender.sendEditTicket(currentUser.getEmail(), userCreator, userResponsable, ticket, equipment);
+        }
+        return returnMsgUpdate(update, extraMsg);
     }
 
     @RequestMapping(path = PUT_CLOSE, method = RequestMethod.PUT)
     public ResponseEntity<ReplyMessage> close(@RequestHeader(value = "userId", required = false) String token,
             @PathVariable(value = "id") int id, @RequestBody Ticket ticket) {
+        // antes de setar, verifica User
+        Integer userId = verifyUser(token);
+        User currentUser = dbUser.selectById(userId);
+        if (currentUser == null) {
+            // força exceção de permissão
+            verifyUser(null);
+        }
         if (!isNotNullNotEmpty(ticket.getDateClosing())) {
             return returnFieldMandatory("Data de Fechamento");
         }
@@ -171,7 +230,19 @@ public class TicketController extends AbstractController {
         ticketOriginal.setNoteClosing(ticket.getNoteClosing());
         ticketOriginal.setState("f");
         boolean update = db.update(ticketOriginal);
-        return returnMsg(update, "Close OK!", "Close Fail!");
+
+        EmailSender emailSender = new EmailSender();
+        String extraMsg = "";
+        if (!update) {
+            extraMsg = "Não foi possível enviar email para o usuário fechador do chamado.";
+        } else {
+            User userCreator = dbUser.selectById(ticket.getUserId());
+            User userResponsable = dbUser.selectById(ticket.getResponsableId());
+            Equipment equipment = dbEquipment.selectById(ticket.getEquipmentId());
+
+            emailSender.sendCloseTicket(currentUser.getEmail(), userCreator, userResponsable, ticket, equipment);
+        }
+        return returnMsg(update, "Close OK!", "Close Fail!", extraMsg);
     }
 
     @RequestMapping(path = PUT_DELETE, method = RequestMethod.PUT)
