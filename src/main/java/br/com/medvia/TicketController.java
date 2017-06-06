@@ -62,6 +62,7 @@ public class TicketController extends AbstractController {
         if (currentUser.getPermissionLevel() >= 1) {
             // a lista termina com uma virgula
             String institutionsList = currentUser.getInstitutionsList();
+            // retorna apenas os tickets das instituições que o usuário tem permissão de acesso
             filter = " and i.id in (" + institutionsList.substring(0, institutionsList.length() - 1) + ")";
         }
         List<Map<String, Object>> selectAll = db.executeQuery(QUERY_LIST + filter);
@@ -200,7 +201,9 @@ public class TicketController extends AbstractController {
             User userResponsable = dbUser.selectById(ticket.getResponsableId());
             Equipment equipment = dbEquipment.selectById(ticket.getEquipmentId());
 
-            emailSender.sendEditTicket(currentUser.getEmail(), userCreator, userResponsable, ticket, equipment);
+            if (!emailSender.sendEditTicket(currentUser.getEmail(), userCreator, userResponsable, ticket, equipment)) {
+                extraMsg = "Não foi possível enviar email para o usuário editor do chamado.";
+            }
         }
         return returnMsgUpdate(update, extraMsg);
     }
@@ -240,7 +243,9 @@ public class TicketController extends AbstractController {
             User userResponsable = dbUser.selectById(ticket.getResponsableId());
             Equipment equipment = dbEquipment.selectById(ticket.getEquipmentId());
 
-            emailSender.sendCloseTicket(currentUser.getEmail(), userCreator, userResponsable, ticket, equipment);
+            if (!emailSender.sendCloseTicket(currentUser.getEmail(), userCreator, userResponsable, ticket, equipment)) {
+                extraMsg = "Não foi possível enviar email para o usuário fechador do chamado.";
+            }
         }
         return returnMsg(update, "Close OK!", "Close Fail!", extraMsg);
     }
